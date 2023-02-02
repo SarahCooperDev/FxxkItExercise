@@ -5,6 +5,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
+import android.widget.Toast
 
 /**
  * A simple [Fragment] subclass.
@@ -24,8 +27,20 @@ class AddExerciseFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_exercise, container, false)
+        val view =  inflater.inflate(R.layout.fragment_add_exercise, container, false)
+
+        val exNameInput = view.findViewById<EditText>(R.id.exercise_name)
+        val exSetNosInput = view.findViewById<EditText>(R.id.exercise_set_nos)
+        val exRepNosInput = view.findViewById<EditText>(R.id.exercise_rep_nos)
+
+
+        val showBtn = view.findViewById<Button>(R.id.add_exercise_btn)
+        showBtn.setOnClickListener{view ->
+            val text = exNameInput.text.toString() + ", " + exSetNosInput.text.toString() + ", " + exRepNosInput.text.toString()
+            Toast.makeText(activity, text, Toast.LENGTH_SHORT).show()
+        }
+
+        return view
     }
 
     companion object {

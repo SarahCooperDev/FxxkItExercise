@@ -5,9 +5,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fxxkit.ViewModel.ExerciseViewModel
+import com.google.android.material.snackbar.Snackbar
 
 /**
  * A simple [Fragment] subclass.
@@ -19,6 +23,7 @@ class ExerciseListFragment : Fragment() {
     private var layoutManager: RecyclerView.LayoutManager? = null
     private var exerciseListAdapter: RecyclerView.Adapter<ExerciseListAdapter.ExerciseListViewHolder>? = null
     private lateinit var exerciseList: ArrayList<ExerciseViewModel>
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +37,6 @@ class ExerciseListFragment : Fragment() {
         var view = inflater.inflate(R.layout.fragment_exercise_list, container, false)
         var recycler = view.findViewById<RecyclerView>(R.id.exercise_list_rv)
         recycler.layoutManager = LinearLayoutManager(activity)
-
 
         createExerciseList()
 

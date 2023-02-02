@@ -5,10 +5,51 @@
     android:layout_height="match_parent"
     tools:context=".AddExerciseFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Add an exercise" />
+        android:text="Add an exercise"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/exercise_name"
+            android:layout_margin="8dp"
+            android:hint="Exercise Name"
+            android:inputType="text"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/exercise_set_nos"
+            android:layout_margin="8dp"
+            android:hint="Number of Sets"
+            android:inputType="text"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/exercise_rep_nos"
+            android:layout_margin="8dp"
+            android:hint="Number of Reps"
+            android:inputType="text"/>
+
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/add_exercise_btn"
+            android:layout_gravity="center_horizontal"
+            android:text="show"
+            android:backgroundTint="@color/black"
+            android:textColor="@color/white"/>
+    </LinearLayout>
 
 </FrameLayout>

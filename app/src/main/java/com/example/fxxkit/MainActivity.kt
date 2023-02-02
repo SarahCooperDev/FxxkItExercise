@@ -45,13 +45,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         addExerciseBtn.setOnClickListener { view ->
-            Snackbar.make(view, "Add exercise button clicked", Snackbar.LENGTH_SHORT)
-                .setAction("Action", null).show()
-
             supportFragmentManager.beginTransaction()
                 .replace(R.id.main_fragment_view, AddExerciseFragment.newInstance(), "addexercise")
                 .commit()
         }
-
     }
 }
