@@ -25,13 +25,14 @@
             android:hint="Exercise Name"
             android:inputType="text"/>
 
-        <EditText
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/exercise_set_nos"
             android:layout_margin="8dp"
-            android:hint="Number of Sets"
-            android:inputType="text"/>
+            android:drawableRight="@android:drawable/arrow_down_float"
+            android:drawablePadding="16dp"
+            android:text="Number of Sets" />
 
         <EditText
             android:layout_width="match_parent"
