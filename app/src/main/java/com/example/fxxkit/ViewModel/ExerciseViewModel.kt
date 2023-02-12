@@ -1,6 +1,6 @@
 package com.example.fxxkit.ViewModel
 
-data class ExerciseViewModel(val name : String, val duration: Int) {
+data class ExerciseViewModel(val name: String?, val duration: Int) {
 
 
 }

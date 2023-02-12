@@ -34,14 +34,14 @@
             android:drawablePadding="16dp"
             android:text="Number of Sets" />
 
-        <EditText
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/exercise_rep_nos"
             android:layout_margin="8dp"
-            android:hint="Number of Reps"
-            android:inputType="text"/>
-
+            android:drawableRight="@android:drawable/arrow_down_float"
+            android:drawablePadding="16dp"
+            android:text="Number of Reps" />
 
         <Button
             android:layout_width="wrap_content"

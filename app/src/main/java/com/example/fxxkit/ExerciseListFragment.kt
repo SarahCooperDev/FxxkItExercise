@@ -5,13 +5,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fxxkit.ViewModel.ExerciseViewModel
-import com.google.android.material.snackbar.Snackbar
 
 /**
  * A simple [Fragment] subclass.
@@ -38,29 +34,31 @@ class ExerciseListFragment : Fragment() {
         var recycler = view.findViewById<RecyclerView>(R.id.exercise_list_rv)
         recycler.layoutManager = LinearLayoutManager(activity)
 
-        createExerciseList()
+        exerciseList = ArrayList<ExerciseViewModel>()
+
+        getExercises(view)
 
         recycler.adapter = ExerciseListAdapter(exerciseList)
 
         return view
     }
 
-    private fun createExerciseList(){
-        exerciseList = ArrayList<ExerciseViewModel>()
-        exerciseList.add(ExerciseViewModel("Push ups", 5))
-        exerciseList.add(ExerciseViewModel("Sit ups", 10))
+    private fun getExercises(view: View){
+        val dbHandler = DBHandler(this.requireContext(), null, null, 1)
+        val exercises = dbHandler.getAllExercises()
+
+        if (exercises != null) {
+            if(exercises.size > 0){
+                for(exercise in exercises){
+                    exerciseList.add(ExerciseViewModel(exercise.exerciseName, 30))
+                }
+            }
+        }
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        //var recyclerView = requireView().findViewById<RecyclerView>(R.id.exercise_list_rv)
-        //recyclerView.adapter = exerciseListAdapter
-        //recyclerView.layoutManager = LinearLayoutManager(activity)
-            //.apply{
-        //    layoutManager = LinearLayoutManager(activity)
-         //   adapter = ExerciseListAdapter()
-        //}
     }
 
     companion object {
