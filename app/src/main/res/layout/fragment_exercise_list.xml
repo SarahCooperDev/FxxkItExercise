@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ExerciseListFragment">
+    tools:context=".Fragment.ExerciseListFragment">
 
     <LinearLayout
         android:id="@+id/linearLayout2"
@@ -40,9 +40,4 @@
                 app:layout_constraintTop_toTopOf="parent" />
         </LinearLayout>
     </LinearLayout>
-
-
-
-
-
 </FrameLayout>

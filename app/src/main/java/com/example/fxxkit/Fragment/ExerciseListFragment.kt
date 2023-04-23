@@ -1,4 +1,4 @@
-package com.example.fxxkit
+package com.example.fxxkit.Fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,6 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.fxxkit.DBHandler
+import com.example.fxxkit.ExerciseListAdapter
+import com.example.fxxkit.R
 import com.example.fxxkit.ViewModel.ExerciseViewModel
 
 /**
@@ -62,13 +65,7 @@ class ExerciseListFragment : Fragment() {
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
 
-         * @return A new instance of fragment ExerciseListFragment.
-         */
         @JvmStatic
         fun newInstance() =
             ExerciseListFragment().apply {

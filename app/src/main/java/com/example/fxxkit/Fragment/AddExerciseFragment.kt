@@ -1,4 +1,4 @@
-package com.example.fxxkit
+package com.example.fxxkit.Fragment
 
 import android.app.AlertDialog
 import android.os.Bundle
@@ -10,8 +10,9 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import com.example.fxxkit.DBHandler
 import com.example.fxxkit.DataClass.Exercise
-import com.google.android.material.snackbar.Snackbar
+import com.example.fxxkit.R
 import java.util.*
 import kotlin.collections.ArrayList
 

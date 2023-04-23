@@ -6,61 +6,129 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import com.example.fxxkit.DataClass.Exercise
+import com.example.fxxkit.DataClass.Workout
 
 class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorFactory?, version: Int):
     SQLiteOpenHelper(context, DATABASE_NAME, factory, DATABASE_VERSION){
 
-
-    override fun onCreate(db: SQLiteDatabase) {
-        val CREATE_EXERCISE_TABLE = ("CREATE TABLE " + TABLE_EXERCISES +
-                "(" + COLUMN_ID + " INTEGER PRIMARY KEY," + COLUMN_EXERCISENAME + " TEXT)")
-
-        db.execSQL(CREATE_EXERCISE_TABLE)
-    }
-
-    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_EXERCISES)
-        onCreate(db)
-    }
+    var dbNeedsRefresh = true;
 
     companion object{
         private val DATABASE_VERSION = 1
         private val DATABASE_NAME = "exerciseDB.db"
         val TABLE_EXERCISES = "exercise"
+        val TABLE_WORKOUTS = "workout"
+        val TABLE_WORKOUT_EXERCISE = "workout_exercise"
 
         val COLUMN_ID = "_id"
-        val COLUMN_EXERCISENAME = "exercisename"
+        val COLUMN_EXERCISENAME = "exercise_name"
+        val COLUMN_WORKOUTNAME = "workout_name"
+        val COLUMN_WORKOUT = "workout_id"
+        val COLUMN_EXERCISE = "exercise_id"
     }
 
-    fun addInitialExercises(){
-        val dbold = this.writableDatabase
-        onUpgrade(dbold, 1, 1)
+    override fun onCreate(db: SQLiteDatabase) {
+        val CREATE_EXERCISE_TABLE = ("CREATE TABLE " + TABLE_EXERCISES +
+                "(" + COLUMN_ID + " INTEGER PRIMARY KEY," + COLUMN_EXERCISENAME + " TEXT)")
+        val CREATE_WORKOUT_TABLE = ("CREATE TABLE " + TABLE_WORKOUTS +
+                "(" + COLUMN_ID + " INTEGER PRIMARY KEY," + COLUMN_WORKOUTNAME + " TEXT)")
+        val CREATE_WORKOUT_EXERCISE_TABLE = ("CREATE TABLE " + TABLE_WORKOUT_EXERCISE +
+                "(" + COLUMN_ID + "INTEGER PRIMARY KEY," + COLUMN_WORKOUT + " INTEGER," + COLUMN_EXERCISE + " INTEGER)")
 
+        db.execSQL(CREATE_EXERCISE_TABLE)
+        db.execSQL(CREATE_WORKOUT_TABLE)
+        db.execSQL(CREATE_WORKOUT_EXERCISE_TABLE)
+
+    }
+
+    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_EXERCISES)
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_WORKOUTS)
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_WORKOUT_EXERCISE)
+
+        onCreate(db)
+    }
+
+
+
+    fun addInitialExercises(){
         val ex1 = Exercise("Push ups")
         val ex2 = Exercise("Sit ups")
         val ex3 = Exercise("Side crunches")
 
-        val values = ContentValues()
-        val db = this.writableDatabase
-
-
-        values.put(COLUMN_EXERCISENAME, ex1.exerciseName)
-        db.insert(TABLE_EXERCISES, null, values)
-        values.put(COLUMN_EXERCISENAME, ex2.exerciseName)
-        db.insert(TABLE_EXERCISES, null, values)
-        values.put(COLUMN_EXERCISENAME, ex3.exerciseName)
-        db.insert(TABLE_EXERCISES, null, values)
-
-        db.close()
+        addExercise(ex1)
+        addExercise(ex2)
+        addExercise(ex3)
     }
+
+    fun addInitialWorkoutExercises(){
+        val exerciseList: ArrayList<Exercise>? = getAllExercises()
+        val workoutList: ArrayList<Workout>? = getAllWorkouts()
+
+        if(workoutList != null && workoutList.size > 0){
+            for(i in 0 ..1) {
+                if(exerciseList != null && exerciseList.size > 0){
+                    if(exerciseList.size >= 3){
+                        for(j in 0..2){
+                            addExerciseToWorkout(workoutList[i], exerciseList[j])
+                        }
+                    } else {
+                        for(j in exerciseList.indices){
+                            addExerciseToWorkout(workoutList[i], exerciseList[j])
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fun addInitialWorkouts(){
+        val work1 = Workout("10 minute workout")
+        val work2 = Workout("Basic half")
+
+        addWorkout(work1)
+        addWorkout(work2)
+    }
+
+    fun initialiseDatabase(){
+        val dbold = this.writableDatabase
+        onUpgrade(dbold, 1, 1)
+
+        addInitialExercises()
+        addInitialWorkouts()
+        addInitialWorkoutExercises()
+    }
+
+
 
     fun addExercise(exercise: Exercise){
         val values = ContentValues()
-        values.put(COLUMN_EXERCISENAME, exercise.exerciseName)
-
         val db = this.writableDatabase
 
+        values.put(COLUMN_EXERCISENAME, exercise.exerciseName)
+
         db.insert(TABLE_EXERCISES, null, values)
+        db.close()
+    }
+
+    fun addExerciseToWorkout(workout: Workout, exercise: Exercise){
+        val values = ContentValues()
+        val db = this.writableDatabase
+
+        values.put(COLUMN_WORKOUT, workout.id)
+        values.put(COLUMN_EXERCISE, exercise.id)
+
+        db.insert(TABLE_WORKOUT_EXERCISE, null, values)
+        db.close()
+    }
+
+    fun addWorkout(workout: Workout){
+        val values = ContentValues()
+        val db = this.writableDatabase
+
+        values.put(COLUMN_WORKOUTNAME, workout.workoutName)
+
+        db.insert(TABLE_WORKOUTS, null, values)
         db.close()
     }
 
@@ -87,7 +155,11 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
 
     @SuppressLint("Range")
     fun getAllExercises(): ArrayList<Exercise>?{
-        //addInitialExercises()
+        if(dbNeedsRefresh){
+            dbNeedsRefresh = false;
+            initialiseDatabase()
+        }
+
         val exerciseList: ArrayList<Exercise> = ArrayList<Exercise>()
 
         val query = "SELECT * FROM $TABLE_EXERCISES"
@@ -108,6 +180,35 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
             } while(cursor.moveToNext())
         }
         return exerciseList
+    }
+
+    @SuppressLint("Range")
+    fun getAllWorkouts(): ArrayList<Workout>?{
+        if(dbNeedsRefresh){
+            dbNeedsRefresh = false
+            initialiseDatabase()
+        }
+
+        val workoutList: ArrayList<Workout> = ArrayList<Workout>()
+
+        val query = "SELECT * FROM $TABLE_WORKOUTS"
+        val db = this.readableDatabase
+        val cursor = db.rawQuery(query, null)
+
+        var workId: Int
+        var workName: String
+
+        if(cursor.moveToFirst()){
+            do{
+                workId = cursor.getInt(cursor.getColumnIndex(COLUMN_ID))
+                workName = cursor.getString(cursor.getColumnIndex(COLUMN_WORKOUTNAME))
+
+                val workout = Workout(workId, workName)
+                workoutList.add(workout)
+            } while(cursor.moveToNext())
+        }
+
+        return workoutList
     }
 
     fun deleteExercise(exerciseName: String): Boolean{

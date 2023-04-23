@@ -3,7 +3,10 @@ package com.example.fxxkit
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.FragmentManager
+import com.example.fxxkit.Fragment.AddExerciseFragment
+import com.example.fxxkit.Fragment.CreateWorkoutFragment
+import com.example.fxxkit.Fragment.ExerciseListFragment
+import com.example.fxxkit.Fragment.WorkoutListFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 
@@ -20,7 +23,7 @@ class MainActivity : AppCompatActivity() {
 
         if(savedInstanceState == null){
             supportFragmentManager.beginTransaction()
-                .add(R.id.main_fragment_view, WorkoutFragment.newInstance(), "workoutlist")
+                .add(R.id.main_fragment_view, WorkoutListFragment.newInstance(), "workoutlist")
                 .commit()
         }
 
@@ -35,7 +38,7 @@ class MainActivity : AppCompatActivity() {
                 .setAction("Action", null).show()
 
             supportFragmentManager.beginTransaction()
-                .replace(R.id.main_fragment_view, WorkoutFragment.newInstance(), "workoutlist")
+                .replace(R.id.main_fragment_view, WorkoutListFragment.newInstance(), "workoutlist")
                 .commit()
 
             setBtnVisibility(view, "workoutlist")
@@ -74,6 +77,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun setBtnVisibility(view: View, fragment: String){
         //val currentFrag = this.supportFragmentManager.fragments.last().tag
+
+        println("Navigated to " + fragment)
 
         when(fragment){
             "addexercise" -> {

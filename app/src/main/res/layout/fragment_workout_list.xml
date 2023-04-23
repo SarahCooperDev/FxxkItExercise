@@ -3,11 +3,37 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".WorkoutListFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".Fragment.WorkoutListFragment">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
     <TextView
+        android:id="@+id/workout_lst_title_id"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:text="Workout List" />
 
+        <LinearLayout
+            android:id="@+id/recycler_linear_lay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@id/workout_lst_title_id">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/workout_list_rv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipChildren="false"
+                tools:listitem="@layout/workout_row_item"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </LinearLayout>
+    </LinearLayout>
 </FrameLayout>
