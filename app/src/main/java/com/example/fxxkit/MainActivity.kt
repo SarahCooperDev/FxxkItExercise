@@ -1,8 +1,12 @@
 package com.example.fxxkit
 
+import android.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
+import android.widget.ImageButton
+import android.widget.TextView
 import com.example.fxxkit.Fragment.AddExerciseFragment
 import com.example.fxxkit.Fragment.CreateWorkoutFragment
 import com.example.fxxkit.Fragment.ExerciseListFragment
@@ -11,11 +15,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
-
-    private lateinit var showWorkoutListBtn: FloatingActionButton
     private lateinit var showExerciseListBtn : FloatingActionButton
     private lateinit var createWorkoutBtn : FloatingActionButton
     private lateinit var addExerciseBtn : FloatingActionButton
+    private lateinit var previousBtn: ImageButton
+    private var navHistory: ArrayList<String> = ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,88 +27,109 @@ class MainActivity : AppCompatActivity() {
 
         if(savedInstanceState == null){
             supportFragmentManager.beginTransaction()
-                .add(R.id.main_fragment_view, WorkoutListFragment.newInstance(), "workoutlist")
-                .commit()
+                .add(R.id.main_fragment_view, WorkoutListFragment.newInstance(), "workoutlist").commit()
         }
 
-        showWorkoutListBtn = findViewById<FloatingActionButton>(R.id.show_workout_list_btn)
-        showWorkoutListBtn.visibility = View.GONE
+        supportActionBar?.setDisplayOptions(androidx.appcompat.app.ActionBar.DISPLAY_SHOW_CUSTOM)
+        supportActionBar?.setCustomView(R.layout.custom_action_bar)
+        getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText("Workouts")
+
         showExerciseListBtn = findViewById<FloatingActionButton>(R.id.show_exercises_btn)
         createWorkoutBtn = findViewById<FloatingActionButton>(R.id.create_workout_btn)
         addExerciseBtn = findViewById<FloatingActionButton>(R.id.add_exercise_btn)
+        previousBtn = findViewById<ImageButton>(R.id.previous_btn)
 
-        showWorkoutListBtn.setOnClickListener { view ->
-            Snackbar.make(view, "Show workout list clicked", Snackbar.LENGTH_SHORT)
-                .setAction("Action", null).show()
+        addToNavHistory("workoutList")
+        previousBtn.visibility = View.GONE
 
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.main_fragment_view, WorkoutListFragment.newInstance(), "workoutlist")
-                .commit()
+        previousBtn.setOnClickListener{ view -> navToPrevious(view) }
+        showExerciseListBtn.setOnClickListener { view -> navToExerciseList(view) }
+        createWorkoutBtn.setOnClickListener { view -> navToCreateWorkout(view) }
+        addExerciseBtn.setOnClickListener { view -> navToAddExercise(view) }
+    }
 
-            setBtnVisibility(view, "workoutlist")
+    private fun clearBtns(){
+        showExerciseListBtn.visibility = View.GONE
+        addExerciseBtn.visibility = View.GONE
+        createWorkoutBtn.visibility = View.GONE
+    }
+
+    private fun navToPrevious(view: View){
+        var previous = getPreviousFragment()
+
+        if(previous != null){
+            when(previous) {
+                "addExercise" -> { navToAddExercise(view) }
+                "createWorkout" -> { navToCreateWorkout(view) }
+                "exerciseList" -> { navToExerciseList(view) }
+                "workoutList" -> { navToWorkoutList(view) }
+            }
         }
 
-        showExerciseListBtn.setOnClickListener { view ->
-            Snackbar.make(view, "Show exercise button clicked", Snackbar.LENGTH_SHORT)
-                .setAction("Action", null).show()
-
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.main_fragment_view, ExerciseListFragment.newInstance(), "exerciselist")
-                .commit()
-
-            setBtnVisibility(view, "exerciselist")
-        }
-
-        createWorkoutBtn.setOnClickListener { view ->
-            Snackbar.make(view, "Create workout button clicked", Snackbar.LENGTH_SHORT)
-                .setAction("Action", null).show()
-
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.main_fragment_view, CreateWorkoutFragment.newInstance(), "createworkout")
-                .commit()
-
-            setBtnVisibility(view, "createworkout")
-        }
-
-        addExerciseBtn.setOnClickListener { view ->
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.main_fragment_view, AddExerciseFragment.newInstance(), "addexercise")
-                .commit()
-
-            setBtnVisibility(view, "addexercise")
+        if(navHistory.size < 2){
+            previousBtn.visibility = View.GONE
         }
     }
 
-    private fun setBtnVisibility(view: View, fragment: String){
-        //val currentFrag = this.supportFragmentManager.fragments.last().tag
+    private fun navToAddExercise(view: View){
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.main_fragment_view, AddExerciseFragment.newInstance(),"addExercise")
+            .commit()
+
+        addToNavHistory("addExercise")
+        clearBtns()
+        getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText("Add Exercise")
+    }
+
+    private fun navToCreateWorkout(view: View){
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.main_fragment_view, CreateWorkoutFragment.newInstance(),"createWorkout")
+            .commit()
+
+        addToNavHistory("createWorkout")
+        clearBtns()
+        getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText("Create Workout")
+    }
+
+    private fun navToExerciseList(view: View){
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.main_fragment_view, ExerciseListFragment.newInstance(),"exerciseList")
+            .commit()
+
+        addToNavHistory("exerciseList")
+        clearBtns()
+        addExerciseBtn.visibility = View.VISIBLE
+        getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText("Exercises")
+    }
+
+    private fun navToWorkoutList(view: View){
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.main_fragment_view, WorkoutListFragment.newInstance(),"workoutList")
+            .commit()
+
+        addToNavHistory("workoutList")
+        clearBtns()
+        showExerciseListBtn.visibility = View.VISIBLE
+        createWorkoutBtn.visibility = View.VISIBLE
+        getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText("Workouts")
+    }
+
+    private fun getPreviousFragment(): String? {
+        if(navHistory.size > 1){
+            navHistory.removeLast()
+            return navHistory.removeLast()
+        } else {
+            return null
+        }
+    }
+
+    private fun addToNavHistory(fragment: String){
+        navHistory.add(fragment)
+
+        if(navHistory.size > 1){
+            previousBtn.visibility = View.VISIBLE
+        }
 
         println("Navigated to " + fragment)
-
-        when(fragment){
-            "addexercise" -> {
-                addExerciseBtn.visibility = View.GONE
-                createWorkoutBtn.visibility = View.GONE
-                showExerciseListBtn.visibility = View.VISIBLE
-                showWorkoutListBtn.visibility = View.VISIBLE
-            }
-            "createworkout" -> {
-                createWorkoutBtn.visibility = View.GONE
-                addExerciseBtn.visibility = View.GONE
-                showExerciseListBtn.visibility = View.GONE
-                showWorkoutListBtn.visibility = View.VISIBLE
-            }
-            "exerciselist" -> {
-                addExerciseBtn.visibility = View.VISIBLE
-                createWorkoutBtn.visibility = View.GONE
-                showWorkoutListBtn.visibility = View.VISIBLE
-                showExerciseListBtn.visibility = View.GONE
-            }
-            "workoutlist" -> {
-                showExerciseListBtn.visibility = View.VISIBLE
-                addExerciseBtn.visibility = View.VISIBLE
-                createWorkoutBtn.visibility = View.VISIBLE
-                showWorkoutListBtn.visibility = View.GONE
-            }
-        }
     }
 }

@@ -57,7 +57,6 @@ class ExerciseListFragment : Fragment() {
                 }
             }
         }
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

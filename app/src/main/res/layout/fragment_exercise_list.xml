@@ -7,37 +7,19 @@
     tools:context=".Fragment.ExerciseListFragment">
 
     <LinearLayout
-        android:id="@+id/linearLayout2"
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/title_tv"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/exercise_list_rv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Exercise List"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:clipChildren="false"
+            tools:listitem="@layout/exercise_row_item"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <LinearLayout
-            android:id="@+id/linearLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintTop_toBottomOf="@id/title_tv">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/exercise_list_rv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clipChildren="false"
-                tools:listitem="@layout/exercise_row_item"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </LinearLayout>
     </LinearLayout>
 </FrameLayout>
