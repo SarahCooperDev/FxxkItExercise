@@ -22,6 +22,7 @@ class WorkoutListFragment : Fragment() {
     private var layoutManager: RecyclerView.LayoutManager? = null
     private var workoutListAdapter: RecyclerView.Adapter<WorkoutListAdapter.WorkoutListViewHolder>? = null
     private lateinit var workoutList: ArrayList<WorkoutViewModel>
+    private var expandedSize = ArrayList<Int>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +55,13 @@ class WorkoutListFragment : Fragment() {
             }
 
             println("Workouts successfully loaded")
+        }
+    }
+
+    private fun setCellSize(){
+        expandedSize = ArrayList()
+        for(i in 0 until workoutList.size){
+            expandedSize.add(0)
         }
     }
 
