@@ -153,6 +153,59 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         return exercise
     }
 
+    fun findExerciseById(exId: Int): Exercise?{
+        val query = "SELECT * FROM $TABLE_EXERCISES WHERE $COLUMN_ID = \"$exId\""
+
+        val db = this.readableDatabase
+        val cursor = db.rawQuery(query, null)
+        var exercise: Exercise? = null
+
+        if(cursor.moveToFirst()){
+            cursor.moveToFirst()
+
+            val id = Integer.parseInt(cursor.getString(0))
+            val exerciseName = cursor.getString(1)
+
+            exercise = Exercise(id, exerciseName)
+            cursor.close()
+        }
+
+        db.close()
+        return exercise
+    }
+
+    @SuppressLint("Range")
+    fun findAllWorkoutExercises(workout: Workout): Workout{
+        if(workout.id != 0) {
+            val query = "SELECT * FROM $TABLE_WORKOUT_EXERCISE WHERE $COLUMN_WORKOUT = \"$workout.id\""
+
+            val db = this.readableDatabase
+            val cursor = db.rawQuery(query, null)
+
+            var exerciseIds: ArrayList<Int>? = ArrayList<Int>()
+            var id: Int = -1
+            var exerciseId: Int = -1
+
+            if(cursor.moveToFirst()){
+                do{
+                    id = cursor.getInt(cursor.getColumnIndex(COLUMN_ID))
+                    exerciseId = cursor.getInt(cursor.getColumnIndex(COLUMN_EXERCISE))
+
+                    if(exerciseId >= 0){
+                        val exercise = findExerciseById(exerciseId)
+                        if (exercise != null) {
+                            workout.exercises.add(exercise)
+                        }
+                    }
+                } while(cursor.moveToNext())
+
+                cursor.close()
+            }
+        }
+
+        return workout
+    }
+
     @SuppressLint("Range")
     fun getAllExercises(): ArrayList<Exercise>?{
         if(dbNeedsRefresh){
@@ -206,6 +259,10 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
                 val workout = Workout(workId, workName)
                 workoutList.add(workout)
             } while(cursor.moveToNext())
+        }
+
+        for(workout in workoutList){
+            findAllWorkoutExercises(workout)
         }
 
         return workoutList
