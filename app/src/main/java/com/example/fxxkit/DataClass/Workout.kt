@@ -1,7 +1,7 @@
 package com.example.fxxkit.DataClass
 
 class Workout {
-    var id: Int = 0
+    var id: Int = -1
     var workoutName: String? = null
     var exercises: ArrayList<Exercise> = ArrayList<Exercise>()
 
@@ -30,4 +30,5 @@ class Workout {
     public fun addExercise(exercise: Exercise){
         exercises.add(exercise)
     }
+
 }

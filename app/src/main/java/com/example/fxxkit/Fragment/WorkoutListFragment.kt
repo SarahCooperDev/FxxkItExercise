@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fxxkit.DBHandler
+import com.example.fxxkit.DataClass.Exercise
+import com.example.fxxkit.DataClass.WorkoutExercise
 import com.example.fxxkit.R
 import com.example.fxxkit.ViewHolder.WorkoutListAdapter
 import com.example.fxxkit.ViewModel.WorkoutViewModel
@@ -51,11 +53,11 @@ class WorkoutListFragment : Fragment() {
 
         if(workouts != null && workouts.size > 0){
             for(workout in workouts){
-                workoutList.add(WorkoutViewModel(workout.workoutName))
+                workoutList.add(WorkoutViewModel(workout.id, workout.workoutName, workout.exercises))
             }
-
-            println("Workouts successfully loaded")
         }
+
+        val workEx = dbHandler.getAllWorkoutExercises()
     }
 
     private fun setCellSize(){

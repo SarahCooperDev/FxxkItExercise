@@ -19,17 +19,8 @@ class WorkoutListAdapter(private val eList: List<WorkoutViewModel>) :   Recycler
     private var expandedSize = ArrayList<Int>()
     private var workList = eList
 
-    private var dummyData = ArrayList<String>()
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WorkoutListViewHolder {
         setCellSize()
-        dummyData.add("Jump")
-        dummyData.add("Squat")
-        dummyData.add("Push")
-        dummyData.add("Wriggle")
-        dummyData.add("Writh")
-        dummyData.add("Lay down")
-        dummyData.add("Sleep")
 
         val viewLayout = LayoutInflater.from(parent.context).inflate(
             R.layout.workout_row_item, parent, false)
@@ -38,41 +29,36 @@ class WorkoutListAdapter(private val eList: List<WorkoutViewModel>) :   Recycler
 
     override fun onBindViewHolder(holder: WorkoutListViewHolder, position: Int) {
         val currentWorkout = eList[position]
+        holder.workout_id.text = currentWorkout.id.toString()
         holder.workout_name.text = currentWorkout.name
 
         var table = holder.exercise_tbl
 
-        for(ex in dummyData){
+        for(ex in currentWorkout.exercises!!){
             val context = holder.exercise_tbl.context
             var row: TableRow = TableRow(context)
             var txtView: TextView = TextView(context)
 
-            txtView.setText(ex)
+            txtView.setText(ex.exerciseName)
             row.addView(txtView)
             table.addView(row)
         }
 
         holder.workout_row.setOnClickListener{
+            var lineHeight = holder.workout_name.height
+            println("Line height is " + lineHeight)
+            var totalHeight = lineHeight * currentWorkout.exercises.size
+
             if(holder.exercise_tbl.visibility == View.VISIBLE){
                 holder.exercise_tbl.visibility = View.GONE
-                holder.workout_row.layoutParams.height = (holder.workout_row.height - 500)
+                if(holder.workout_row.layoutParams.height - totalHeight > 10){
+                    holder.workout_row.layoutParams.height = (holder.workout_row.height - totalHeight)
+                }
             } else if(holder.exercise_tbl.visibility == View.GONE){
                 holder.exercise_tbl.visibility = View.VISIBLE
-                holder.workout_row.layoutParams.height = (holder.workout_row.height + 500)
+                holder.workout_row.layoutParams.height = (holder.workout_row.height + totalHeight)
             }
         }
-
-
-
-        /***holder.workout_name.setOnClickListener{ view ->
-            if(expandedSize[position] == 0){
-                holder.exercise_name.layoutParams.height = 30
-                expandedSize[position] = holder.exercise_name.layoutParams.height
-            } else {
-                holder.exercise_name.layoutParams.height = 0
-                expandedSize[position] = holder.exercise_name.layoutParams.height
-            }
-        }***/
     }
 
     override fun getItemCount(): Int {
@@ -83,6 +69,7 @@ class WorkoutListAdapter(private val eList: List<WorkoutViewModel>) :   Recycler
         val workout_name: TextView = itemView.findViewById(R.id.workout_name_txt)
         val workout_row: CardView = itemView.findViewById(R.id.workout_row_item)
         val exercise_tbl: TableLayout = itemView.findViewById(R.id.exercise_tbl)
+        val workout_id: TextView = itemView.findViewById(R.id.workout_id_txt)
     }
 
     fun setCellSize(){

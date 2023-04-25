@@ -1,3 +1,5 @@
 package com.example.fxxkit.ViewModel
 
-data class WorkoutViewModel(val name: String?)
+import com.example.fxxkit.DataClass.Exercise
+
+data class WorkoutViewModel(val id: Int?, val name: String?, val exercises: ArrayList<Exercise>?)
