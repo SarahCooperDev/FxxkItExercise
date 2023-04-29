@@ -10,15 +10,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fxxkit.DBHandler
 import com.example.fxxkit.DataClass.Exercise
 import com.example.fxxkit.DataClass.WorkoutExercise
+import com.example.fxxkit.MainActivity
 import com.example.fxxkit.R
 import com.example.fxxkit.ViewHolder.WorkoutListAdapter
 import com.example.fxxkit.ViewModel.WorkoutViewModel
 
-/**
- * A simple [Fragment] subclass.
- * Use the [WorkoutListFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class WorkoutListFragment : Fragment() {
 
     private var layoutManager: RecyclerView.LayoutManager? = null
@@ -40,14 +36,14 @@ class WorkoutListFragment : Fragment() {
 
         workoutList = ArrayList<WorkoutViewModel>()
 
-        getWorkouts(view)
+        loadWorkouts(view)
 
         recycler.adapter = WorkoutListAdapter(workoutList)
 
         return view
     }
 
-    fun getWorkouts(view: View){
+    fun loadWorkouts(view: View){
         val dbHandler = DBHandler(this.requireContext(), null, null, 1)
         val workouts = dbHandler.getAllWorkouts()
 

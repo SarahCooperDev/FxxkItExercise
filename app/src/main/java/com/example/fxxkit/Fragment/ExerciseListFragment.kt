@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fxxkit.DBHandler
 import com.example.fxxkit.ExerciseListAdapter
+import com.example.fxxkit.MainActivity
 import com.example.fxxkit.R
 import com.example.fxxkit.ViewModel.ExerciseViewModel
 
@@ -53,7 +54,7 @@ class ExerciseListFragment : Fragment() {
         if (exercises != null) {
             if(exercises.size > 0){
                 for(exercise in exercises){
-                    exerciseList.add(ExerciseViewModel(exercise.exerciseName, 30))
+                    exerciseList.add(ExerciseViewModel(exercise.id, exercise.exerciseName, 30))
                 }
             }
         }

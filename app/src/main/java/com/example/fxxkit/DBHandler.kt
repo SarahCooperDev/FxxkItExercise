@@ -5,14 +5,13 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import com.example.fxxkit.DataClass.Debugger
 import com.example.fxxkit.DataClass.Exercise
 import com.example.fxxkit.DataClass.Workout
 import com.example.fxxkit.DataClass.WorkoutExercise
 
 class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorFactory?, version: Int):
     SQLiteOpenHelper(context, DATABASE_NAME, factory, CURRENT_DATABASE_VERSION){
-
-    var dbNeedsRefresh = true;
 
     companion object{
         private val CURRENT_DATABASE_VERSION = 2
@@ -116,7 +115,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         db.close()
     }
 
-    fun addExerciseToWorkout(workout: Workout, exercise: Exercise){
+    fun addExerciseToWorkout(workout: Workout, exercise: Exercise): Int?{
         val values = ContentValues()
         val db = this.writableDatabase
 
@@ -125,16 +124,20 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
 
         val newId = db.insert(TABLE_WORKOUT_EXERCISE, null, values)
         db.close()
+
+        return newId.toInt()
     }
 
-    fun addWorkout(workout: Workout){
+    fun addWorkout(workout: Workout): Int?{
         val values = ContentValues()
         val db = this.writableDatabase
 
         values.put(COLUMN_WORKOUTNAME, workout.workoutName)
 
-        db.insert(TABLE_WORKOUTS, null, values)
+        var result = db.insert(TABLE_WORKOUTS, null, values)
         db.close()
+
+        return result.toInt()
     }
 
     fun findExercise(exerciseName: String): Exercise?{
@@ -193,7 +196,6 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
             if(cursor.moveToFirst()){
                 cursor.moveToFirst()
                 do{
-                    println("Cursor moving line")
                     id = cursor.getInt(cursor.getColumnIndex(COLUMN_ID))
                     exerciseId = cursor.getInt(cursor.getColumnIndex(COLUMN_EXERCISE))
 
@@ -209,18 +211,11 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
             }
         }
 
-        println("DB size is: " + workout.exercises.size)
-
         return workout
     }
 
     @SuppressLint("Range")
     fun getAllExercises(): ArrayList<Exercise>?{
-        if(dbNeedsRefresh){
-            dbNeedsRefresh = false;
-            initialiseDatabase()
-        }
-
         val exerciseList: ArrayList<Exercise> = ArrayList<Exercise>()
 
         val query = "SELECT * FROM $TABLE_EXERCISES"
@@ -268,19 +263,11 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
             } while(cursor.moveToNext())
         }
 
-        for(wx in workExList){
-            println("Id: " + wx.id.toString() + ", Workout: " + wx.workoutId.toString() + ", Exercise: " + wx.exerciseId.toString())
-        }
         return workExList
     }
 
     @SuppressLint("Range")
     fun getAllWorkouts(): ArrayList<Workout>?{
-        if(dbNeedsRefresh){
-            dbNeedsRefresh = false
-            initialiseDatabase()
-        }
-
         val workoutList: ArrayList<Workout> = ArrayList<Workout>()
 
         val query = "SELECT * FROM $TABLE_WORKOUTS"

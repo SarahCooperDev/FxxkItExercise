@@ -1,5 +1,6 @@
 package com.example.fxxkit
 
+import android.annotation.SuppressLint
 import android.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -7,6 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageButton
 import android.widget.TextView
+import com.example.fxxkit.DataClass.Debugger
 import com.example.fxxkit.Fragment.AddExerciseFragment
 import com.example.fxxkit.Fragment.CreateWorkoutFragment
 import com.example.fxxkit.Fragment.ExerciseListFragment
@@ -15,12 +17,15 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
+    public var debugger: Debugger = Debugger(true)
+
     private lateinit var showExerciseListBtn : FloatingActionButton
     private lateinit var createWorkoutBtn : FloatingActionButton
     private lateinit var addExerciseBtn : FloatingActionButton
     private lateinit var previousBtn: ImageButton
     private var navHistory: ArrayList<String> = ArrayList<String>()
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -40,7 +45,7 @@ class MainActivity : AppCompatActivity() {
         previousBtn = findViewById<ImageButton>(R.id.previous_btn)
 
         addToNavHistory("workoutList")
-        previousBtn.visibility = View.GONE
+        previousBtn.visibility = View.INVISIBLE
 
         previousBtn.setOnClickListener{ view -> navToPrevious(view) }
         showExerciseListBtn.setOnClickListener { view -> navToExerciseList(view) }
@@ -54,7 +59,7 @@ class MainActivity : AppCompatActivity() {
         createWorkoutBtn.visibility = View.GONE
     }
 
-    private fun navToPrevious(view: View){
+    fun navToPrevious(view: View){
         var previous = getPreviousFragment()
 
         if(previous != null){
@@ -67,7 +72,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         if(navHistory.size < 2){
-            previousBtn.visibility = View.GONE
+            previousBtn.visibility = View.INVISIBLE
         }
     }
 
@@ -91,7 +96,7 @@ class MainActivity : AppCompatActivity() {
         getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText("Create Workout")
     }
 
-    private fun navToExerciseList(view: View){
+    public fun navToExerciseList(view: View){
         supportFragmentManager.beginTransaction()
             .replace(R.id.main_fragment_view, ExerciseListFragment.newInstance(),"exerciseList")
             .commit()
@@ -102,7 +107,7 @@ class MainActivity : AppCompatActivity() {
         getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText("Exercises")
     }
 
-    private fun navToWorkoutList(view: View){
+    public fun navToWorkoutList(view: View){
         supportFragmentManager.beginTransaction()
             .replace(R.id.main_fragment_view, WorkoutListFragment.newInstance(),"workoutList")
             .commit()
@@ -112,6 +117,8 @@ class MainActivity : AppCompatActivity() {
         showExerciseListBtn.visibility = View.VISIBLE
         createWorkoutBtn.visibility = View.VISIBLE
         getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText("Workouts")
+
+
     }
 
     private fun getPreviousFragment(): String? {
@@ -131,5 +138,15 @@ class MainActivity : AppCompatActivity() {
         }
 
         println("Navigated to " + fragment)
+    }
+
+    private fun initialiseDB(){
+        if(debugger.dbNeedsRefresh){
+            println("Refreshing database")
+            debugger.dbNeedsRefresh = false
+
+            val dbHandler = DBHandler(this, null, null, 1)
+            dbHandler.initialiseDatabase()
+        }
     }
 }

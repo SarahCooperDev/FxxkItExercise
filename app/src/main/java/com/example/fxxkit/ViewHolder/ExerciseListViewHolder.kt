@@ -18,6 +18,7 @@ class ExerciseListAdapter(private val eList: List<ExerciseViewModel>) :   Recycl
 
     override fun onBindViewHolder(holder: ExerciseListViewHolder, position: Int) {
         val currentExercise = eList[position]
+        holder.id.text = currentExercise.id.toString()
         holder.name.text = currentExercise.name
         holder.duration.text = currentExercise.duration.toString()
     }
@@ -27,6 +28,7 @@ class ExerciseListAdapter(private val eList: List<ExerciseViewModel>) :   Recycl
     }
 
     class ExerciseListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val id: TextView = itemView.findViewById(R.id.exercise_id_txt)
         val name: TextView = itemView.findViewById(R.id.exercise_name)
         val duration: TextView = itemView.findViewById(R.id.exercise_duration)
 

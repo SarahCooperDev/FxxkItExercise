@@ -1,11 +1,21 @@
 package com.example.fxxkit.DataClass
 
 class Exercise {
-    var id: Int = 0
+    var id: Int = -1
     var exerciseName: String? = null
 
     constructor(id:Int, exerciseName: String){
         this.id = id
+        this.exerciseName = exerciseName
+    }
+
+    constructor(id:Int?, exerciseName: String?){
+        if(id != null){
+            this.id = id
+        } else {
+            this.id = -1
+        }
+
         this.exerciseName = exerciseName
     }
 

@@ -5,19 +5,23 @@
     android:layout_height="wrap_content"
     android:layout_width="match_parent">
 
-    <TableRow>
-        <ImageButton
-            android:id="@+id/previous_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@android:drawable/ic_media_previous" />
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+            <ImageButton
+                android:id="@+id/previous_btn"
+                android:layout_centerHorizontal="true"
+                android:gravity="center_vertical"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                app:srcCompat="@android:drawable/ic_media_previous" />
 
-        <TextView
-            android:id="@+id/appbar_title_id"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:gravity="center_vertical"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:textStyle="bold" />
+            <TextView
+                android:id="@+id/appbar_title_id"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:textStyle="bold" />
     </TableRow>
 </TableLayout>

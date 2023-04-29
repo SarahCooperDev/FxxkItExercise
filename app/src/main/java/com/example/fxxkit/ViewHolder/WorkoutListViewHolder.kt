@@ -10,7 +10,6 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fxxkit.DataClass.Exercise
-import com.example.fxxkit.DataClass.WorkoutListData
 import com.example.fxxkit.R
 import com.example.fxxkit.ViewModel.ExerciseViewModel
 import com.example.fxxkit.ViewModel.WorkoutViewModel
@@ -45,9 +44,7 @@ class WorkoutListAdapter(private val eList: List<WorkoutViewModel>) :   Recycler
         }
 
         holder.workout_row.setOnClickListener{
-            var lineHeight = holder.workout_name.height
-            println("Line height is " + lineHeight)
-            var totalHeight = lineHeight * currentWorkout.exercises.size
+            var totalHeight = holder.workout_name.height * currentWorkout.exercises.size
 
             if(holder.exercise_tbl.visibility == View.VISIBLE){
                 holder.exercise_tbl.visibility = View.GONE
