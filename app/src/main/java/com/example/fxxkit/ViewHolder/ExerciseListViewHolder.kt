@@ -20,7 +20,11 @@ class ExerciseListAdapter(private val eList: List<ExerciseViewModel>) :   Recycl
         val currentExercise = eList[position]
         holder.id.text = currentExercise.id.toString()
         holder.name.text = currentExercise.name
-        holder.duration.text = currentExercise.duration.toString()
+        holder.isStrength.text = currentExercise.isStrength.toString()
+        holder.isCondition.text = currentExercise.isCondition.toString()
+        holder.setList.text = currentExercise.possibleSetSize
+        holder.repList.text = currentExercise.possibleRepSize
+        holder.muscleList.text = currentExercise.targettedMuscles
     }
 
     override fun getItemCount(): Int {
@@ -30,7 +34,11 @@ class ExerciseListAdapter(private val eList: List<ExerciseViewModel>) :   Recycl
     class ExerciseListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val id: TextView = itemView.findViewById(R.id.exercise_id_txt)
         val name: TextView = itemView.findViewById(R.id.exercise_name)
-        val duration: TextView = itemView.findViewById(R.id.exercise_duration)
+        val isStrength: TextView = itemView.findViewById(R.id.is_strength_txt)
+        val isCondition: TextView = itemView.findViewById(R.id.is_condition_txt)
+        val setList: TextView = itemView.findViewById(R.id.set_list_txt)
+        val repList: TextView = itemView.findViewById(R.id.rep_list_txt)
+        val muscleList: TextView = itemView.findViewById(R.id.muscle_list_txt)
 
     }
 }

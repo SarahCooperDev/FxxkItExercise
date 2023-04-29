@@ -23,7 +23,6 @@ class WorkoutExerciseListAdapter(private val eList: List<ExerciseViewModel>, var
         val currentExercise = eList[position]
         holder.id.text = currentExercise.id.toString()
         holder.name.text = currentExercise.name
-        holder.duration.text = currentExercise.duration.toString()
 
         holder.row.setOnClickListener{
             if(holder.isSelected.isChecked){
@@ -31,13 +30,13 @@ class WorkoutExerciseListAdapter(private val eList: List<ExerciseViewModel>, var
                 selectedExercises = selectedExercises.filter{ it.id.toString() != holder.id.text.toString() } as ArrayList<ExerciseViewModel>
             } else{
                 holder.isSelected.setChecked(true)
-                selectedExercises.add(ExerciseViewModel(holder.id.text.toString().toInt(), holder.name.text.toString(), -1))
+                selectedExercises.add(ExerciseViewModel(holder.id.text.toString().toInt(), holder.name.text.toString()))
             }
         }
 
         holder.isSelected.setOnClickListener{
             if(holder.isSelected.isChecked){
-                selectedExercises.add(ExerciseViewModel(holder.id.text.toString().toInt(), holder.name.text.toString(), -1))
+                selectedExercises.add(ExerciseViewModel(holder.id.text.toString().toInt(), holder.name.text.toString()))
             } else {
                 selectedExercises = selectedExercises.filter{ it.id.toString() != holder.id.text.toString() } as ArrayList<ExerciseViewModel>
             }
@@ -52,7 +51,6 @@ class WorkoutExerciseListAdapter(private val eList: List<ExerciseViewModel>, var
         val row: CardView = itemView.findViewById(R.id.exercise_row_item)
         val id: TextView = itemView.findViewById(R.id.exercise_id_txt)
         val name: TextView = itemView.findViewById(R.id.exercise_name)
-        val duration: TextView = itemView.findViewById(R.id.exercise_duration)
         val isSelected: CheckBox = itemView.findViewById(R.id.is_selected_chbx)
     }
 }

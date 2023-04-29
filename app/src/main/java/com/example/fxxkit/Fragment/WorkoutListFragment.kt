@@ -46,6 +46,8 @@ class WorkoutListFragment : Fragment() {
     fun loadWorkouts(view: View){
         val dbHandler = DBHandler(this.requireContext(), null, null, 1)
         val workouts = dbHandler.getAllWorkouts()
+        println("Workouts")
+        println(workouts)
 
         if(workouts != null && workouts.size > 0){
             for(workout in workouts){
@@ -53,7 +55,8 @@ class WorkoutListFragment : Fragment() {
             }
         }
 
-        val workEx = dbHandler.getAllWorkoutExercises()
+        //val workEx = dbHandler.getAllWorkoutExercises()
+        println("Got all workout exercises")
     }
 
     private fun setCellSize(){

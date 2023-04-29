@@ -82,7 +82,10 @@ class CreateWorkoutFragment : Fragment() {
 
         if (exercises != null && exercises.size > 0) {
             for(exercise in exercises){
-                exerciseList.add(ExerciseViewModel(exercise.id, exercise.exerciseName, 30))
+                var exerciseVM = ExerciseViewModel(exercise.id, exercise.exerciseName)
+                exerciseVM.convertExerciseToViewModel(exercise)
+
+                exerciseList.add(exerciseVM)
             }
         }
     }

@@ -13,14 +13,13 @@
     card_view:contentPadding="10dp"
     android:foreground="?selectableItemBackground"
     android:clickable="true">
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
             <TableRow>
                 <TextView
                     android:id="@+id/exercise_id_txt"
@@ -37,21 +36,71 @@
                     android:layout_height="wrap_content"
                     android:text="Test"/>
             </TableRow>
+        </TableLayout>
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"
+            android:layout_margin="3dp"/>
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
             <TableRow>
-                <View
-                    android:id="@+id/divider"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="?android:attr/listDivider"
-                    android:layout_margin="3dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sets: "/>
+                <TextView
+                    android:id="@+id/set_list_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="N/A"/>
             </TableRow>
             <TableRow>
                 <TextView
-                    android:id="@+id/exercise_duration"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="duration"/>
+                    android:text="Reps: "/>
+                <TextView
+                    android:id="@+id/rep_list_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="N/A"/>
+            </TableRow>
+            <TableRow>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Targetted Muscles: "/>
+                <TextView
+                    android:id="@+id/muscle_list_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="N/A"/>
+            </TableRow>
+            <TableRow>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Is Strength: "/>
+                <TextView
+                    android:id="@+id/is_strength_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="False"/>
+            </TableRow>
+            <TableRow>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Is Conditioning: "/>
+                <TextView
+                    android:id="@+id/is_condition_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="False"/>
             </TableRow>
         </TableLayout>
-    </RelativeLayout>
+    </LinearLayout>
 </androidx.cardview.widget.CardView>

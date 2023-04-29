@@ -54,7 +54,9 @@ class ExerciseListFragment : Fragment() {
         if (exercises != null) {
             if(exercises.size > 0){
                 for(exercise in exercises){
-                    exerciseList.add(ExerciseViewModel(exercise.id, exercise.exerciseName, 30))
+                    var exerciseViewModel = ExerciseViewModel(exercise.id, exercise.exerciseName)
+                    exerciseViewModel.convertExerciseToViewModel(exercise)
+                    exerciseList.add(exerciseViewModel)
                 }
             }
         }

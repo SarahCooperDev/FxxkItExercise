@@ -5,52 +5,91 @@
     android:layout_height="match_parent"
     tools:context=".Fragment.AddExerciseFragment">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Add an exercise"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
-
-    <LinearLayout
+    <TableLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp">
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/exercise_name"
-            android:layout_margin="8dp"
-            android:hint="Exercise Name"
-            android:inputType="text"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/exercise_set_nos"
-            android:layout_margin="8dp"
-            android:drawableRight="@android:drawable/arrow_down_float"
-            android:drawablePadding="16dp"
-            android:text="Number of Sets" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/exercise_rep_nos"
-            android:layout_margin="8dp"
-            android:drawableRight="@android:drawable/arrow_down_float"
-            android:drawablePadding="16dp"
-            android:text="Number of Reps" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/add_exercise_btn"
-            android:layout_gravity="center_horizontal"
-            android:text="show"
-            android:backgroundTint="@color/black"
-            android:textColor="@color/white"/>
-    </LinearLayout>
-
+        <TableRow>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/exercise_name"
+                android:layout_margin="8dp"
+                android:hint="Exercise Name"
+                android:inputType="text"/>
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No. of Sets: "
+                android:layout_margin="8dp"/>
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/exercise_set_nos"
+                android:layout_margin="8dp"
+                android:drawableRight="@android:drawable/arrow_down_float"
+                android:drawablePadding="16dp"
+                android:text="Sets" />
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No. of Reps: "
+                android:layout_margin="8dp"/>
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/exercise_rep_nos"
+                android:layout_margin="8dp"
+                android:drawableRight="@android:drawable/arrow_down_float"
+                android:drawablePadding="16dp"
+                android:text="Reps" />
+        </TableRow>
+        <TableRow>
+            <ToggleButton
+                android:id="@+id/strengthening_toggle_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Strength" />
+            <ToggleButton
+                android:id="@+id/conditioning_toggle_btn"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Condition" />
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:layout_width="20dp"
+                android:layout_height="wrap_content"
+                android:text="Targetted Muscles/Joints "
+                android:layout_margin="8dp"/>
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/muscle_select"
+                android:layout_margin="8dp"
+                android:drawableRight="@android:drawable/arrow_down_float"
+                android:drawablePadding="16dp"
+                android:text="Targets" />
+        </TableRow>
+        <TableRow>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/add_exercise_btn"
+                android:layout_gravity="center_horizontal"
+                android:text="create"
+                android:backgroundTint="@color/black"
+                android:textColor="@color/white"/>
+        </TableRow>
+    </TableLayout>
 </FrameLayout>

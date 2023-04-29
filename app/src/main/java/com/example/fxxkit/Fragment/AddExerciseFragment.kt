@@ -10,8 +10,10 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import android.widget.ToggleButton
 import com.example.fxxkit.DBHandler
 import com.example.fxxkit.DataClass.Exercise
+import com.example.fxxkit.MainActivity
 import com.example.fxxkit.R
 import java.util.*
 import kotlin.collections.ArrayList
@@ -24,17 +26,22 @@ import kotlin.collections.ArrayList
 class AddExerciseFragment : Fragment() {
 
     private var setNoArray: Array<String> = arrayOf("3", "5", "10", "12", "15")
-    val selectedSetNos = ArrayList<String>()
-
     private var repNoArray: Array<String> = arrayOf("5", "10", "12", "15", "20", "30", "50")
-    val selectedRepNos = ArrayList<String>()
+    private var targettedMusclesArray: Array<String> = arrayOf("Calfs", "Quads", "Glutts", "Abs", "Triceps", "Biceps")
+
+    private val selectedSetNos = ArrayList<String>()
+    private val selectedRepNos = ArrayList<String>()
+    private val selectedMuscles = ArrayList<String>()
 
     private lateinit var exNameInput: EditText
+    private lateinit var isStrengthBtn: ToggleButton
+    private lateinit var isConditioningBtn: ToggleButton
+    private lateinit var targettedMusclesMultiselect: TextView
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-        }
+        arguments?.let { }
     }
 
     override fun onCreateView(
@@ -44,21 +51,23 @@ class AddExerciseFragment : Fragment() {
         val view =  inflater.inflate(R.layout.fragment_add_exercise, container, false)
 
         exNameInput = view.findViewById<EditText>(R.id.exercise_name)
+        isStrengthBtn = view.findViewById<ToggleButton>(R.id.strengthening_toggle_btn)
+        isConditioningBtn = view.findViewById<ToggleButton>(R.id.conditioning_toggle_btn)
+        targettedMusclesMultiselect = view.findViewById<TextView>(R.id.muscle_select)
         val exSetNosInput = view.findViewById<TextView>(R.id.exercise_set_nos)
         val exRepNosInput = view.findViewById<TextView>(R.id.exercise_rep_nos)
 
 
         val showBtn = view.findViewById<Button>(R.id.add_exercise_btn)
         showBtn.setOnClickListener{view ->
-            val setNosText = Arrays.toString(selectedSetNos.toTypedArray())
-            val repNosText = Arrays.toString(selectedRepNos.toTypedArray())
-            val text = exNameInput.text.toString() + ", " + setNosText + ", " + repNosText
-
             addExercise(view)
+
+            (activity as MainActivity).navToPrevious(view)
         }
 
         buildMultiselectSetNo(view)
         buildMultiselectRepNo(view)
+        buildTargettedMusclesMultiselect(view)
 
         return view
     }
@@ -70,9 +79,69 @@ class AddExerciseFragment : Fragment() {
 
         val exercise = Exercise(exerciseName)
 
+        if(isStrengthBtn.isChecked()){ exercise.isStrengthening = true }
+        if(isConditioningBtn.isChecked()){ exercise.isConditioning = true }
+        if(selectedSetNos.size > 0){ exercise.possibleSetSize = selectedSetNos }
+        if(selectedRepNos.size > 0){ exercise.possibleRepSize = selectedRepNos }
+        if(selectedMuscles.size > 0){ exercise.targettedMuscles = selectedMuscles }
+
         dbHandler.addExercise(exercise)
 
         Toast.makeText(activity, "Added exercise to database", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun buildTargettedMusclesMultiselect(view:View){
+        // Array that keeps track of the options selected, but only by index
+        var selectedIndexArray =  ArrayList<Int>()
+
+        // Triggers the dialog on click
+        targettedMusclesMultiselect.setOnClickListener{view ->
+            val builder = AlertDialog.Builder(activity)
+            builder.setTitle("Muscles targetted by exercise")
+            builder.setCancelable(false)
+
+            // Creates the array of bools that indicates whether an option should already be checked
+            val preselectedArray = BooleanArray(targettedMusclesArray.size){false}
+            for(item in selectedMuscles){
+                var itemIndex = targettedMusclesArray.indexOf(item)
+                preselectedArray[itemIndex] = true
+            }
+
+            // Shows the options, and chooses what to do when one is selected
+            builder.setMultiChoiceItems(targettedMusclesArray, preselectedArray){dialog, which, isChecked ->
+                if(isChecked){
+                    selectedIndexArray.add(which)
+                } else if(selectedIndexArray.contains(which)){
+                    selectedIndexArray.remove(Integer.valueOf(which))
+                }
+            }
+
+            // Sets up button to complete the dialog
+            builder.setPositiveButton("Done"){ dialogInterface, i ->
+                // Converts the selection of indexes into the the corresponding values
+                selectedMuscles.clear()
+                selectedIndexArray.sort()
+                for(j in selectedIndexArray.indices){
+                    selectedMuscles.add(targettedMusclesArray[selectedIndexArray[j]])
+                }
+
+                // Sets the TextView text to the selected sets
+                targettedMusclesMultiselect.text = Arrays.toString(selectedMuscles.toTypedArray())
+            }
+
+            // Sets up the button to cancel the input
+            builder.setNegativeButton("Cancel"){dialogInterface, i ->
+                dialogInterface.dismiss()
+            }
+
+            // Sets up the button that clears all selected options
+            builder.setNeutralButton("Clear"){dialogInterface, i ->
+                selectedIndexArray.clear()
+                selectedMuscles.clear()
+            }
+
+            builder.show()
+        }
     }
 
 
@@ -199,13 +268,6 @@ class AddExerciseFragment : Fragment() {
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-
-         * @return A new instance of fragment AddExerciseFragment.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance() =
             AddExerciseFragment().apply {

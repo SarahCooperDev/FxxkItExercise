@@ -14,8 +14,8 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
     SQLiteOpenHelper(context, DATABASE_NAME, factory, CURRENT_DATABASE_VERSION){
 
     companion object{
-        private val CURRENT_DATABASE_VERSION = 2
-        private val NEW_DATABASE_VERSION = 3
+        private val CURRENT_DATABASE_VERSION = 3
+        private val NEW_DATABASE_VERSION = 4
         private val DATABASE_NAME = "exerciseDB.db"
 
         val TABLE_EXERCISES = "exercise"
@@ -24,6 +24,12 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
 
         val COLUMN_ID = "_id"
         val COLUMN_EXERCISENAME = "exercise_name"
+        val COLUMN_ISSTRENGTH = "is_strength"
+        val COLUMN_ISCONDITION = "is_condition"
+        val COLUMN_POSSIBLESETSIZE = "possible_set_size"
+        val COLUMN_POSSIBLEREPSIZE = "possible_rep_size"
+        val COLUMN_TARGETTEDMUSCLES = "targetted_muscles"
+
         val COLUMN_WORKOUTNAME = "workout_name"
         val COLUMN_WORKOUT = "workout_id"
         val COLUMN_EXERCISE = "exercise_id"
@@ -31,7 +37,10 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
 
     override fun onCreate(db: SQLiteDatabase) {
         val CREATE_EXERCISE_TABLE = ("CREATE TABLE " + TABLE_EXERCISES +
-                "(" + COLUMN_ID + " INTEGER PRIMARY KEY," + COLUMN_EXERCISENAME + " TEXT)")
+                "(" + COLUMN_ID + " INTEGER PRIMARY KEY," + COLUMN_EXERCISENAME + " TEXT, " +
+                COLUMN_ISSTRENGTH + " BOOLEAN, " + COLUMN_ISCONDITION + " BOOLEAN, " +
+                COLUMN_POSSIBLESETSIZE + " TEXT, " + COLUMN_POSSIBLEREPSIZE + " TEXT, " +
+                COLUMN_TARGETTEDMUSCLES + " TEXT)")
         val CREATE_WORKOUT_TABLE = ("CREATE TABLE " + TABLE_WORKOUTS +
                 "(" + COLUMN_ID + " INTEGER PRIMARY KEY," + COLUMN_WORKOUTNAME + " TEXT)")
         val CREATE_WORKOUT_EXERCISE_TABLE = ("CREATE TABLE " + TABLE_WORKOUT_EXERCISE +
@@ -95,6 +104,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
     }
 
     fun initialiseDatabase(){
+        println("Initialising database")
         val dbold = this.writableDatabase
         onUpgrade(dbold, CURRENT_DATABASE_VERSION, NEW_DATABASE_VERSION)
 
@@ -106,10 +116,28 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
 
 
     fun addExercise(exercise: Exercise){
+        var setString = exercise.getSetAsString()
+        var repString = exercise.getRepsAsString()
+        var muscleString = exercise.getMusclesAsString()
+
         val values = ContentValues()
         val db = this.writableDatabase
 
         values.put(COLUMN_EXERCISENAME, exercise.exerciseName)
+        values.put(COLUMN_ISCONDITION, exercise.isConditioning)
+        values.put(COLUMN_ISSTRENGTH, exercise.isStrengthening)
+
+        if(setString != null){
+            values.put(COLUMN_POSSIBLESETSIZE, setString)
+        }
+
+        if(repString != null){
+            values.put(COLUMN_POSSIBLEREPSIZE, repString)
+        }
+
+        if(muscleString != null){
+            values.put(COLUMN_TARGETTEDMUSCLES, muscleString)
+        }
 
         db.insert(TABLE_EXERCISES, null, values)
         db.close()
@@ -184,6 +212,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
 
     @SuppressLint("Range")
     fun findAllWorkoutExercises(workout: Workout): Workout{
+        println("Finding exercises for workout " + workout.id)
         if(workout.id >= 0) {
             val query = "SELECT * FROM $TABLE_WORKOUT_EXERCISE WHERE $COLUMN_WORKOUT=" + workout.id.toString()
 
@@ -216,6 +245,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
 
     @SuppressLint("Range")
     fun getAllExercises(): ArrayList<Exercise>?{
+        println("Retrieving all exercises")
         val exerciseList: ArrayList<Exercise> = ArrayList<Exercise>()
 
         val query = "SELECT * FROM $TABLE_EXERCISES"
@@ -225,13 +255,30 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
 
         var exId: Int
         var exName: String
+        var isStrength: Boolean?
+        var isCondition: Boolean?
+        var setString: String?
+        var repString: String?
+        var muscleString: String?
 
         if(cursor.moveToFirst()){
             do{
                 exId = cursor.getInt(cursor.getColumnIndex(COLUMN_ID))
                 exName = cursor.getString(cursor.getColumnIndex(COLUMN_EXERCISENAME))
+                isStrength = cursor.getInt(cursor.getColumnIndex(COLUMN_ISSTRENGTH)) > 0
+                isCondition = cursor.getInt(cursor.getColumnIndex(COLUMN_ISCONDITION)) > 0
+                setString = cursor.getString(cursor.getColumnIndex(COLUMN_POSSIBLESETSIZE))
+                repString = cursor.getString(cursor.getColumnIndex(COLUMN_POSSIBLEREPSIZE))
+                muscleString = cursor.getString(cursor.getColumnIndex(COLUMN_TARGETTEDMUSCLES))
 
                 val exercise = Exercise(exId, exName)
+                if(isCondition != null){ exercise.isConditioning = isCondition }
+                if(isStrength != null){ exercise.isStrengthening = isStrength }
+                if(setString != null){ exercise.setStringToSet(setString) }
+                if(repString != null){ exercise.setStringToRep(repString) }
+                if(muscleString != null){ exercise.setStringToMuscle(muscleString) }
+
+                println("Exercise: " + exercise)
                 exerciseList.add(exercise)
             } while(cursor.moveToNext())
         }
@@ -240,6 +287,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
 
     @SuppressLint("Range")
     fun getAllWorkoutExercises(): ArrayList<WorkoutExercise>?{
+        println("Retrieving all workout exercises")
         val workExList: ArrayList<WorkoutExercise> = ArrayList<WorkoutExercise>()
 
         val query = "SELECT * FROM $TABLE_WORKOUT_EXERCISE"
@@ -268,6 +316,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
 
     @SuppressLint("Range")
     fun getAllWorkouts(): ArrayList<Workout>?{
+        println("Retrieving all workouts")
         val workoutList: ArrayList<Workout> = ArrayList<Workout>()
 
         val query = "SELECT * FROM $TABLE_WORKOUTS"
