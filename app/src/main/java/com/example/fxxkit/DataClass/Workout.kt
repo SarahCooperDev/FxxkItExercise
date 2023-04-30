@@ -30,5 +30,4 @@ class Workout {
     public fun addExercise(exercise: Exercise){
         exercises.add(exercise)
     }
-
 }

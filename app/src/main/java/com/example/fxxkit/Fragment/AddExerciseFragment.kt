@@ -1,6 +1,7 @@
 package com.example.fxxkit.Fragment
 
 import android.app.AlertDialog
+import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -24,6 +25,7 @@ import kotlin.collections.ArrayList
  * create an instance of this fragment.
  */
 class AddExerciseFragment : Fragment() {
+    private var errorColor: String = "#cc0000"
 
     private var setNoArray: Array<String> = arrayOf("3", "5", "10", "12", "15")
     private var repNoArray: Array<String> = arrayOf("5", "10", "12", "15", "20", "30", "50")
@@ -54,15 +56,17 @@ class AddExerciseFragment : Fragment() {
         isStrengthBtn = view.findViewById<ToggleButton>(R.id.strengthening_toggle_btn)
         isConditioningBtn = view.findViewById<ToggleButton>(R.id.conditioning_toggle_btn)
         targettedMusclesMultiselect = view.findViewById<TextView>(R.id.muscle_select)
-        val exSetNosInput = view.findViewById<TextView>(R.id.exercise_set_nos)
-        val exRepNosInput = view.findViewById<TextView>(R.id.exercise_rep_nos)
-
 
         val showBtn = view.findViewById<Button>(R.id.add_exercise_btn)
         showBtn.setOnClickListener{view ->
-            addExercise(view)
-
-            (activity as MainActivity).navToPrevious(view)
+            if(exNameInput.text.toString().length < 1){
+                Toast.makeText(activity, "Exercise name may not be blank", Toast.LENGTH_LONG).show()
+                exNameInput.setBackgroundColor(Color.parseColor(errorColor))
+            } else {
+                addExercise(view)
+                Toast.makeText(activity, "Added exercise to database", Toast.LENGTH_SHORT).show()
+                (activity as MainActivity).navToPrevious(view)
+            }
         }
 
         buildMultiselectSetNo(view)
@@ -86,8 +90,6 @@ class AddExerciseFragment : Fragment() {
         if(selectedMuscles.size > 0){ exercise.targettedMuscles = selectedMuscles }
 
         dbHandler.addExercise(exercise)
-
-        Toast.makeText(activity, "Added exercise to database", Toast.LENGTH_SHORT).show()
     }
 
     private fun buildTargettedMusclesMultiselect(view:View){

@@ -5,13 +5,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fxxkit.DBHandler
+import com.example.fxxkit.DataClass.Exercise
 import com.example.fxxkit.ExerciseListAdapter
 import com.example.fxxkit.MainActivity
 import com.example.fxxkit.R
-import com.example.fxxkit.ViewModel.ExerciseViewModel
 
 /**
  * A simple [Fragment] subclass.
@@ -22,8 +23,9 @@ class ExerciseListFragment : Fragment() {
 
     private var layoutManager: RecyclerView.LayoutManager? = null
     private var exerciseListAdapter: RecyclerView.Adapter<ExerciseListAdapter.ExerciseListViewHolder>? = null
-    private lateinit var exerciseList: ArrayList<ExerciseViewModel>
-
+    private lateinit var exerciseList: ArrayList<Exercise>
+    private lateinit var editBtn: ImageButton
+    private lateinit var deleteBtn: ImageButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,27 +40,21 @@ class ExerciseListFragment : Fragment() {
         var recycler = view.findViewById<RecyclerView>(R.id.exercise_list_rv)
         recycler.layoutManager = LinearLayoutManager(activity)
 
-        exerciseList = ArrayList<ExerciseViewModel>()
+        exerciseList = ArrayList<Exercise>()
 
-        getExercises(view)
+        loadExercises(view)
 
-        recycler.adapter = ExerciseListAdapter(exerciseList)
+        recycler.adapter = ExerciseListAdapter(exerciseList, activity as MainActivity)
 
         return view
     }
 
-    private fun getExercises(view: View){
+    private fun loadExercises(view: View){
         val dbHandler = DBHandler(this.requireContext(), null, null, 1)
-        val exercises = dbHandler.getAllExercises()
+        val retrievedList = dbHandler.getAllExercises()
 
-        if (exercises != null) {
-            if(exercises.size > 0){
-                for(exercise in exercises){
-                    var exerciseViewModel = ExerciseViewModel(exercise.id, exercise.exerciseName)
-                    exerciseViewModel.convertExerciseToViewModel(exercise)
-                    exerciseList.add(exerciseViewModel)
-                }
-            }
+        if(retrievedList != null && retrievedList.size > 0){
+            exerciseList = retrievedList
         }
     }
 

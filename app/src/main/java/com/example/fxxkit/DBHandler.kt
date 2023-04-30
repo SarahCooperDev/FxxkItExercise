@@ -123,7 +123,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         val values = ContentValues()
         val db = this.writableDatabase
 
-        values.put(COLUMN_EXERCISENAME, exercise.exerciseName)
+        values.put(COLUMN_EXERCISENAME, exercise.name)
         values.put(COLUMN_ISCONDITION, exercise.isConditioning)
         values.put(COLUMN_ISSTRENGTH, exercise.isStrengthening)
 
@@ -168,8 +168,8 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         return result.toInt()
     }
 
-    fun findExercise(exerciseName: String): Exercise?{
-        val query = "SELECT * FROM $TABLE_EXERCISES WHERE $COLUMN_EXERCISENAME = \"$exerciseName\""
+    fun findExercise(name: String): Exercise?{
+        val query = "SELECT * FROM $TABLE_EXERCISES WHERE $COLUMN_EXERCISENAME = \"$name\""
 
         val db = this.readableDatabase
         val cursor = db.rawQuery(query, null)
@@ -179,9 +179,9 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
             cursor.moveToFirst()
 
             val id = Integer.parseInt(cursor.getString(0))
-            val exerciseName = cursor.getString(1)
+            val name = cursor.getString(1)
 
-            exercise = Exercise(id, exerciseName)
+            exercise = Exercise(id, name)
             cursor.close()
         }
 
@@ -200,9 +200,9 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
             cursor.moveToFirst()
 
             val id = Integer.parseInt(cursor.getString(0))
-            val exerciseName = cursor.getString(1)
+            val name = cursor.getString(1)
 
-            exercise = Exercise(id, exerciseName)
+            exercise = Exercise(id, name)
             cursor.close()
         }
 
@@ -275,6 +275,9 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
                 if(isCondition != null){ exercise.isConditioning = isCondition }
                 if(isStrength != null){ exercise.isStrengthening = isStrength }
                 if(setString != null){ exercise.setStringToSet(setString) }
+                for(set in exercise.possibleSetSize){
+                    println("DB has set: (" + set + ")")
+                }
                 if(repString != null){ exercise.setStringToRep(repString) }
                 if(muscleString != null){ exercise.setStringToMuscle(muscleString) }
 
@@ -343,10 +346,36 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         return workoutList
     }
 
-    fun deleteExercise(exerciseName: String): Boolean{
+    fun updateExercise(exercise: Exercise): Boolean{
+        println("Updating exercise: " + exercise.toString())
+        var setString = exercise.getSetAsString()
+        var repString = exercise.getRepsAsString()
+        var muscleString = exercise.getMusclesAsString()
+        var result = -1
+
+        val values = ContentValues()
+        val db = this.writableDatabase
+
+        values.put(COLUMN_EXERCISENAME, exercise.name)
+        values.put(COLUMN_ISCONDITION, exercise.isConditioning)
+        values.put(COLUMN_ISSTRENGTH, exercise.isStrengthening)
+
+        if(setString != null){ values.put(COLUMN_POSSIBLESETSIZE, setString) }
+
+        if(repString != null){ values.put(COLUMN_POSSIBLEREPSIZE, repString) }
+
+        if(muscleString != null){ values.put(COLUMN_TARGETTEDMUSCLES, muscleString) }
+
+        result = db.update(TABLE_EXERCISES, values, "$COLUMN_ID=?", arrayOf(exercise.id.toString()))
+        println("Result of updating is: " + result.toString())
+
+        return (result != -1)
+    }
+
+    fun deleteExercise(name: String): Boolean{
         var result = false
 
-        val query = "SELECT * FROM $TABLE_EXERCISES WHERE $COLUMN_EXERCISENAME = \"$exerciseName\""
+        val query = "SELECT * FROM $TABLE_EXERCISES WHERE $COLUMN_EXERCISENAME = \"$name\""
 
         val db = this.writableDatabase
 

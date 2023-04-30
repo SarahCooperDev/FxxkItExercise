@@ -2,30 +2,30 @@ package com.example.fxxkit.DataClass
 
 class Exercise {
     var id: Int = -1
-    var exerciseName: String = ""
+    var name: String = ""
     var isStrengthening: Boolean = false
     var isConditioning: Boolean = false
     var possibleSetSize: ArrayList<String> = ArrayList<String>()
     var possibleRepSize: ArrayList<String> = ArrayList<String>()
     var targettedMuscles: ArrayList<String> = ArrayList<String>()
 
-    constructor(id:Int, exerciseName: String){
+    constructor(id:Int, name: String){
         this.id = id
-        this.exerciseName = exerciseName
+        this.name = name
     }
 
-    constructor(id:Int?, exerciseName: String){
+    constructor(id:Int?, name: String){
         if(id != null){
             this.id = id
         } else {
             this.id = -1
         }
 
-        this.exerciseName = exerciseName
+        this.name = name
     }
 
-    constructor(exerciseName: String){
-        this.exerciseName = exerciseName
+    constructor(name: String){
+        this.name = name
     }
 
     public fun getSetAsString(): String?{
@@ -48,7 +48,7 @@ class Exercise {
         var setList: List<String> = setString.split(",") as List<String>
 
         for(set in setList){
-            possibleSetSize.add(set)
+            possibleSetSize.add(set.trim())
         }
     }
 
@@ -72,7 +72,7 @@ class Exercise {
         var repList: List<String> = repString.split(",") as List<String>
 
         for(rep in repList){
-            possibleRepSize.add(rep)
+            possibleRepSize.add(rep.trim())
         }
     }
 
@@ -96,7 +96,7 @@ class Exercise {
         var muscleList: List<String> = muscleString.split(",") as List<String>
 
         for(muscle in muscleList){
-            targettedMuscles.add(muscle)
+            targettedMuscles.add(muscle.trim())
         }
     }
 

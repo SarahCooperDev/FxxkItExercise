@@ -7,13 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fxxkit.*
 import com.example.fxxkit.DataClass.Exercise
 import com.example.fxxkit.DataClass.Workout
-import com.example.fxxkit.ViewModel.ExerciseViewModel
 
 /**
  * A simple [Fragment] subclass.
@@ -24,8 +22,8 @@ class CreateWorkoutFragment : Fragment() {
     private lateinit var workoutName: EditText
     private lateinit var createWorkoutBtn : Button
     private var exerciseListAdapter: RecyclerView.Adapter<ExerciseListAdapter.ExerciseListViewHolder>? = null
-    private lateinit var exerciseList: ArrayList<ExerciseViewModel>
-    var selectedExercises = ArrayList<ExerciseViewModel>()
+    private lateinit var exerciseList: ArrayList<Exercise>
+    var selectedExercises = ArrayList<Exercise>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +38,7 @@ class CreateWorkoutFragment : Fragment() {
         var recycler = view.findViewById<RecyclerView>(R.id.exercise_list_rv)
         recycler.layoutManager = LinearLayoutManager(activity)
 
-        exerciseList = ArrayList<ExerciseViewModel>()
+        exerciseList = ArrayList<Exercise>()
 
         getExercises(view)
 
@@ -68,8 +66,8 @@ class CreateWorkoutFragment : Fragment() {
         if(workoutId != null && workoutId >= 0){
             workout.id = workoutId
 
-            for(exVM in selectedExercises){
-                var exercise = Exercise(exVM.id, exVM.name)
+            for(exercise in selectedExercises){
+                var exercise = Exercise(exercise.id, exercise.name)
 
                 var result = dbHandler.addExerciseToWorkout(workout, exercise)
             }
@@ -79,15 +77,6 @@ class CreateWorkoutFragment : Fragment() {
     private fun getExercises(view: View){
         val dbHandler = DBHandler(this.requireContext(), null, null, 1)
         val exercises = dbHandler.getAllExercises()
-
-        if (exercises != null && exercises.size > 0) {
-            for(exercise in exercises){
-                var exerciseVM = ExerciseViewModel(exercise.id, exercise.exerciseName)
-                exerciseVM.convertExerciseToViewModel(exercise)
-
-                exerciseList.add(exerciseVM)
-            }
-        }
     }
 
     companion object {

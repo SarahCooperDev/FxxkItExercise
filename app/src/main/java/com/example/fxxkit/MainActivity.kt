@@ -9,10 +9,8 @@ import android.view.View
 import android.widget.ImageButton
 import android.widget.TextView
 import com.example.fxxkit.DataClass.Debugger
-import com.example.fxxkit.Fragment.AddExerciseFragment
-import com.example.fxxkit.Fragment.CreateWorkoutFragment
-import com.example.fxxkit.Fragment.ExerciseListFragment
-import com.example.fxxkit.Fragment.WorkoutListFragment
+import com.example.fxxkit.DataClass.Exercise
+import com.example.fxxkit.Fragment.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 
@@ -84,6 +82,16 @@ class MainActivity : AppCompatActivity() {
         addToNavHistory("addExercise")
         clearBtns()
         getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText("Add Exercise")
+    }
+
+    public fun navToEditExercise(view:View, editExercise: Exercise){
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.main_fragment_view, EditExerciseFragment.newInstance(editExercise), "editExercise")
+            .commit()
+
+        addToNavHistory("editExercise")
+        clearBtns()
+        getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText("Edit Exercise")
     }
 
     private fun navToCreateWorkout(view: View){

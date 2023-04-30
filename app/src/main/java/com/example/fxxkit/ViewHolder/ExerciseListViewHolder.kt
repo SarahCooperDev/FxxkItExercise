@@ -1,14 +1,15 @@
 package com.example.fxxkit
 
-import android.service.autofill.Dataset
+import android.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.fxxkit.ViewModel.ExerciseViewModel
+import com.example.fxxkit.DataClass.Exercise
 
-class ExerciseListAdapter(private val eList: List<ExerciseViewModel>) :   RecyclerView.Adapter<ExerciseListAdapter.ExerciseListViewHolder>(){
+class ExerciseListAdapter(private val eList: ArrayList<Exercise>, private val activity: MainActivity) :   RecyclerView.Adapter<ExerciseListAdapter.ExerciseListViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseListViewHolder {
         val viewLayout = LayoutInflater.from(parent.context).inflate(
@@ -20,11 +21,39 @@ class ExerciseListAdapter(private val eList: List<ExerciseViewModel>) :   Recycl
         val currentExercise = eList[position]
         holder.id.text = currentExercise.id.toString()
         holder.name.text = currentExercise.name
-        holder.isStrength.text = currentExercise.isStrength.toString()
-        holder.isCondition.text = currentExercise.isCondition.toString()
-        holder.setList.text = currentExercise.possibleSetSize
-        holder.repList.text = currentExercise.possibleRepSize
-        holder.muscleList.text = currentExercise.targettedMuscles
+        holder.isStrength.text = currentExercise.isStrengthening.toString()
+        holder.isCondition.text = currentExercise.isConditioning.toString()
+        holder.setList.text = currentExercise.getSetAsString()
+        holder.repList.text = currentExercise.getRepsAsString()
+        holder.muscleList.text = currentExercise.getMusclesAsString()
+
+        holder.editBtn.setOnClickListener{view ->
+            activity.navToEditExercise(view, currentExercise)
+        }
+
+        holder.deleteBtn.setOnClickListener{ view ->
+            val builder = AlertDialog.Builder(view.context)
+            builder.setMessage("Are you sure you want to delete?")
+                .setCancelable(false)
+                .setPositiveButton("Yes") { dialog, id ->
+                    val dbHandler = DBHandler(view.context, null, null, 1)
+                    dbHandler.deleteExercise(currentExercise.name)
+
+                    for(ex in eList){
+                        if(ex.id == currentExercise.id){
+                            eList.remove(ex)
+                        }
+                    }
+
+                    notifyDataSetChanged()
+                }
+                .setNegativeButton("No") { dialog, id ->
+                    dialog.dismiss()
+                }
+
+            val alert = builder.create()
+            alert.show()
+        }
     }
 
     override fun getItemCount(): Int {
@@ -39,7 +68,8 @@ class ExerciseListAdapter(private val eList: List<ExerciseViewModel>) :   Recycl
         val setList: TextView = itemView.findViewById(R.id.set_list_txt)
         val repList: TextView = itemView.findViewById(R.id.rep_list_txt)
         val muscleList: TextView = itemView.findViewById(R.id.muscle_list_txt)
-
+        val editBtn: ImageButton = itemView.findViewById(R.id.edit_btn)
+        val deleteBtn: ImageButton = itemView.findViewById(R.id.delete_btn)
     }
 }
 

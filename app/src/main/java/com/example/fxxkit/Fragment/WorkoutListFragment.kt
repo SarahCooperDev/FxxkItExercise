@@ -16,7 +16,6 @@ import com.example.fxxkit.ViewHolder.WorkoutListAdapter
 import com.example.fxxkit.ViewModel.WorkoutViewModel
 
 class WorkoutListFragment : Fragment() {
-
     private var layoutManager: RecyclerView.LayoutManager? = null
     private var workoutListAdapter: RecyclerView.Adapter<WorkoutListAdapter.WorkoutListViewHolder>? = null
     private lateinit var workoutList: ArrayList<WorkoutViewModel>
@@ -54,8 +53,6 @@ class WorkoutListFragment : Fragment() {
                 workoutList.add(WorkoutViewModel(workout.id, workout.workoutName, workout.exercises))
             }
         }
-
-        //val workEx = dbHandler.getAllWorkoutExercises()
         println("Got all workout exercises")
     }
 

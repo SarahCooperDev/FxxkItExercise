@@ -3,15 +3,12 @@ package com.example.fxxkit.ViewHolder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ListView
 import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.fxxkit.DataClass.Exercise
 import com.example.fxxkit.R
-import com.example.fxxkit.ViewModel.ExerciseViewModel
 import com.example.fxxkit.ViewModel.WorkoutViewModel
 
 class WorkoutListAdapter(private val eList: List<WorkoutViewModel>) :   RecyclerView.Adapter<WorkoutListAdapter.WorkoutListViewHolder>(){
@@ -38,7 +35,7 @@ class WorkoutListAdapter(private val eList: List<WorkoutViewModel>) :   Recycler
             var row: TableRow = TableRow(context)
             var txtView: TextView = TextView(context)
 
-            txtView.setText(ex.exerciseName)
+            txtView.setText(ex.name)
             row.addView(txtView)
             table.addView(row)
         }

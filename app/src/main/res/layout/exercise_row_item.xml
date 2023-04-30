@@ -21,20 +21,47 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TableRow>
-                <TextView
-                    android:id="@+id/exercise_id_txt"
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="0dp"
+                    android:layout_weight="1">
+                    <TextView
+                        android:id="@+id/exercise_id_txt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Test"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=" | "/>
+                    <TextView
+                        android:id="@+id/exercise_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Test"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:orientation="horizontal"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Test"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=" | "/>
-                <TextView
-                    android:id="@+id/exercise_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Test"/>
+                    android:layout_height="wrap_content">
+                    <ImageButton
+                        android:id="@+id/edit_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="#39BD84"
+                        android:src="@android:drawable/ic_menu_edit"
+                        android:text="Edit"
+                        android:layout_margin="5dp"></ImageButton>
+
+                    <ImageButton
+                        android:id="@+id/delete_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="#E91E63"
+                        android:src="@android:drawable/ic_menu_delete"
+                        android:text="Delete"
+                        android:layout_margin="5dp"></ImageButton>
+                </LinearLayout>
             </TableRow>
         </TableLayout>
         <View
@@ -45,59 +72,60 @@
             android:layout_margin="3dp"/>
         <TableLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:stretchColumns="*">
             <TableRow>
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Sets: "/>
                 <TextView
                     android:id="@+id/set_list_txt"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="N/A"/>
             </TableRow>
             <TableRow>
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Reps: "/>
                 <TextView
                     android:id="@+id/rep_list_txt"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="N/A"/>
             </TableRow>
             <TableRow>
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Targetted Muscles: "/>
                 <TextView
                     android:id="@+id/muscle_list_txt"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="N/A"/>
             </TableRow>
             <TableRow>
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Is Strength: "/>
                 <TextView
                     android:id="@+id/is_strength_txt"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="False"/>
             </TableRow>
             <TableRow>
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Is Conditioning: "/>
                 <TextView
                     android:id="@+id/is_condition_txt"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="False"/>
             </TableRow>

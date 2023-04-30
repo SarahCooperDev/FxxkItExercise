@@ -1,6 +1,5 @@
 package com.example.fxxkit
 
-import android.service.autofill.Dataset
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,9 +8,8 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fxxkit.DataClass.Exercise
-import com.example.fxxkit.ViewModel.ExerciseViewModel
 
-class WorkoutExerciseListAdapter(private val eList: List<ExerciseViewModel>, var selectedExercises: ArrayList<ExerciseViewModel>) :   RecyclerView.Adapter<WorkoutExerciseListAdapter.WorkoutExerciseListViewHolder>(){
+class WorkoutExerciseListAdapter(private val eList: List<Exercise>, var selectedExercises: ArrayList<Exercise>) :   RecyclerView.Adapter<WorkoutExerciseListAdapter.WorkoutExerciseListViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WorkoutExerciseListViewHolder {
         val viewLayout = LayoutInflater.from(parent.context).inflate(
@@ -27,18 +25,18 @@ class WorkoutExerciseListAdapter(private val eList: List<ExerciseViewModel>, var
         holder.row.setOnClickListener{
             if(holder.isSelected.isChecked){
                 holder.isSelected.setChecked(false)
-                selectedExercises = selectedExercises.filter{ it.id.toString() != holder.id.text.toString() } as ArrayList<ExerciseViewModel>
+                selectedExercises = selectedExercises.filter{ it.id.toString() != holder.id.text.toString() } as ArrayList<Exercise>
             } else{
                 holder.isSelected.setChecked(true)
-                selectedExercises.add(ExerciseViewModel(holder.id.text.toString().toInt(), holder.name.text.toString()))
+                selectedExercises.add(Exercise(holder.id.text.toString().toInt(), holder.name.text.toString()))
             }
         }
 
         holder.isSelected.setOnClickListener{
             if(holder.isSelected.isChecked){
-                selectedExercises.add(ExerciseViewModel(holder.id.text.toString().toInt(), holder.name.text.toString()))
+                selectedExercises.add(Exercise(holder.id.text.toString().toInt(), holder.name.text.toString()))
             } else {
-                selectedExercises = selectedExercises.filter{ it.id.toString() != holder.id.text.toString() } as ArrayList<ExerciseViewModel>
+                selectedExercises = selectedExercises.filter{ it.id.toString() != holder.id.text.toString() } as ArrayList<Exercise>
             }
         }
     }
