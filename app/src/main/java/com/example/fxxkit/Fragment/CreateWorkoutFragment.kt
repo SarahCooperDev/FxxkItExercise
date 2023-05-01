@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fxxkit.*
 import com.example.fxxkit.DataClass.Exercise
 import com.example.fxxkit.DataClass.Workout
+import com.example.fxxkit.DataClass.WorkoutExercise
 
 /**
  * A simple [Fragment] subclass.
@@ -22,8 +23,7 @@ class CreateWorkoutFragment : Fragment() {
     private lateinit var workoutName: EditText
     private lateinit var createWorkoutBtn : Button
     private var exerciseListAdapter: RecyclerView.Adapter<ExerciseListAdapter.ExerciseListViewHolder>? = null
-    private lateinit var exerciseList: ArrayList<Exercise>
-    var selectedExercises = ArrayList<Exercise>()
+    private var workoutExerciseList: ArrayList<WorkoutExercise> = ArrayList<WorkoutExercise>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,11 +38,10 @@ class CreateWorkoutFragment : Fragment() {
         var recycler = view.findViewById<RecyclerView>(R.id.exercise_list_rv)
         recycler.layoutManager = LinearLayoutManager(activity)
 
-        exerciseList = ArrayList<Exercise>()
+        var exerciseList = loadExercises(view)
+        loadExercisesIntoWorkout(exerciseList)
 
-        loadExercises(view)
-
-        recycler.adapter = WorkoutExerciseListAdapter(exerciseList, selectedExercises)
+        recycler.adapter = WorkoutExerciseListAdapter((activity as MainActivity), workoutExerciseList)
 
         workoutName = view.findViewById<EditText>(R.id.workout_name_txt)
         createWorkoutBtn = view.findViewById<Button>(R.id.create_workout_btn)
@@ -66,17 +65,27 @@ class CreateWorkoutFragment : Fragment() {
         if(workoutId != null && workoutId >= 0){
             workout.id = workoutId
 
-            for(exercise in selectedExercises){
-                var exercise = Exercise(exercise.id, exercise.name)
-
-                var result = dbHandler.addExerciseToWorkout(workout, exercise)
+            for(workEx in workoutExerciseList){
+                if(workEx.isSelected) {
+                    workEx.workoutId = workoutId
+                    var result = dbHandler.addExerciseToWorkout(workEx)
+                }
             }
         }
     }
 
-    private fun loadExercises(view: View){
+    private fun loadExercisesIntoWorkout(exerciseList: ArrayList<Exercise>){
+        for(exercise in exerciseList){
+            var workEx = WorkoutExercise(exercise)
+            workEx.exercise = exercise
+            workoutExerciseList.add(workEx)
+        }
+    }
+
+    private fun loadExercises(view: View): ArrayList<Exercise>{
         val dbHandler = DBHandler(this.requireContext(), null, null, 1)
-        exerciseList = dbHandler.getAllExercises()!!
+        var exerciseList = dbHandler.getAllExercises()!!
+        return exerciseList
     }
 
     companion object {

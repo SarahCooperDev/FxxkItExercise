@@ -99,5 +99,4 @@ class Exercise {
             targettedMuscles.add(muscle.trim())
         }
     }
-
 }

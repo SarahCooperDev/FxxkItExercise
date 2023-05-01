@@ -14,8 +14,8 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
     SQLiteOpenHelper(context, DATABASE_NAME, factory, CURRENT_DATABASE_VERSION){
 
     companion object{
-        private val CURRENT_DATABASE_VERSION = 3
-        private val NEW_DATABASE_VERSION = 4
+        private val CURRENT_DATABASE_VERSION = 4
+        private val NEW_DATABASE_VERSION = 5
         private val DATABASE_NAME = "exerciseDB.db"
 
         val TABLE_EXERCISES = "exercise"
@@ -27,7 +27,9 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         val COLUMN_ISSTRENGTH = "is_strength"
         val COLUMN_ISCONDITION = "is_condition"
         val COLUMN_POSSIBLESETSIZE = "possible_set_size"
+        val COLUMN_SET_SIZE = "set_size"
         val COLUMN_POSSIBLEREPSIZE = "possible_rep_size"
+        val COLUMN_REP_SIZE = "rep_size"
         val COLUMN_TARGETTEDMUSCLES = "targetted_muscles"
 
         val COLUMN_WORKOUTNAME = "workout_name"
@@ -44,7 +46,8 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         val CREATE_WORKOUT_TABLE = ("CREATE TABLE " + TABLE_WORKOUTS +
                 "(" + COLUMN_ID + " INTEGER PRIMARY KEY," + COLUMN_WORKOUTNAME + " TEXT)")
         val CREATE_WORKOUT_EXERCISE_TABLE = ("CREATE TABLE " + TABLE_WORKOUT_EXERCISE +
-                "(" + COLUMN_ID + " INTEGER PRIMARY KEY," + COLUMN_WORKOUT + " INTEGER," + COLUMN_EXERCISE + " INTEGER)")
+                "(" + COLUMN_ID + " INTEGER PRIMARY KEY, " + COLUMN_WORKOUT + " INTEGER, " + COLUMN_EXERCISE + " INTEGER, " +
+                 COLUMN_SET_SIZE + " TEXT, " + COLUMN_REP_SIZE + " TEXT" + ")")
 
         db.execSQL(CREATE_EXERCISE_TABLE)
         db.execSQL(CREATE_WORKOUT_TABLE)
@@ -80,13 +83,13 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
             if(exerciseList != null && exerciseList.size > 0){
                 if(exerciseList.size >= 3){
                     for(j in 0..2){
-                        addExerciseToWorkout(workoutList[0], exerciseList[j])
+                        //addExerciseToWorkout(workoutList[0], exerciseList[j])
                     }
-                    addExerciseToWorkout(workoutList[1], exerciseList[0])
+                    //addExerciseToWorkout(workoutList[1], exerciseList[0])
                 } else {
                     for(j in exerciseList.indices){
-                        addExerciseToWorkout(workoutList[0], exerciseList[j])
-                        addExerciseToWorkout(workoutList[1], exerciseList[0])
+                        //addExerciseToWorkout(workoutList[0], exerciseList[j])
+                        //addExerciseToWorkout(workoutList[1], exerciseList[0])
                     }
                 }
             }
@@ -127,28 +130,24 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         values.put(COLUMN_ISCONDITION, exercise.isConditioning)
         values.put(COLUMN_ISSTRENGTH, exercise.isStrengthening)
 
-        if(setString != null){
-            values.put(COLUMN_POSSIBLESETSIZE, setString)
-        }
-
-        if(repString != null){
-            values.put(COLUMN_POSSIBLEREPSIZE, repString)
-        }
-
-        if(muscleString != null){
-            values.put(COLUMN_TARGETTEDMUSCLES, muscleString)
-        }
+        if(setString != null){ values.put(COLUMN_POSSIBLESETSIZE, setString) }
+        if(repString != null){ values.put(COLUMN_POSSIBLEREPSIZE, repString) }
+        if(muscleString != null){ values.put(COLUMN_TARGETTEDMUSCLES, muscleString) }
 
         db.insert(TABLE_EXERCISES, null, values)
         db.close()
     }
 
-    fun addExerciseToWorkout(workout: Workout, exercise: Exercise): Int?{
+    fun addExerciseToWorkout(workoutExercise: WorkoutExercise): Int?{
+        println("Workout exercise in db: " + workoutExercise)
         val values = ContentValues()
         val db = this.writableDatabase
 
-        values.put(COLUMN_WORKOUT, workout.id)
-        values.put(COLUMN_EXERCISE, exercise.id)
+        values.put(COLUMN_WORKOUT, workoutExercise.workoutId)
+        values.put(COLUMN_EXERCISE, workoutExercise.exerciseId)
+
+        if(workoutExercise.setSize != null){ values.put(COLUMN_SET_SIZE, workoutExercise.setSize) }
+        if(workoutExercise.repSize != null){ values.put(COLUMN_REP_SIZE, workoutExercise.repSize) }
 
         val newId = db.insert(TABLE_WORKOUT_EXERCISE, null, values)
         db.close()
