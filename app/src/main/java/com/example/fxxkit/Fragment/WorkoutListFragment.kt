@@ -34,10 +34,9 @@ class WorkoutListFragment : Fragment() {
         recycler.layoutManager = LinearLayoutManager(activity)
 
         workoutList = ArrayList<WorkoutViewModel>()
-
         loadWorkouts(view)
 
-        recycler.adapter = WorkoutListAdapter(workoutList)
+        recycler.adapter = WorkoutListAdapter((activity as MainActivity), workoutList)
 
         return view
     }
@@ -45,15 +44,21 @@ class WorkoutListFragment : Fragment() {
     fun loadWorkouts(view: View){
         val dbHandler = DBHandler(this.requireContext(), null, null, 1)
         val workouts = dbHandler.getAllWorkouts()
-        println("Workouts")
-        println(workouts)
 
         if(workouts != null && workouts.size > 0){
             for(workout in workouts){
-                workoutList.add(WorkoutViewModel(workout.id, workout.workoutName, workout.exercises))
+                var workoutVM = WorkoutViewModel(workout.id, workout.workoutName!!)
+                workoutVM.workExList = dbHandler.findAllWorkoutExercises(workout)
+
+                for(workEx in workoutVM.workExList){
+                    if(workEx.exerciseId > -1){
+                        var exercise = dbHandler.findExerciseById(workEx.exerciseId)
+                        workEx.exercise = exercise
+                    }
+                }
+                workoutList.add(workoutVM)
             }
         }
-        println("Got all workout exercises")
     }
 
     private fun setCellSize(){

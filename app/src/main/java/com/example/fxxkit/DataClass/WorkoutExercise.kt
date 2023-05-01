@@ -30,7 +30,7 @@ class WorkoutExercise{
 
     constructor(exercise: Exercise){
         this.exercise = exercise
-        this.exerciseId = exerciseId
+        this.exerciseId = exercise.id
     }
 
     constructor(){}
