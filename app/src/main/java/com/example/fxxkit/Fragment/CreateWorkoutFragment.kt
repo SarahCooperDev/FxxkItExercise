@@ -40,7 +40,7 @@ class CreateWorkoutFragment : Fragment() {
 
         exerciseList = ArrayList<Exercise>()
 
-        getExercises(view)
+        loadExercises(view)
 
         recycler.adapter = WorkoutExerciseListAdapter(exerciseList, selectedExercises)
 
@@ -74,9 +74,9 @@ class CreateWorkoutFragment : Fragment() {
         }
     }
 
-    private fun getExercises(view: View){
+    private fun loadExercises(view: View){
         val dbHandler = DBHandler(this.requireContext(), null, null, 1)
-        val exercises = dbHandler.getAllExercises()
+        exerciseList = dbHandler.getAllExercises()!!
     }
 
     companion object {

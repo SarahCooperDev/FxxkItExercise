@@ -13,7 +13,7 @@ class WorkoutExerciseListAdapter(private val eList: List<Exercise>, var selected
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WorkoutExerciseListViewHolder {
         val viewLayout = LayoutInflater.from(parent.context).inflate(
-            R.layout.workout_exercise_row_item, parent, false)
+            R.layout.exercise_row_item, parent, false)
         return WorkoutExerciseListViewHolder(viewLayout)
     }
 
@@ -21,6 +21,11 @@ class WorkoutExerciseListAdapter(private val eList: List<Exercise>, var selected
         val currentExercise = eList[position]
         holder.id.text = currentExercise.id.toString()
         holder.name.text = currentExercise.name
+        holder.isStrength.text = currentExercise.isStrengthening.toString()
+        holder.isCondition.text = currentExercise.isConditioning.toString()
+        holder.setList.text = currentExercise.getSetAsString()
+        holder.repList.text = currentExercise.getRepsAsString()
+        holder.muscleList.text = currentExercise.getMusclesAsString()
 
         holder.row.setOnClickListener{
             if(holder.isSelected.isChecked){
@@ -41,6 +46,7 @@ class WorkoutExerciseListAdapter(private val eList: List<Exercise>, var selected
         }
     }
 
+
     override fun getItemCount(): Int {
         return eList.size
     }
@@ -50,6 +56,11 @@ class WorkoutExerciseListAdapter(private val eList: List<Exercise>, var selected
         val id: TextView = itemView.findViewById(R.id.exercise_id_txt)
         val name: TextView = itemView.findViewById(R.id.exercise_name)
         val isSelected: CheckBox = itemView.findViewById(R.id.is_selected_chbx)
+        val isStrength: TextView = itemView.findViewById(R.id.is_strength_txt)
+        val isCondition: TextView = itemView.findViewById(R.id.is_condition_txt)
+        val setList: TextView = itemView.findViewById(R.id.set_list_txt)
+        val repList: TextView = itemView.findViewById(R.id.rep_list_txt)
+        val muscleList: TextView = itemView.findViewById(R.id.muscle_list_txt)
     }
 }
 

@@ -54,13 +54,7 @@
                         android:background="?android:attr/listDivider"
                         android:layout_margin="3dp"/>
                 </TableRow>
-                <TableRow>
-                    <TextView
-                        android:id="@+id/exercise_duration"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="duration"/>
-                </TableRow>
+                <TableRow></TableRow>
             </TableLayout>
         </LinearLayout>
     </RelativeLayout>

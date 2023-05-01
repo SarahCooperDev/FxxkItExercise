@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.*
 import com.example.fxxkit.DBHandler
 import com.example.fxxkit.DataClass.Exercise
+import com.example.fxxkit.DataClass.MultiselectLists
 import com.example.fxxkit.MainActivity
 import com.example.fxxkit.R
 import java.util.*
@@ -18,14 +19,6 @@ import kotlin.collections.ArrayList
 class EditExerciseFragment : Fragment() {
     private lateinit var currentExercise: Exercise
     private var errorColor: String = "#cc0000"
-
-    private var setSizesArray: Array<String> = arrayOf("3", "5", "10", "12", "15")
-    private var repSizesArray: Array<String> = arrayOf("5", "10", "12", "15", "20", "30", "50")
-    private var targettedMusclesArray: Array<String> = arrayOf("Calfs", "Quads", "Glutts", "Abs", "Triceps", "Biceps")
-
-    private var selectedSetSizes = ArrayList<String>()
-    private var selectedRepSizes = ArrayList<String>()
-    private var selectedMuscles = ArrayList<String>()
 
     private lateinit var idTxt: TextView
     private lateinit var nameEditTxt: EditText
@@ -63,25 +56,27 @@ class EditExerciseFragment : Fragment() {
 
         setSizeMultiselect = view.findViewById(R.id.set_size_multiselect)
         if(currentExercise.possibleSetSize.size > 0){
-            selectedSetSizes = currentExercise.possibleSetSize
-            setSizeMultiselect.text = getStringFromArray(selectedSetSizes)
+            setSizeMultiselect.text = MultiselectLists.getStringFromArray(currentExercise.possibleSetSize)
         }
 
         repSizeMultiselect = view.findViewById(R.id.rep_size_multiselect)
         if(currentExercise.possibleRepSize.size > 0){
-            selectedRepSizes = currentExercise.possibleRepSize
-            repSizeMultiselect.text = getStringFromArray(selectedRepSizes)
+            repSizeMultiselect.text = MultiselectLists.getStringFromArray(currentExercise.possibleRepSize)
         }
 
         targettedMusclesMultiselect = view.findViewById(R.id.muscle_select)
         if(currentExercise.targettedMuscles.size > 0){
-            selectedMuscles = currentExercise.targettedMuscles
-            targettedMusclesMultiselect.text = getStringFromArray(selectedMuscles)
+            targettedMusclesMultiselect.text = MultiselectLists.getStringFromArray(currentExercise.targettedMuscles)
         }
 
-        buildMultiselectSetNo(view)
-        buildMultiselectRepNo(view)
-        buildTargettedMusclesMultiselect(view)
+        MultiselectLists.buildMultiselect((activity as MainActivity), view, setSizeMultiselect, MultiselectLists.setSizesArray,
+            currentExercise.possibleSetSize)
+
+        MultiselectLists.buildMultiselect((activity as MainActivity), view, repSizeMultiselect, MultiselectLists.repSizesArray,
+            currentExercise.possibleRepSize)
+
+        MultiselectLists.buildMultiselect((activity as MainActivity), view, targettedMusclesMultiselect,
+            MultiselectLists.targettedMusclesArray,currentExercise.targettedMuscles)
 
         cancelBtn = view.findViewById(R.id.cancel_btn)
         cancelBtn.setOnClickListener{ view ->
@@ -106,230 +101,12 @@ class EditExerciseFragment : Fragment() {
 
     private fun updateExercise(){
         currentExercise.name = nameEditTxt.text.toString()
-        currentExercise.isConditioning = isConditioningBtn.isChecked
-        currentExercise.isStrengthening = isStrengthBtn.isChecked
-        currentExercise.possibleSetSize = selectedSetSizes
-        currentExercise.possibleRepSize = selectedRepSizes
-        currentExercise.targettedMuscles = selectedMuscles
-
         if(isStrengthBtn.isChecked()){ currentExercise.isStrengthening = true }
         if(isConditioningBtn.isChecked()){ currentExercise.isConditioning = true }
-        currentExercise.possibleSetSize = selectedSetSizes
-        currentExercise.possibleRepSize = selectedRepSizes
-        currentExercise.targettedMuscles = selectedMuscles
 
         val dbHandler = DBHandler(this.requireContext(), null, null, 1)
 
         dbHandler.updateExercise(currentExercise)
-    }
-
-    private fun getStringFromArray(array: ArrayList<String>): String?{
-        if(array.size > 0){
-            var stringgedArray = ""
-            for(i in 0..array.size - 2){
-                stringgedArray += array[i] + ", "
-            }
-            stringgedArray += array[array.size - 1]
-
-            return stringgedArray
-        }
-        return null
-    }
-
-
-    private fun buildTargettedMusclesMultiselect(view:View){
-        // Array that keeps track of the options selected, but only by index
-        var selectedOptionsArray =  ArrayList<Int>()
-
-        // Triggers the dialog on click
-        targettedMusclesMultiselect.setOnClickListener{view ->
-            val builder = AlertDialog.Builder(activity)
-            builder.setTitle("Muscles targetted by exercise")
-            builder.setCancelable(false)
-
-            // Creates the array of bools that indicates whether an option should already be checked
-            val preselectedArray = BooleanArray(targettedMusclesArray.size){false}
-            for(item in selectedMuscles){
-                var itemIndex = targettedMusclesArray.indexOf(item)
-                preselectedArray[itemIndex] = true
-                selectedOptionsArray.add(itemIndex)
-            }
-
-            // Shows the options, and chooses what to do when one is selected
-            builder.setMultiChoiceItems(targettedMusclesArray, preselectedArray){dialog, which, isChecked ->
-                if(isChecked){
-                    selectedOptionsArray.add(which)
-                } else if(selectedOptionsArray.contains(which)){
-                    selectedOptionsArray.remove(Integer.valueOf(which))
-                }
-            }
-
-            // Sets up button to complete the dialog
-            builder.setPositiveButton("Done"){ dialogInterface, i ->
-                // Converts the selection of indexes into the the corresponding values
-                selectedMuscles.clear()
-                selectedOptionsArray.sort()
-                for(j in selectedOptionsArray.indices){
-                    selectedMuscles.add(targettedMusclesArray[selectedOptionsArray[j]])
-                }
-
-                // Sets the TextView text to the selected sets
-                targettedMusclesMultiselect.text = getStringFromArray(selectedMuscles)
-            }
-
-            // Sets up the button to cancel the input
-            builder.setNegativeButton("Cancel"){dialogInterface, i ->
-                dialogInterface.dismiss()
-                if(currentExercise.targettedMuscles.size > 0){
-                    selectedMuscles = currentExercise.targettedMuscles
-                    targettedMusclesMultiselect.text = getStringFromArray(selectedMuscles)
-                }
-            }
-
-            // Sets up the button that clears all selected options
-            builder.setNeutralButton("Clear"){dialogInterface, i ->
-                selectedOptionsArray.clear()
-                if(currentExercise.targettedMuscles.size > 0){
-                    selectedMuscles = currentExercise.targettedMuscles
-                    targettedMusclesMultiselect.text = getStringFromArray(selectedMuscles)
-                }
-            }
-
-            builder.show()
-        }
-    }
-
-
-    /**
-     * Function that creates a multiselect dialog upon clicking an element
-     *
-     * Inputs params: view - the current view context
-     *
-     * Updates the selectedSetNos array
-     */
-    private fun buildMultiselectSetNo(view:View){
-        // Array that keeps track of the options selected, but only by index
-        var selectedOptionsArray =  ArrayList<Int>()
-
-        // Triggers the dialog on click
-        setSizeMultiselect.setOnClickListener{view ->
-            val builder = AlertDialog.Builder(activity)
-            builder.setTitle("Set lengths for Exercise")
-            builder.setCancelable(false)
-
-            // Creates the array of bools that indicates whether an option should already be checked
-            val preselectedArray = BooleanArray(setSizesArray.size){false}
-            for(setSize in selectedSetSizes){
-                var itemIndex = setSizesArray.indexOf(setSize)
-                preselectedArray[itemIndex] = true
-                selectedOptionsArray.add(itemIndex)
-            }
-
-            // Shows the options, and chooses what to do when one is selected
-            builder.setMultiChoiceItems(setSizesArray, preselectedArray){dialog, which, isChecked ->
-                if(isChecked){
-                    selectedOptionsArray.add(which)
-                } else if(selectedOptionsArray.contains(which)){
-                    selectedOptionsArray.remove(Integer.valueOf(which))
-                }
-            }
-
-            // Sets up button to complete the dialog
-            builder.setPositiveButton("Done"){ dialogInterface, i ->
-                // Converts the selection of indexes into the the corresponding values
-                selectedSetSizes.clear()
-                selectedOptionsArray.sort()
-                for(j in selectedOptionsArray.indices){
-                    selectedSetSizes.add(setSizesArray[selectedOptionsArray[j]])
-                }
-
-                // Sets the TextView text to the selected sets
-                setSizeMultiselect.text = getStringFromArray(selectedSetSizes)
-            }
-
-            // Sets up the button to cancel the input
-            builder.setNegativeButton("Cancel"){dialogInterface, i ->
-                dialogInterface.dismiss()
-                if(currentExercise.possibleSetSize.size > 0){
-                    selectedSetSizes = currentExercise.possibleSetSize
-                    setSizeMultiselect.text = getStringFromArray(selectedSetSizes)
-                }
-            }
-
-            // Sets up the button that clears all selected options
-            builder.setNeutralButton("Clear"){dialogInterface, i ->
-                selectedOptionsArray.clear()
-                if(currentExercise.possibleSetSize.size > 0){
-                    selectedSetSizes = currentExercise.possibleSetSize
-                    setSizeMultiselect.text = getStringFromArray(selectedSetSizes)
-                }
-            }
-
-            builder.show()
-        }
-    }
-
-
-    private fun buildMultiselectRepNo(view:View){
-        // Array that keeps track of the options selected, but only by index
-        var selectedOptionsArray =  ArrayList<Int>()
-
-        // Triggers the dialog on click
-        repSizeMultiselect.setOnClickListener{view ->
-            val builder = AlertDialog.Builder(activity)
-            builder.setTitle("Rep lengths for Exercise")
-            builder.setCancelable(false)
-
-            // Creates the array of bools that indicates whether an option should already be checked
-            val preselectedArray = BooleanArray(repSizesArray.size){false}
-            for(repSize in selectedRepSizes){
-                var itemIndex = repSizesArray.indexOf(repSize)
-                preselectedArray[itemIndex] = true
-                selectedOptionsArray.add(itemIndex)
-            }
-
-            // Shows the options, and chooses what to do when one is selected
-            builder.setMultiChoiceItems(repSizesArray, preselectedArray){dialog, which, isChecked ->
-                if(isChecked){
-                    selectedOptionsArray.add(which)
-                } else if(selectedOptionsArray.contains(which)){
-                    selectedOptionsArray.remove(Integer.valueOf(which))
-                }
-            }
-
-            // Sets up button to complete the dialog
-            builder.setPositiveButton("Done"){ dialogInterface, i ->
-                // Converts the selection of indexes into the the corresponding values
-                selectedRepSizes.clear()
-                selectedOptionsArray.sort()
-                for(j in selectedOptionsArray.indices){
-                    selectedRepSizes.add(repSizesArray[selectedOptionsArray[j]])
-                }
-
-                // Sets the TextView text to the selected sets
-                repSizeMultiselect.text = getStringFromArray(selectedRepSizes)
-            }
-
-            // Sets up the button to cancel the input
-            builder.setNegativeButton("Cancel"){dialogInterface, i ->
-                dialogInterface.dismiss()
-                if(currentExercise.possibleRepSize.size > 0){
-                    selectedRepSizes = currentExercise.possibleRepSize
-                    repSizeMultiselect.text = getStringFromArray(selectedRepSizes)
-                }
-            }
-
-            // Sets up the button that clears all selected options
-            builder.setNeutralButton("Clear"){dialogInterface, i ->
-                selectedOptionsArray.clear()
-                if(currentExercise.possibleRepSize.size > 0){
-                    selectedRepSizes = currentExercise.possibleRepSize
-                    repSizeMultiselect.text = getStringFromArray(selectedRepSizes)
-                }
-            }
-
-            builder.show()
-        }
     }
 
     companion object {
