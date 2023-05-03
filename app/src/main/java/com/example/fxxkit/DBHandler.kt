@@ -221,16 +221,23 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
 
             var id: Int = -1
             var exerciseId: Int = -1
+            var setSize: String? = null
+            var repSize: String? = null
 
             if(cursor.moveToFirst()){
                 cursor.moveToFirst()
                 do{
                     id = cursor.getInt(cursor.getColumnIndex(COLUMN_ID))
                     exerciseId = cursor.getInt(cursor.getColumnIndex(COLUMN_EXERCISE))
+                    setSize = cursor.getString(cursor.getColumnIndex(COLUMN_SET_SIZE))
+                    repSize = cursor.getString(cursor.getColumnIndex(COLUMN_REP_SIZE))
+
 
                     var workEx = WorkoutExercise(id)
                     workEx.workoutId = workout.id
                     workEx.exerciseId = exerciseId
+                    workEx.setSize = setSize
+                    workEx.repSize = repSize
 
                     workExList.add(workEx)
                 } while(cursor.moveToNext())

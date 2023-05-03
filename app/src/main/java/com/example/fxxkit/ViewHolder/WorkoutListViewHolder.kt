@@ -1,5 +1,6 @@
 package com.example.fxxkit.ViewHolder
 
+import android.app.ActionBar.LayoutParams
 import android.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
@@ -18,13 +19,15 @@ import com.example.fxxkit.ViewModel.WorkoutViewModel
 class WorkoutListAdapter(private val activity: MainActivity, private val eList: List<WorkoutViewModel>) :   RecyclerView.Adapter<WorkoutListAdapter.WorkoutListViewHolder>(){
     private var expandedSize = ArrayList<Int>()
     private var workList = eList
+    private lateinit var inflatedViewGroup: View
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WorkoutListViewHolder {
         setCellSize()
 
-        val viewLayout = LayoutInflater.from(parent.context).inflate(
+        inflatedViewGroup = LayoutInflater.from(parent.context).inflate(
             R.layout.workout_row_item, parent, false)
-        return WorkoutListViewHolder(viewLayout)
+
+        return WorkoutListViewHolder(inflatedViewGroup)
     }
 
     override fun onBindViewHolder(holder: WorkoutListViewHolder, position: Int) {
@@ -39,9 +42,18 @@ class WorkoutListAdapter(private val activity: MainActivity, private val eList: 
 
             if(ex.exercise != null && ex.exercise!!.name != null){
                 var row: TableRow = TableRow(context)
-                var txtView: TextView = TextView(context)
-                txtView.setText(ex.exercise!!.name)
-                row.addView(txtView)
+
+                var exRowLayout: View = LayoutInflater.from(activity).inflate(R.layout.workout_list_exercise_row, null)
+
+                var rowNameTxt = exRowLayout.findViewById<TextView>(R.id.exercise_name_txt)
+                var rowSetTxt = exRowLayout.findViewById<TextView>(R.id.exercise_set_txt)
+                var rowRepTxt = exRowLayout.findViewById<TextView>(R.id.exercise_rep_text)
+
+                rowNameTxt.setText(ex.exercise!!.name)
+                rowSetTxt.setText(ex.setSize)
+                rowRepTxt.setText(ex.repSize)
+
+                row.addView(exRowLayout)
                 table.addView(row)
             }
         }
@@ -61,7 +73,7 @@ class WorkoutListAdapter(private val activity: MainActivity, private val eList: 
         }
 
         holder.edit_btn.setOnClickListener { view ->
-            println("Clicked edit button")
+            activity.navToEditWorkout(view, currentWorkout)
         }
 
         holder.delete_btn.setOnClickListener{ view ->

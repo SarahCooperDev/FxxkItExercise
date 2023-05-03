@@ -38,7 +38,7 @@ class CreateWorkoutFragment : Fragment() {
         var recycler = view.findViewById<RecyclerView>(R.id.exercise_list_rv)
         recycler.layoutManager = LinearLayoutManager(activity)
 
-        var exerciseList = loadExercises(view)
+        var exerciseList = loadExercises()
         loadExercisesIntoWorkout(exerciseList)
 
         recycler.adapter = WorkoutExerciseListAdapter((activity as MainActivity), workoutExerciseList)
@@ -82,7 +82,7 @@ class CreateWorkoutFragment : Fragment() {
         }
     }
 
-    private fun loadExercises(view: View): ArrayList<Exercise>{
+    private fun loadExercises(): ArrayList<Exercise>{
         val dbHandler = DBHandler(this.requireContext(), null, null, 1)
         var exerciseList = dbHandler.getAllExercises()!!
         return exerciseList
