@@ -10,8 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fxxkit.DataClass.Exercise
 import com.example.fxxkit.DataClass.WorkoutExercise
 
-class WorkoutExerciseListAdapter(private val activity: MainActivity, private val workExList: List<WorkoutExercise>) :   RecyclerView.Adapter<WorkoutExerciseListAdapter.WorkoutExerciseListViewHolder>(){
+class WorkoutExerciseListAdapter(private val activity: MainActivity, private val workExList: ArrayList<WorkoutExercise>) :   RecyclerView.Adapter<WorkoutExerciseListAdapter.WorkoutExerciseListViewHolder>(){
     var dialogTitleString = "Specify sets and reps for this workout"
+    private lateinit var otherWorkList: ArrayList<WorkoutExercise>
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WorkoutExerciseListViewHolder {
         val viewLayout = LayoutInflater.from(parent.context).inflate(
@@ -21,13 +22,23 @@ class WorkoutExerciseListAdapter(private val activity: MainActivity, private val
 
     override fun onBindViewHolder(holder: WorkoutExerciseListViewHolder, position: Int) {
         val currentExercise = workExList[position]
+        println("Current exercise: ${currentExercise.exercise!!.name}, is selected - ${currentExercise.isSelected.toString()}")
+
         holder.id.text = currentExercise.exercise!!.id.toString()
         holder.name.text = currentExercise.exercise!!.name
         holder.isStrength.text = currentExercise.exercise!!.isStrengthening.toString()
         holder.isCondition.text = currentExercise.exercise!!.isConditioning.toString()
-        holder.setList.text = currentExercise.exercise!!.getSetAsString()
-        holder.repList.text = currentExercise.exercise!!.getRepsAsString()
         holder.muscleList.text = currentExercise.exercise!!.getMusclesAsString()
+
+        if(currentExercise.isSelected){
+            holder.setList.text = currentExercise.setSize
+            holder.repList.text = currentExercise.repSize
+            holder.isSelected.setChecked(true)
+        } else {
+            holder.setList.text = currentExercise.exercise!!.getSetAsString()
+            holder.repList.text = currentExercise.exercise!!.getRepsAsString()
+            holder.isSelected.setChecked(false)
+        }
 
         holder.row.setOnClickListener{
             if(holder.isSelected.isChecked){
@@ -46,12 +57,25 @@ class WorkoutExerciseListAdapter(private val activity: MainActivity, private val
             if(holder.isSelected.isChecked){
                 buildWorkoutExerciseDialog(currentExercise, holder)
                 currentExercise.isSelected = true
+                swapList(currentExercise, position)
             } else {
                 currentExercise.isSelected = false
                 holder.setList.text = currentExercise.exercise!!.getSetAsString()
                 holder.repList.text = currentExercise.exercise!!.getRepsAsString()
+                swapList(currentExercise, position)
             }
         }
+    }
+
+    private fun swapList(workExercise: WorkoutExercise, position: Int){
+        this.otherWorkList.add(workExercise)
+        workExList.removeAt(position)
+        notifyItemRemoved(position)
+        notifyItemRangeChanged(position, workExList.size)
+    }
+
+    public fun setOtherWorkExList(otherList: ArrayList<WorkoutExercise>){
+        this.otherWorkList = otherList
     }
 
     private fun buildWorkoutExerciseDialog(currentExercise: WorkoutExercise, holder: WorkoutExerciseListViewHolder){

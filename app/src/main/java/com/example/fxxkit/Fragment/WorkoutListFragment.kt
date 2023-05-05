@@ -54,6 +54,7 @@ class WorkoutListFragment : Fragment() {
                     if(workEx.exerciseId > -1){
                         var exercise = dbHandler.findExerciseById(workEx.exerciseId)
                         workEx.exercise = exercise
+                        workEx.isSelected = true
                     }
                 }
                 workoutList.add(workoutVM)

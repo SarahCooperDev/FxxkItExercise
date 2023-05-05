@@ -30,7 +30,7 @@
                 <TextView
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
-                    android:text="Sets:"></TextView>
+                    android:text="Sets: "></TextView>
                 <TextView
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
@@ -51,9 +51,8 @@
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:id="@+id/exercise_rep_text"
-                    android:text="Reps:"></TextView>
+                    android:text="Reps: "></TextView>
             </LinearLayout>
-
         </TableRow>
     </TableLayout>
 </LinearLayout>
