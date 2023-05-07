@@ -5,10 +5,41 @@
     android:layout_height="match_parent"
     tools:context=".Fragment.WorkoutFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Saved Workouts" />
-
+    <TableLayout
+        android:layout_margin="10dp"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+        <TableRow>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Workout Name"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:id="@+id/workout_name_txt"/>
+        </TableRow>
+        <TableRow>
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+                android:layout_margin="3dp"/>
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:id="@+id/exercise_title_txt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Exercises"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"></TextView>
+        </TableRow>
+        <TableRow
+            android:background="@color/black">
+            <androidx.recyclerview.widget.RecyclerView
+                android:background="@color/black"
+                android:id="@+id/exercise_rv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"></androidx.recyclerview.widget.RecyclerView>
+        </TableRow>
+    </TableLayout>
 </FrameLayout>

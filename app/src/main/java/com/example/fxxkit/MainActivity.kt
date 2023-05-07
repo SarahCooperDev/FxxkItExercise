@@ -10,6 +10,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import com.example.fxxkit.DataClass.Debugger
 import com.example.fxxkit.DataClass.Exercise
+import com.example.fxxkit.DataClass.Workout
 import com.example.fxxkit.Fragment.*
 import com.example.fxxkit.ViewModel.WorkoutViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -113,6 +114,16 @@ class MainActivity : AppCompatActivity() {
         addToNavHistory("createWorkout")
         clearBtns()
         getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText("Create Workout")
+    }
+
+    public fun navToWorkoutDetails(view: View, currentWorkout: WorkoutViewModel){
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.main_fragment_view, WorkoutFragment.newInstance(currentWorkout),"detailWorkout")
+            .commit()
+
+        addToNavHistory("detailWorkout")
+        clearBtns()
+        getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText("Workout Details")
     }
 
     public fun navToExerciseList(view: View){

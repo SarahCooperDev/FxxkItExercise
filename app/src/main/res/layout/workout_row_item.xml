@@ -1,6 +1,7 @@
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="12dp"
@@ -49,6 +50,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/detail_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:background="#3399ff"
+                        android:src="@android:drawable/ic_menu_view"
+                        android:text="Detail"></ImageButton>
+
                     <ImageButton
                         android:id="@+id/edit_btn"
                         android:layout_width="wrap_content"

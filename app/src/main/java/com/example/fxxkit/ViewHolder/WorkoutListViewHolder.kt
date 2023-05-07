@@ -66,7 +66,9 @@ class WorkoutListAdapter(private val activity: MainActivity, private val eList: 
             }
         }
 
-
+        holder.detail_btn.setOnClickListener { view ->
+            activity.navToWorkoutDetails(view, currentWorkout)
+        }
 
         holder.edit_btn.setOnClickListener { view ->
             activity.navToEditWorkout(view, currentWorkout)
@@ -102,6 +104,7 @@ class WorkoutListAdapter(private val activity: MainActivity, private val eList: 
         val workout_row: CardView = itemView.findViewById(R.id.workout_row_item)
         val exercise_tbl: TableLayout = itemView.findViewById(R.id.exercise_tbl)
         val workout_id: TextView = itemView.findViewById(R.id.workout_id_txt)
+        val detail_btn: ImageButton = itemView.findViewById(R.id.detail_btn)
         val edit_btn: ImageButton = itemView.findViewById(R.id.edit_btn)
         val delete_btn: ImageButton = itemView.findViewById(R.id.delete_btn)
     }

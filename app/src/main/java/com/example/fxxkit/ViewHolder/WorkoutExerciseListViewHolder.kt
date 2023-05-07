@@ -22,6 +22,8 @@ class WorkoutExerciseListAdapter(private val workExList: ArrayList<WorkoutExerci
         println("Exercise length in holder: " + workExList.size.toString())
         val currentExercise = workExList[position]
 
+        println("Current exercise sets ${currentExercise.setSize}")
+
         holder.name.text = currentExercise.exercise!!.name.toString()
         holder.sets.text = currentExercise.setSize
         holder.reps.text = currentExercise.repSize
