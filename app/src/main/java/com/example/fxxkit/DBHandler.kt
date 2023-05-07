@@ -119,6 +119,8 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
 
 
     fun addExercise(exercise: Exercise){
+        println("DB: Adding exercise: ${exercise.name}")
+
         var setString = exercise.getSetAsString()
         var repString = exercise.getRepsAsString()
         var muscleString = exercise.getMusclesAsString()
@@ -139,6 +141,8 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
     }
 
     fun addExerciseToWorkout(workoutExercise: WorkoutExercise): Int?{
+        println("DB: Adding exercise ${workoutExercise.exerciseId.toString()} to workout ${workoutExercise.workoutId.toString()}")
+
         val values = ContentValues()
         val db = this.writableDatabase
 
@@ -155,6 +159,8 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
     }
 
     fun addWorkout(workout: Workout): Int?{
+        println("DB: Adding workout ${workout.workoutName}")
+
         val values = ContentValues()
         val db = this.writableDatabase
 
@@ -232,14 +238,19 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
                     setSize = cursor.getString(cursor.getColumnIndex(COLUMN_SET_SIZE))
                     repSize = cursor.getString(cursor.getColumnIndex(COLUMN_REP_SIZE))
 
-
-                    var workEx = WorkoutExercise(id)
+                    var workEx = WorkoutExercise()
+                    workEx.id = id
                     workEx.workoutId = workout.id
                     workEx.exerciseId = exerciseId
                     workEx.setSize = setSize
                     workEx.repSize = repSize
 
-                    workExList.add(workEx)
+                    var exercise = findExerciseById(exerciseId)
+
+                    if(workEx.workoutId != null && workEx.exerciseId != null && exercise != null){
+                        workEx.exercise = exercise
+                        workExList.add(workEx)
+                    }
                 } while(cursor.moveToNext())
 
                 cursor.close()
@@ -342,6 +353,8 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
     }
 
     fun updateExercise(exercise: Exercise): Boolean{
+        println("DB: Updating exercise ${exercise.name}")
+
         var setString = exercise.getSetAsString()
         var repString = exercise.getRepsAsString()
         var muscleString = exercise.getMusclesAsString()
@@ -355,9 +368,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         values.put(COLUMN_ISSTRENGTH, exercise.isStrengthening)
 
         if(setString != null){ values.put(COLUMN_POSSIBLESETSIZE, setString) }
-
         if(repString != null){ values.put(COLUMN_POSSIBLEREPSIZE, repString) }
-
         if(muscleString != null){ values.put(COLUMN_TARGETTEDMUSCLES, muscleString) }
 
         result = db.update(TABLE_EXERCISES, values, "$COLUMN_ID=?", arrayOf(exercise.id.toString()))
@@ -365,33 +376,64 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         return (result != -1)
     }
 
-    fun deleteExercise(name: String): Boolean{
-        var result = false
-
-        val query = "SELECT * FROM $TABLE_EXERCISES WHERE $COLUMN_EXERCISENAME = \"$name\""
-
+    fun updateWorkoutExercise(workoutExercise: WorkoutExercise): Boolean{
+        var result = -1
+        val values = ContentValues()
         val db = this.writableDatabase
 
+        values.put(COLUMN_WORKOUT, workoutExercise.workoutId)
+        values.put(COLUMN_EXERCISE, workoutExercise.exerciseId)
+
+        if(workoutExercise.setSize != null){ values.put(COLUMN_SET_SIZE, workoutExercise.setSize) }
+        if(workoutExercise.repSize != null){ values.put(COLUMN_REP_SIZE, workoutExercise.repSize) }
+
+        result = db.update(TABLE_WORKOUT_EXERCISE, values, "$COLUMN_ID=?", arrayOf(workoutExercise.id.toString()))
+        db.close()
+
+        return result == 0
+    }
+
+    fun updateWorkout(workout: Workout): Boolean{
+        println("DB: Updating workout: ${workout.id} - ${workout.workoutName}")
+
+        var result = -1
+        val values = ContentValues()
+        val db = this.writableDatabase
+
+        values.put(COLUMN_WORKOUTNAME, workout.workoutName)
+
+        result = db.update(TABLE_WORKOUTS, values, "$COLUMN_ID=?", arrayOf(workout.id.toString()))
+        db.close()
+
+        return result == 0
+    }
+
+    fun deleteExercise(name: String): Boolean{
+        println("DB: Deleting exercise: ${name}")
+
+        var result = -1
+
+        val query = "SELECT * FROM $TABLE_EXERCISES WHERE $COLUMN_EXERCISENAME = \"$name\""
+        val db = this.writableDatabase
         val cursor = db.rawQuery(query, null)
 
         if(cursor.moveToFirst()){
             val id = Integer.parseInt(cursor.getString(0))
-            db.delete(TABLE_EXERCISES, COLUMN_ID + " = ?", arrayOf(id.toString()))
+            result = db.delete(TABLE_EXERCISES, COLUMN_ID + " = ?", arrayOf(id.toString()))
             cursor.close()
-            result = true
+
         }
 
         db.close()
-        return result
+        return result == 0
     }
 
     fun deleteWorkout(id: Int): Boolean{
+        println("DB: Deleting workout: ${id}")
+
         var result = false
-
         val query = "SELECT * FROM $TABLE_WORKOUTS WHERE $COLUMN_ID = \"$id\""
-
         val db = this.writableDatabase
-
         val cursor = db.rawQuery(query, null)
 
         if(cursor.moveToFirst()){
@@ -402,16 +444,19 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         }
 
         db.close()
+        println("Result is ${result.toString()}")
         return result
     }
 
-    fun deleteWorkoutExercises(id: Int): Boolean{
-        println("Deleting workout: $id")
+    fun deleteWorkoutExercise(id: Int): Boolean{
+        println("DB: Deleting workout exercise: ${id}")
+
         val db = this.writableDatabase
 
-        var result = db.delete(TABLE_WORKOUTS, "$COLUMN_WORKOUT = ?", arrayOf(id.toString()))
+        var result = db.delete(TABLE_WORKOUT_EXERCISE, "$COLUMN_ID = ?", arrayOf(id.toString()))
 
         db.close()
+        println("result is ${result.toString()}")
         return result == 0
     }
 }

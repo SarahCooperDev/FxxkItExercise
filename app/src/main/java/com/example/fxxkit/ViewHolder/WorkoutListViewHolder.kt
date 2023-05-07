@@ -59,18 +59,14 @@ class WorkoutListAdapter(private val activity: MainActivity, private val eList: 
         }
 
         holder.workout_row.setOnClickListener{
-            var totalHeight = holder.workout_name.height * currentWorkout.workExList.size
-
             if(holder.exercise_tbl.visibility == View.VISIBLE){
                 holder.exercise_tbl.visibility = View.GONE
-                if(holder.workout_row.layoutParams.height - totalHeight > 10){
-                    holder.workout_row.layoutParams.height = (holder.workout_row.height - totalHeight)
-                }
             } else if(holder.exercise_tbl.visibility == View.GONE){
                 holder.exercise_tbl.visibility = View.VISIBLE
-                holder.workout_row.layoutParams.height = (holder.workout_row.height + totalHeight)
             }
         }
+
+
 
         holder.edit_btn.setOnClickListener { view ->
             activity.navToEditWorkout(view, currentWorkout)

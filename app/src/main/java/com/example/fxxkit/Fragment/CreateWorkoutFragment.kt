@@ -41,7 +41,7 @@ class CreateWorkoutFragment : Fragment() {
         var exerciseList = loadExercises()
         loadExercisesIntoWorkout(exerciseList)
 
-        recycler.adapter = WorkoutExerciseListAdapter((activity as MainActivity), workoutExerciseList)
+        recycler.adapter = AddWorkoutExerciseListAdapter((activity as MainActivity), workoutExerciseList)
 
         workoutName = view.findViewById<EditText>(R.id.workout_name_txt)
         createWorkoutBtn = view.findViewById<Button>(R.id.create_workout_btn)

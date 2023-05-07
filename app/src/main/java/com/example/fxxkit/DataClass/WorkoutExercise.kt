@@ -33,5 +33,6 @@ class WorkoutExercise{
         this.exerciseId = exercise.id
     }
 
+
     constructor(){}
 }

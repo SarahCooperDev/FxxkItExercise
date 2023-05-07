@@ -19,6 +19,10 @@ class Workout {
         this.workoutName = workoutName
     }
 
+    constructor(id: Int){
+        this.id = id
+    }
+
     public fun setWorkoutExercises(exercises: ArrayList<Exercise>){
         this.exercises = exercises
     }

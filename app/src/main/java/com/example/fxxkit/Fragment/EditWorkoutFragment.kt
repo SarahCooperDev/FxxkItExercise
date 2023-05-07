@@ -1,27 +1,35 @@
 package com.example.fxxkit.Fragment
 
+import android.app.AlertDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
+import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fxxkit.*
 import com.example.fxxkit.DataClass.Exercise
+import com.example.fxxkit.DataClass.Workout
 import com.example.fxxkit.DataClass.WorkoutExercise
+import com.example.fxxkit.ViewHolder.WorkoutExerciseListAdapter
+import com.example.fxxkit.ViewHolder.WorkoutListAdapter
 import com.example.fxxkit.ViewModel.WorkoutViewModel
 
 class EditWorkoutFragment : Fragment() {
     private lateinit var currentWorkout: WorkoutViewModel
     private lateinit var workoutName: EditText
     private lateinit var updateWorkoutBtn : Button
+    private lateinit var addExerciseBtn: Button
+    private lateinit var removeExerciseBtn: Button
+    private lateinit var selectedExRV: RecyclerView
     private var allExerciseList: ArrayList<Exercise>? = null
     private var unselectedExerciseList: ArrayList<Exercise> = ArrayList<Exercise>()
     private var selectedExercises: ArrayList<WorkoutExercise> = ArrayList<WorkoutExercise>()
     private var unselectedWorkExercises: ArrayList<WorkoutExercise> = ArrayList<WorkoutExercise>()
+    private var removedWorkExercises: ArrayList<WorkoutExercise> = ArrayList<WorkoutExercise>()
+    private var addedWorkExercises: ArrayList<WorkoutExercise> = ArrayList<WorkoutExercise>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,33 +41,25 @@ class EditWorkoutFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         var view = inflater.inflate(R.layout.fragment_edit_workout, container, false)
-        var selectedRecycler = view.findViewById<RecyclerView>(R.id.selected_exercises_rv)
-        selectedRecycler.layoutManager = LinearLayoutManager(activity)
-        var unselectedRecycler = view.findViewById<RecyclerView>(R.id.unselected_exercises_rv)
-        unselectedRecycler.layoutManager = LinearLayoutManager(activity)
-
-        println("Workoutvm list size: ${currentWorkout.workExList.size.toString()}")
 
         loadAllExercises()
+        loadWorkoutExercises()
         filterExercisesBySelected()
-        loadExercisesIntoWorkout(unselectedExerciseList)
-
-        println("Have loaded exercises")
-        println("Selected ex: ${selectedExercises.size.toString()}")
-        println("All other ex: ${unselectedWorkExercises.size.toString()}")
-
-        var selectAdapter = WorkoutExerciseListAdapter((activity as MainActivity), selectedExercises)
-        selectedRecycler.adapter = selectAdapter
-        selectAdapter.setOtherWorkExList(unselectedWorkExercises)
-
-        var unselectAdapter = WorkoutExerciseListAdapter((activity as MainActivity), unselectedWorkExercises)
-        unselectedRecycler.adapter = unselectAdapter
-        unselectAdapter.setOtherWorkExList(selectedExercises)
+        loadExercisesIntoWorkouts(unselectedExerciseList)
 
         workoutName = view.findViewById<EditText>(R.id.workout_name_txt)
         updateWorkoutBtn = view.findViewById<Button>(R.id.update_workout_btn)
+        addExerciseBtn = view.findViewById<Button>(R.id.add_exercise_btn)
+        removeExerciseBtn = view.findViewById<Button>(R.id.remove_exercise_btn)
+        selectedExRV = view.findViewById<RecyclerView>(R.id.selected_ex_rv)
+
+        selectedExRV.layoutManager = LinearLayoutManager(activity)
+        selectedExRV.adapter = WorkoutExerciseListAdapter(selectedExercises)
 
         workoutName.setText(currentWorkout.name)
+
+        addExerciseBtn.setOnClickListener { view -> buildAddExerciseDialog() }
+        removeExerciseBtn.setOnClickListener { view -> buildRemoveExerciseDialog() }
 
         updateWorkoutBtn.setOnClickListener{ view ->
             updateWorkoutWithExercises()
@@ -69,7 +69,83 @@ class EditWorkoutFragment : Fragment() {
         return view
     }
 
-    private fun loadExercisesIntoWorkout(exerciseList: ArrayList<Exercise>){
+    private fun buildAddExerciseDialog(){
+        val builder = AlertDialog.Builder(activity)
+        builder.setTitle("Add Exercise")
+        builder.setCancelable(false)
+
+        val inflater: LayoutInflater = requireActivity().getLayoutInflater()
+        var view = inflater.inflate(R.layout.custom_add_exercise_dialog, null)
+
+        var addExRV = view.findViewById<RecyclerView>(R.id.add_exercise_rv)
+        addExRV.layoutManager = LinearLayoutManager(activity)
+        addExRV.adapter = AddWorkoutExerciseListAdapter((activity as MainActivity), unselectedWorkExercises)
+
+        builder.setView(view)
+
+        builder.setPositiveButton("Done") { dialogInterface, i ->
+            for(workEx in unselectedWorkExercises){
+                println("Exercise is selected to be ${workEx.isSelected.toString()}")
+
+                if(workEx.isSelected){
+                    addedWorkExercises.add(workEx)
+                }
+            }
+
+            for(workEx in addedWorkExercises){
+                println("Sets is ${workEx.setSize} and reps is ${workEx.repSize}")
+                unselectedWorkExercises.remove(workEx)
+                workEx.workoutId = currentWorkout.id
+                selectedExercises.add(workEx)
+                selectedExRV.adapter!!.notifyDataSetChanged()
+            }
+        }
+
+        builder.setNegativeButton("Cancel") { dialogInterface, i ->
+            dialogInterface.dismiss()
+        }
+
+        builder.show()
+    }
+
+    private fun buildRemoveExerciseDialog(){
+        val builder = AlertDialog.Builder(activity)
+        builder.setTitle("Remove/Edit Exercise")
+        builder.setCancelable(false)
+
+        val inflater: LayoutInflater = requireActivity().getLayoutInflater()
+        var view = inflater.inflate(R.layout.custom_remove_exercise_dialog, null)
+
+        var removeExRV = view.findViewById<RecyclerView>(R.id.remove_exercise_rv)
+        removeExRV.layoutManager = LinearLayoutManager(activity)
+        removeExRV.adapter = AddWorkoutExerciseListAdapter((activity as MainActivity), selectedExercises)
+
+        builder.setView(view)
+
+        builder.setPositiveButton("Done") { dialogInterface, i ->
+            for(workEx in selectedExercises){
+                println("Exercise is selected to be ${workEx.isSelected.toString()}")
+                if(!workEx.isSelected){
+                    println("Workex id is: ${workEx.id.toString()}")
+                    removedWorkExercises.add(workEx)
+                }
+            }
+
+            for(workEx in removedWorkExercises){
+                selectedExercises.remove(workEx)
+                unselectedWorkExercises.add(workEx)
+                selectedExRV.adapter!!.notifyDataSetChanged()
+            }
+        }
+
+        builder.setNegativeButton("Cancel") { dialogInterface, i ->
+            dialogInterface.dismiss()
+        }
+
+        builder.show()
+    }
+
+    private fun loadExercisesIntoWorkouts(exerciseList: ArrayList<Exercise>){
         for(exercise in exerciseList){
             var workEx = WorkoutExercise(exercise)
             workEx.exercise = exercise
@@ -81,14 +157,22 @@ class EditWorkoutFragment : Fragment() {
         if(allExerciseList != null && allExerciseList!!.size > 0){
             unselectedExerciseList = allExerciseList!!.clone() as ArrayList<Exercise>
 
-            for(workExercise in currentWorkout.workExList){
+            for(workExercise in selectedExercises){
                 var element = unselectedExerciseList.firstOrNull{it.id == workExercise.exerciseId}
                 if(element != null){
                     workExercise.exercise = element
-                    selectedExercises.add(workExercise)
                     unselectedExerciseList.remove(element)
                 }
             }
+        }
+    }
+
+    private fun loadWorkoutExercises(){
+        val dbHandler = DBHandler(this.requireContext(), null, null, 1)
+        selectedExercises = dbHandler.findAllWorkoutExercises(currentWorkout.castWorkoutVMToWorkout())
+
+        for(workEx in selectedExercises){
+            workEx.isSelected = true
         }
     }
 
@@ -98,16 +182,26 @@ class EditWorkoutFragment : Fragment() {
     }
 
     private fun updateWorkoutWithExercises(){
+        val dbHandler = DBHandler(this.requireContext(), null, null, 1)
+        var updatedWorkout = currentWorkout.castWorkoutVMToWorkout()
+        updatedWorkout.workoutName = workoutName.text.toString()
 
+        dbHandler.updateWorkout(updatedWorkout)
+
+        for(workEx in removedWorkExercises){
+            dbHandler.deleteWorkoutExercise(workEx.id)
+        }
+
+        for(workEx in addedWorkExercises){
+            dbHandler.addExerciseToWorkout(workEx)
+        }
     }
+
+
 
     companion object {
         @JvmStatic
         fun newInstance(workoutVM: WorkoutViewModel) =
-            EditWorkoutFragment().apply {
-                arguments = Bundle().apply {
-                    currentWorkout = workoutVM
-                }
-            }
+            EditWorkoutFragment().apply { arguments = Bundle().apply { currentWorkout = workoutVM  } }
     }
 }
