@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageButton
@@ -23,6 +24,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var createWorkoutBtn : FloatingActionButton
     private lateinit var addExerciseBtn : FloatingActionButton
     private lateinit var previousBtn: ImageButton
+    private lateinit var exercisesBtn: ImageButton
     private var navHistory: ArrayList<String> = ArrayList<String>()
 
     @SuppressLint("MissingInflatedId")
@@ -43,14 +45,30 @@ class MainActivity : AppCompatActivity() {
         createWorkoutBtn = findViewById<FloatingActionButton>(R.id.create_workout_btn)
         addExerciseBtn = findViewById<FloatingActionButton>(R.id.add_exercise_btn)
         previousBtn = findViewById<ImageButton>(R.id.previous_btn)
+        exercisesBtn = findViewById<ImageButton>(R.id.exercises_btn)
 
         addToNavHistory("workoutList")
         previousBtn.visibility = View.INVISIBLE
 
         previousBtn.setOnClickListener{ view -> navToPrevious(view) }
+        exercisesBtn.setOnClickListener { view -> navToExerciseList(view) }
         showExerciseListBtn.setOnClickListener { view -> navToExerciseList(view) }
         createWorkoutBtn.setOnClickListener { view -> navToCreateWorkout(view) }
         addExerciseBtn.setOnClickListener { view -> navToAddExercise(view) }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean{
+        menuInflater.inflate(R.menu.action_bar_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        println("On options item selected")
+        val id = item.itemId
+        when(id){
+
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun clearBtns(){
