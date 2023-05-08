@@ -9,6 +9,10 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import com.example.fxxkit.DataClass.Debugger
 import com.example.fxxkit.DataClass.Exercise
 import com.example.fxxkit.DataClass.Workout
@@ -26,16 +30,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var previousBtn: ImageButton
     private lateinit var exercisesBtn: ImageButton
     private var navHistory: ArrayList<String> = ArrayList<String>()
+    private lateinit var navController: NavController
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        if(savedInstanceState == null){
-            supportFragmentManager.beginTransaction()
-                .add(R.id.main_fragment_view, WorkoutListFragment.newInstance(), "workoutlist").commit()
-        }
 
         supportActionBar?.setDisplayOptions(androidx.appcompat.app.ActionBar.DISPLAY_SHOW_CUSTOM)
         supportActionBar?.setCustomView(R.layout.custom_action_bar)
@@ -47,12 +47,18 @@ class MainActivity : AppCompatActivity() {
         previousBtn = findViewById<ImageButton>(R.id.previous_btn)
         exercisesBtn = findViewById<ImageButton>(R.id.exercises_btn)
 
+        var navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        navController = navHostFragment.navController
+
         addToNavHistory("workoutList")
         previousBtn.visibility = View.INVISIBLE
 
         previousBtn.setOnClickListener{ view -> navToPrevious(view) }
-        exercisesBtn.setOnClickListener { view -> navToExerciseList(view) }
-        showExerciseListBtn.setOnClickListener { view -> navToExerciseList(view) }
+        exercisesBtn.setOnClickListener { view ->
+            navController.popBackStack()
+            navController.navigate(R.id.action_workoutListFragment_to_exerciseListFragment)
+        }
+        showExerciseListBtn.setOnClickListener { view -> navFromWorkoutListToExerciseList(view) }
         createWorkoutBtn.setOnClickListener { view -> navToCreateWorkout(view) }
         addExerciseBtn.setOnClickListener { view -> navToAddExercise(view) }
     }
@@ -84,7 +90,7 @@ class MainActivity : AppCompatActivity() {
             when(previous) {
                 "addExercise" -> { navToAddExercise(view) }
                 "createWorkout" -> { navToCreateWorkout(view) }
-                "exerciseList" -> { navToExerciseList(view) }
+                "exerciseList" -> { navFromWorkoutListToExerciseList(view) }
                 "workoutList" -> { navToWorkoutList(view) }
             }
         }
@@ -96,7 +102,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun navToAddExercise(view: View){
         supportFragmentManager.beginTransaction()
-            .replace(R.id.main_fragment_view, AddExerciseFragment.newInstance(),"addExercise")
+            .replace(R.id.nav_host_fragment, AddExerciseFragment.newInstance(),"addExercise")
             .commit()
 
         addToNavHistory("addExercise")
@@ -106,7 +112,7 @@ class MainActivity : AppCompatActivity() {
 
     public fun navToEditExercise(view:View, editExercise: Exercise){
         supportFragmentManager.beginTransaction()
-            .replace(R.id.main_fragment_view, EditExerciseFragment.newInstance(editExercise), "editExercise")
+            .replace(R.id.nav_host_fragment, EditExerciseFragment.newInstance(editExercise), "editExercise")
             .commit()
 
         addToNavHistory("editExercise")
@@ -116,7 +122,7 @@ class MainActivity : AppCompatActivity() {
 
     public fun navToEditWorkout(view:View, editWorkout: WorkoutViewModel){
         supportFragmentManager.beginTransaction()
-            .replace(R.id.main_fragment_view, EditWorkoutFragment.newInstance(editWorkout), "editWorkout")
+            .replace(R.id.nav_host_fragment, EditWorkoutFragment.newInstance(editWorkout), "editWorkout")
             .commit()
 
         addToNavHistory("editWorkout")
@@ -126,7 +132,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun navToCreateWorkout(view: View){
         supportFragmentManager.beginTransaction()
-            .replace(R.id.main_fragment_view, CreateWorkoutFragment.newInstance(),"createWorkout")
+            .replace(R.id.nav_host_fragment, CreateWorkoutFragment.newInstance(),"createWorkout")
             .commit()
 
         addToNavHistory("createWorkout")
@@ -136,7 +142,7 @@ class MainActivity : AppCompatActivity() {
 
     public fun navToWorkoutDetails(view: View, currentWorkout: WorkoutViewModel){
         supportFragmentManager.beginTransaction()
-            .replace(R.id.main_fragment_view, WorkoutFragment.newInstance(currentWorkout),"detailWorkout")
+            .replace(R.id.nav_host_fragment, WorkoutFragment.newInstance(currentWorkout),"detailWorkout")
             .commit()
 
         addToNavHistory("detailWorkout")
@@ -144,10 +150,8 @@ class MainActivity : AppCompatActivity() {
         getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText("Workout Details")
     }
 
-    public fun navToExerciseList(view: View){
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.main_fragment_view, ExerciseListFragment.newInstance(),"exerciseList")
-            .commit()
+    public fun navFromWorkoutListToExerciseList(view: View){
+        navController.navigate(R.id.action_workoutListFragment_to_exerciseListFragment)
 
         addToNavHistory("exerciseList")
         clearBtns()
@@ -157,7 +161,7 @@ class MainActivity : AppCompatActivity() {
 
     public fun navToWorkoutList(view: View){
         supportFragmentManager.beginTransaction()
-            .replace(R.id.main_fragment_view, WorkoutListFragment.newInstance(),"workoutList")
+            .replace(R.id.nav_host_fragment, WorkoutListFragment.newInstance(),"workoutList")
             .commit()
 
         addToNavHistory("workoutList")
