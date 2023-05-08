@@ -193,25 +193,44 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         return exercise
     }
 
+    @SuppressLint("Range")
     fun findExerciseById(exId: Int): Exercise?{
         val query = "SELECT * FROM $TABLE_EXERCISES WHERE $COLUMN_ID = \"$exId\""
 
         val db = this.readableDatabase
         val cursor = db.rawQuery(query, null)
-        var exercise: Exercise? = null
 
         if(cursor.moveToFirst()){
             cursor.moveToFirst()
 
-            val id = Integer.parseInt(cursor.getString(0))
-            val name = cursor.getString(1)
+            val exId = cursor.getInt(cursor.getColumnIndex(COLUMN_ID))
+            val exName = cursor.getString(cursor.getColumnIndex(COLUMN_EXERCISENAME))
+            val isStrength = cursor.getInt(cursor.getColumnIndex(COLUMN_ISSTRENGTH)) > 0
+            val isCondition = cursor.getInt(cursor.getColumnIndex(COLUMN_ISCONDITION)) > 0
+            val setString = cursor.getString(cursor.getColumnIndex(COLUMN_POSSIBLESETSIZE))
+            val repString = cursor.getString(cursor.getColumnIndex(COLUMN_POSSIBLEREPSIZE))
+            val muscleString = cursor.getString(cursor.getColumnIndex(COLUMN_TARGETTEDMUSCLES))
 
-            exercise = Exercise(id, name)
+            if(exId < 0 || exName == null){
+                return null
+            }
+
+            val exercise = Exercise(exId, exName)
+            if(isCondition != null){ exercise.isConditioning = isCondition }
+            if(isStrength != null){ exercise.isStrengthening = isStrength }
+            if(setString != null){ exercise.setStringToSet(setString) }
+            if(repString != null){ exercise.setStringToRep(repString) }
+            if(muscleString != null){ exercise.setStringToMuscle(muscleString) }
+
             cursor.close()
+            db.close()
+            return exercise
+        } else {
+            db.close()
+            return null
         }
 
-        db.close()
-        return exercise
+
     }
 
     @SuppressLint("Range")
@@ -377,6 +396,8 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
     }
 
     fun updateWorkoutExercise(workoutExercise: WorkoutExercise): Boolean{
+        println("DB: updating workout exercise: ${workoutExercise.id.toString()}")
+
         var result = -1
         val values = ContentValues()
         val db = this.writableDatabase

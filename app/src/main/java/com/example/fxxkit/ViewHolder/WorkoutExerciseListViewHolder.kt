@@ -21,19 +21,22 @@ class WorkoutExerciseListAdapter(private val workExList: ArrayList<WorkoutExerci
     override fun onBindViewHolder(holder: WorkoutExerciseListAdapter.WorkoutExerciseListViewHolder, position: Int) {
         println("Exercise length in holder: " + workExList.size.toString())
         val currentExercise = workExList[position]
-
-        println("Current exercise sets ${currentExercise.setSize}")
-
         holder.name.text = currentExercise.exercise!!.name.toString()
         holder.sets.text = currentExercise.setSize
         holder.reps.text = currentExercise.repSize
+
+        holder.row.setOnClickListener { view ->
+
+        }
     }
+
 
     override fun getItemCount(): Int {
         return workExList.size
     }
 
     class WorkoutExerciseListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val row: CardView = itemView.findViewById(R.id.exercise_row)
         val name: TextView = itemView.findViewById(R.id.exercise_name_txt)
         val sets: TextView = itemView.findViewById(R.id.exercise_set_txt)
         val reps: TextView = itemView.findViewById(R.id.exercise_rep_text)

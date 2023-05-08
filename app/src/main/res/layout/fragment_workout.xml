@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Fragment.WorkoutFragment">
-
     <TableLayout
         android:layout_margin="10dp"
         android:layout_height="wrap_content"
@@ -34,11 +33,11 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"></TextView>
         </TableRow>
         <TableRow
-            android:background="@color/black">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
             <androidx.recyclerview.widget.RecyclerView
-                android:background="@color/black"
                 android:id="@+id/exercise_rv"
-                android:layout_width="match_parent"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"></androidx.recyclerview.widget.RecyclerView>
         </TableRow>
     </TableLayout>

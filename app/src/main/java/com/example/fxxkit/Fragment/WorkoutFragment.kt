@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fxxkit.DBHandler
 import com.example.fxxkit.DataClass.WorkoutExercise
 import com.example.fxxkit.R
+import com.example.fxxkit.ViewHolder.DetailWorkoutExerciseListAdapter
 import com.example.fxxkit.ViewHolder.WorkoutExerciseListAdapter
 import com.example.fxxkit.ViewModel.WorkoutViewModel
 
@@ -45,7 +46,7 @@ class WorkoutFragment : Fragment() {
         loadWorkoutExercises()
 
         exerciseRV.layoutManager = LinearLayoutManager(activity)
-        exerciseRV.adapter = WorkoutExerciseListAdapter(workExercises)
+        exerciseRV.adapter = DetailWorkoutExerciseListAdapter(workExercises)
 
         return view
     }
