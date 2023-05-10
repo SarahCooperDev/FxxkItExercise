@@ -14,8 +14,10 @@ import com.example.fxxkit.MainActivity
 import com.example.fxxkit.R
 import com.example.fxxkit.ViewHolder.WorkoutListAdapter
 import com.example.fxxkit.ViewModel.WorkoutViewModel
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class WorkoutListFragment : Fragment() {
+    private lateinit var createWorkoutBtn : FloatingActionButton
     private var layoutManager: RecyclerView.LayoutManager? = null
     private var workoutListAdapter: RecyclerView.Adapter<WorkoutListAdapter.WorkoutListViewHolder>? = null
     private lateinit var workoutList: ArrayList<WorkoutViewModel>
@@ -30,6 +32,8 @@ class WorkoutListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         var view = inflater.inflate(R.layout.fragment_workout_list, container, false)
+
+        createWorkoutBtn = view.findViewById<FloatingActionButton>(R.id.create_workout_btn)
         var recycler = view.findViewById<RecyclerView>(R.id.workout_list_rv)
         recycler.layoutManager = LinearLayoutManager(activity)
 
@@ -38,6 +42,7 @@ class WorkoutListFragment : Fragment() {
 
         recycler.adapter = WorkoutListAdapter((activity as MainActivity), workoutList)
 
+        createWorkoutBtn.setOnClickListener { view -> (activity as MainActivity).navToCreateWorkout() }
         return view
     }
 

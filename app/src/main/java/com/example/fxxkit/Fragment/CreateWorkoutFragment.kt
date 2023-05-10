@@ -1,5 +1,6 @@
 package com.example.fxxkit.Fragment
 
+import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -7,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fxxkit.*
@@ -47,14 +50,20 @@ class CreateWorkoutFragment : Fragment() {
         createWorkoutBtn = view.findViewById<Button>(R.id.create_workout_btn)
 
         createWorkoutBtn.setOnClickListener{ view ->
-            addWorkoutWithExercises(view)
-            (activity as MainActivity).navToPrevious(view)
+            if(workoutName.text.toString().length < 1){
+                Toast.makeText(activity, "Workout name may not be blank", Toast.LENGTH_LONG).show()
+                workoutName.setBackgroundColor(ContextCompat.getColor(context!!, R.color.dark_red))
+            } else {
+                addWorkoutWithExercises()
+                Toast.makeText(activity, "Added workout to database", Toast.LENGTH_SHORT).show()
+                (activity as MainActivity).navToWorkoutList()
+            }
         }
 
         return view
     }
 
-    private fun addWorkoutWithExercises(view: View){
+    private fun addWorkoutWithExercises(){
         val workout = Workout(workoutName.text.toString())
 
         val dbHandler = DBHandler(this.requireContext(), null, null, 1)

@@ -12,6 +12,7 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.ToggleButton
+import androidx.core.content.ContextCompat
 import com.example.fxxkit.DBHandler
 import com.example.fxxkit.DataClass.Exercise
 import com.example.fxxkit.DataClass.MultiselectLists
@@ -26,12 +27,6 @@ import kotlin.collections.ArrayList
  * create an instance of this fragment.
  */
 class AddExerciseFragment : Fragment() {
-    private var errorColor: String = "#cc0000"
-
-    private val selectedSetNos = ArrayList<String>()
-    private val selectedRepNos = ArrayList<String>()
-    private val selectedMuscles = ArrayList<String>()
-
     private var newExercise: Exercise = Exercise("Null")
 
     private lateinit var exNameInput: EditText
@@ -64,11 +59,11 @@ class AddExerciseFragment : Fragment() {
         showBtn.setOnClickListener{view ->
             if(exNameInput.text.toString().length < 1){
                 Toast.makeText(activity, "Exercise name may not be blank", Toast.LENGTH_LONG).show()
-                exNameInput.setBackgroundColor(Color.parseColor(errorColor))
+                exNameInput.setBackgroundColor(ContextCompat.getColor(context!!, R.color.dark_red))
             } else {
                 addExercise(view)
                 Toast.makeText(activity, "Added exercise to database", Toast.LENGTH_SHORT).show()
-                (activity as MainActivity).navToPrevious(view)
+                (activity as MainActivity).navToExerciseList()
             }
         }
 

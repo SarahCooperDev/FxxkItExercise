@@ -33,7 +33,8 @@ class EditWorkoutFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {  }
+        var workoutId = arguments!!.getInt("workoutId")
+        loadWorkout(workoutId)
     }
 
     override fun onCreateView(
@@ -63,7 +64,7 @@ class EditWorkoutFragment : Fragment() {
 
         updateWorkoutBtn.setOnClickListener{ view ->
             updateWorkoutWithExercises()
-            (activity as MainActivity).navToPrevious(view)
+            (activity as MainActivity).navToPrevious()
         }
 
         return view
@@ -145,6 +146,13 @@ class EditWorkoutFragment : Fragment() {
         builder.show()
     }
 
+    private fun loadWorkout(workoutId: Int){
+        val dbHandler = DBHandler(this.requireContext(), null, null, 1)
+        var workout = dbHandler.findWorkoutById(workoutId)
+        if(workout !=  null){
+            currentWorkout = workout.workoutName?.let { WorkoutViewModel(workout.id, it) }!!
+        }
+    }
     private fun loadExercisesIntoWorkouts(exerciseList: ArrayList<Exercise>){
         for(exercise in exerciseList){
             var workEx = WorkoutExercise(exercise)

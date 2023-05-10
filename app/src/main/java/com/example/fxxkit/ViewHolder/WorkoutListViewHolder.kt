@@ -67,11 +67,11 @@ class WorkoutListAdapter(private val activity: MainActivity, private val eList: 
         }
 
         holder.detail_btn.setOnClickListener { view ->
-            activity.navToWorkoutDetails(view, currentWorkout)
+            activity.navToWorkoutDetails(currentWorkout.id)
         }
 
         holder.edit_btn.setOnClickListener { view ->
-            activity.navToEditWorkout(view, currentWorkout)
+            activity.navToEditWorkout(currentWorkout.id)
         }
 
         holder.delete_btn.setOnClickListener{ view ->
@@ -83,7 +83,7 @@ class WorkoutListAdapter(private val activity: MainActivity, private val eList: 
                     var result = dbHandler.deleteWorkout(currentWorkout.id)
 
                     if(result){
-                        activity.navToWorkoutList(view)
+                        activity.navToWorkoutList()
                     }
                 }
                 .setNegativeButton("No"){ dialog, id ->

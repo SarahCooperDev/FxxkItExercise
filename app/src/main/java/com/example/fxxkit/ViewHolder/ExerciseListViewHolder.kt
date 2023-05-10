@@ -28,7 +28,7 @@ class ExerciseListAdapter(private val eList: ArrayList<Exercise>, private val ac
         holder.muscleList.text = currentExercise.getMusclesAsString()
 
         holder.editBtn.setOnClickListener{view ->
-            activity.navToEditExercise(view, currentExercise)
+            activity.navToEditExercise(currentExercise.id)
         }
 
         holder.deleteBtn.setOnClickListener{ view ->

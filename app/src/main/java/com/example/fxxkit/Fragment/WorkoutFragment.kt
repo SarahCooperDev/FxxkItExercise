@@ -21,6 +21,7 @@ import com.example.fxxkit.ViewModel.WorkoutViewModel
  * create an instance of this fragment.
  */
 class WorkoutFragment : Fragment() {
+    private var workoutId: Int = -1
     private lateinit var currentWorkout: WorkoutViewModel
     private var workExercises: ArrayList<WorkoutExercise> = ArrayList<WorkoutExercise>()
 
@@ -29,7 +30,7 @@ class WorkoutFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let { }
+        workoutId = arguments!!.getInt("workoutId")
     }
 
     override fun onCreateView(
@@ -41,14 +42,23 @@ class WorkoutFragment : Fragment() {
         titleTV = view.findViewById(R.id.workout_name_txt)
         exerciseRV = view.findViewById(R.id.exercise_rv)
 
-        titleTV.setText(currentWorkout.name)
-
+        loadWorkout()
         loadWorkoutExercises()
+
+        titleTV.setText(currentWorkout.name)
 
         exerciseRV.layoutManager = LinearLayoutManager(activity)
         exerciseRV.adapter = DetailWorkoutExerciseListAdapter(workExercises)
 
         return view
+    }
+
+    private fun loadWorkout(){
+        val dbHandler = DBHandler(this.requireContext(), null, null, 1)
+        var workout = dbHandler.findWorkoutById(workoutId)
+        if(workout !=  null){
+            currentWorkout = workout.workoutName?.let { WorkoutViewModel(workout.id, it) }!!
+        }
     }
 
     private fun loadWorkoutExercises(){
@@ -66,8 +76,6 @@ class WorkoutFragment : Fragment() {
     companion object {
         @JvmStatic
         fun newInstance(workoutVM: WorkoutViewModel) =
-            WorkoutFragment().apply {
-                arguments = Bundle().apply { currentWorkout = workoutVM }
-            }
+            WorkoutFragment().apply {  }
     }
 }

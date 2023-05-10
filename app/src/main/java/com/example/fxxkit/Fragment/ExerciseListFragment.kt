@@ -13,6 +13,7 @@ import com.example.fxxkit.DataClass.Exercise
 import com.example.fxxkit.ExerciseListAdapter
 import com.example.fxxkit.MainActivity
 import com.example.fxxkit.R
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 /**
  * A simple [Fragment] subclass.
@@ -21,11 +22,9 @@ import com.example.fxxkit.R
  */
 class ExerciseListFragment : Fragment() {
 
-    private var layoutManager: RecyclerView.LayoutManager? = null
+    private lateinit var addExerciseBtn : FloatingActionButton
     private var exerciseListAdapter: RecyclerView.Adapter<ExerciseListAdapter.ExerciseListViewHolder>? = null
     private lateinit var exerciseList: ArrayList<Exercise>
-    private lateinit var editBtn: ImageButton
-    private lateinit var deleteBtn: ImageButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +36,8 @@ class ExerciseListFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         var view = inflater.inflate(R.layout.fragment_exercise_list, container, false)
+        addExerciseBtn = view.findViewById<FloatingActionButton>(R.id.add_exercise_btn)
+        addExerciseBtn.setOnClickListener { view -> (activity as MainActivity).navToAddExercise() }
         var recycler = view.findViewById<RecyclerView>(R.id.exercise_list_rv)
         recycler.layoutManager = LinearLayoutManager(activity)
 

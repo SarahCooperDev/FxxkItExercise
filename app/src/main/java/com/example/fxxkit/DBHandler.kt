@@ -229,8 +229,34 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
             db.close()
             return null
         }
+    }
 
+    @SuppressLint("Range")
+    fun findWorkoutById(id: Int): Workout?{
+        println("DB: finding workout of id ${id}")
+        val query = "SELECT * FROM $TABLE_WORKOUTS WHERE $COLUMN_ID = \"$id\""
+        val db = this.readableDatabase
+        val cursor = db.rawQuery(query, null)
 
+        if(cursor.moveToFirst()){
+            cursor.moveToFirst()
+
+            val workId = cursor.getInt(cursor.getColumnIndex(COLUMN_ID))
+            val workName = cursor.getString(cursor.getColumnIndex(COLUMN_WORKOUTNAME))
+
+            val workout = Workout(workId, workName)
+
+            if(workId < 0 || workId == null || workName == null){
+                return null
+            }
+
+            cursor.close()
+            db.close()
+            return workout
+        } else {
+            db.close()
+            return null
+        }
     }
 
     @SuppressLint("Range")

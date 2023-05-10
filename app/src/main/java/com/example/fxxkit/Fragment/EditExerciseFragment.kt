@@ -13,6 +13,7 @@ import com.example.fxxkit.DataClass.Exercise
 import com.example.fxxkit.DataClass.MultiselectLists
 import com.example.fxxkit.MainActivity
 import com.example.fxxkit.R
+import com.example.fxxkit.ViewModel.WorkoutViewModel
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -33,7 +34,8 @@ class EditExerciseFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {  }
+        var exerciseId = arguments!!.getInt("exerciseId")
+        loadExercise(exerciseId)
     }
 
     override fun onCreateView(
@@ -80,7 +82,7 @@ class EditExerciseFragment : Fragment() {
 
         cancelBtn = view.findViewById(R.id.cancel_btn)
         cancelBtn.setOnClickListener{ view ->
-            (activity as MainActivity).navToPrevious(view)
+            (activity as MainActivity).navToPrevious()
         }
 
         updateBtn = view.findViewById(R.id.update_btn)
@@ -91,12 +93,19 @@ class EditExerciseFragment : Fragment() {
             } else {
                 updateExercise()
                 Toast.makeText(activity, "Updated exercise in database", Toast.LENGTH_SHORT).show()
-                (activity as MainActivity).navToPrevious(view)
+                (activity as MainActivity).navToPrevious()
             }
-
         }
 
         return view
+    }
+
+    private fun loadExercise(exerciseId: Int){
+        val dbHandler = DBHandler(this.requireContext(), null, null, 1)
+        var exercise = dbHandler.findExerciseById(exerciseId)
+        if(exercise !=  null){
+            currentExercise = exercise
+        }
     }
 
     private fun updateExercise(){
@@ -111,10 +120,6 @@ class EditExerciseFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(editExercise: Exercise) = EditExerciseFragment().apply {
-            arguments = Bundle().apply {
-                currentExercise = editExercise
-            }
-        }
+        fun newInstance() = EditExerciseFragment().apply { }
     }
 }
