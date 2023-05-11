@@ -5,13 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Fragment.CreateWorkoutFragment">
-    <LinearLayout
+    <TableLayout
         android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:orientation="vertical">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        android:layout_width="match_parent">
+        <TableRow>
             <EditText
                 android:layout_weight="1"
                 android:layout_width="0dp"
@@ -20,45 +17,72 @@
                 android:layout_margin="10dp"
                 android:hint="Workout Title"
                 android:inputType="text"/>
+            <ImageButton
+                android:layout_gravity="center_vertical"
+                android:id="@+id/fav_btn"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_margin="0dp"
+                android:padding="0dp"
+                android:scaleType="fitXY"
+                android:src="@android:drawable/btn_star_big_off"
+                android:text="Favourite button"></ImageButton>
+        </TableRow>
+        <TableRow>
+            <EditText
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:id="@+id/description_txt"
+                android:layout_margin="10dp"
+                android:hint="Description..."
+                android:inputType="textMultiLine"/>
+        </TableRow>
+        <TableRow>
             <Button
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:id="@+id/update_workout_btn"
                 android:text="Update"
                 android:backgroundTint="@color/black"
                 android:textColor="@color/white"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+        </TableRow>
+        <TableRow>
             <Button
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:text="Add Exercise"
                 android:id="@+id/add_exercise_btn"></Button>
             <Button
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:text="Remove Exercise"
                 android:id="@+id/remove_exercise_btn"></Button>
-        </LinearLayout>
-        <View
-            android:id="@+id/divider"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="?android:attr/listDivider"
-            android:layout_margin="3dp"/>
-
-        <TextView
-            android:id="@+id/selected_ex_title_txt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Selected Exercises"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"></TextView>
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/selected_ex_rv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"></androidx.recyclerview.widget.RecyclerView>
-    </LinearLayout>
+        </TableRow>
+        <TableRow>
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+                android:layout_margin="3dp"/>
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:id="@+id/selected_ex_title_txt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Selected Exercises"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"></TextView>
+        </TableRow>
+        <TableRow>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/selected_ex_rv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"></androidx.recyclerview.widget.RecyclerView>
+        </TableRow>
+    </TableLayout>
 </FrameLayout>

@@ -3,6 +3,8 @@ package com.example.fxxkit.DataClass
 class Workout {
     var id: Int = -1
     var workoutName: String? = null
+    var description: String? = null
+    var isFavourited: Boolean = false
     var exercises: ArrayList<Exercise> = ArrayList<Exercise>()
 
     constructor(id: Int, workoutName: String, exercises: ArrayList<Exercise>){

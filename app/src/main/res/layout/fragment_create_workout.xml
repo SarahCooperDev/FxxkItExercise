@@ -20,6 +20,30 @@
                 android:layout_margin="10dp"
                 android:hint="Workout Title"
                 android:inputType="text"/>
+
+            <ImageButton
+                android:layout_gravity="center_vertical"
+                android:id="@+id/fav_btn"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_margin="0dp"
+                android:padding="0dp"
+                android:scaleType="fitXY"
+                android:src="@android:drawable/btn_star_big_off"
+                android:text="Favourite button"></ImageButton>
+        </TableRow>
+        <TableRow
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent">
+
+            <EditText
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:id="@+id/description_txt"
+                android:layout_margin="10dp"
+                android:hint="Description..."
+                android:inputType="textMultiLine"/>
         </TableRow>
         <TableRow
             android:layout_height="wrap_content"

@@ -41,6 +41,7 @@ class WorkoutListFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        println("Getting workout list fragment")
         var view = inflater.inflate(R.layout.fragment_workout_list, container, false)
 
         createWorkoutBtn = view.findViewById<FloatingActionButton>(R.id.create_workout_btn)
@@ -55,6 +56,7 @@ class WorkoutListFragment : Fragment() {
 
         workoutListRecycler.layoutManager = LinearLayoutManager(activity)
         workoutListRecycler.adapter = WorkoutListAdapter((activity as MainActivity), workoutList)
+        workoutListRecycler.adapter?.notifyDataSetChanged()
 
         setUpSortBtn()
         setUpFilterBtn()
@@ -97,7 +99,10 @@ class WorkoutListFragment : Fragment() {
     }
 
     private fun filterByFavourite(){
-
+        var filteredList: ArrayList<WorkoutViewModel> = allWorkouts.filter{ it.isFavourited } as ArrayList<WorkoutViewModel>
+        workoutList.clear()
+        workoutList.addAll(filteredList)
+        workoutListRecycler.adapter?.notifyDataSetChanged()
     }
 
     private fun setUpFilterBtn(){
@@ -106,8 +111,14 @@ class WorkoutListFragment : Fragment() {
             filterPopup.menuInflater.inflate(R.menu.workout_list_filter_menu, filterPopup.menu)
             filterPopup.setOnMenuItemClickListener { menuItem ->
                 when(menuItem.itemId){
-                    R.id.filter_name_item -> { println("Filter by name")}
-                    R.id.filter_fav_item -> { println("Filter by favourite")}
+                    R.id.filter_name_item -> {
+                        println("Filter by name")
+                        filterSetting = 0
+                    }
+                    R.id.filter_fav_item -> {
+                        println("Filter by favourite")
+                        filterSetting = 1
+                    }
                 }
                 true
             }
@@ -153,12 +164,16 @@ class WorkoutListFragment : Fragment() {
     }
 
     fun loadWorkouts(view: View){
+        workoutList.clear()
+        allWorkouts.clear()
         val dbHandler = DBHandler(this.requireContext(), null, null, 1)
         val workouts = dbHandler.getAllWorkouts()
 
         if(workouts != null && workouts.size > 0){
             for(workout in workouts){
                 var workoutVM = WorkoutViewModel(workout.id, workout.workoutName!!)
+                workoutVM.description = workout.description
+                workoutVM.isFavourited = workout.isFavourited
                 workoutVM.workExList = dbHandler.findAllWorkoutExercises(workout)
 
                 for(workEx in workoutVM.workExList){

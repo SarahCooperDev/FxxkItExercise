@@ -14,8 +14,8 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
     SQLiteOpenHelper(context, DATABASE_NAME, factory, CURRENT_DATABASE_VERSION){
 
     companion object{
-        private val CURRENT_DATABASE_VERSION = 4
-        private val NEW_DATABASE_VERSION = 5
+        private val CURRENT_DATABASE_VERSION = 5
+        private val NEW_DATABASE_VERSION = 6
         private val DATABASE_NAME = "exerciseDB.db"
 
         val TABLE_EXERCISES = "exercise"
@@ -27,14 +27,18 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         val COLUMN_ISSTRENGTH = "is_strength"
         val COLUMN_ISCONDITION = "is_condition"
         val COLUMN_POSSIBLESETSIZE = "possible_set_size"
-        val COLUMN_SET_SIZE = "set_size"
         val COLUMN_POSSIBLEREPSIZE = "possible_rep_size"
-        val COLUMN_REP_SIZE = "rep_size"
         val COLUMN_TARGETTEDMUSCLES = "targetted_muscles"
 
         val COLUMN_WORKOUTNAME = "workout_name"
+
+        val COLUMN_DESCRIPTION = "description"
+        val COLUMN_IS_FAVOURITED = "is_favourited"
+
         val COLUMN_WORKOUT = "workout_id"
         val COLUMN_EXERCISE = "exercise_id"
+        val COLUMN_SET_SIZE = "set_size"
+        val COLUMN_REP_SIZE = "rep_size"
     }
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -44,7 +48,8 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
                 COLUMN_POSSIBLESETSIZE + " TEXT, " + COLUMN_POSSIBLEREPSIZE + " TEXT, " +
                 COLUMN_TARGETTEDMUSCLES + " TEXT)")
         val CREATE_WORKOUT_TABLE = ("CREATE TABLE " + TABLE_WORKOUTS +
-                "(" + COLUMN_ID + " INTEGER PRIMARY KEY," + COLUMN_WORKOUTNAME + " TEXT)")
+                "(" + COLUMN_ID + " INTEGER PRIMARY KEY," + COLUMN_WORKOUTNAME + " TEXT, " +
+                COLUMN_DESCRIPTION + " TEXT, " + COLUMN_IS_FAVOURITED + " BOOLEAN)")
         val CREATE_WORKOUT_EXERCISE_TABLE = ("CREATE TABLE " + TABLE_WORKOUT_EXERCISE +
                 "(" + COLUMN_ID + " INTEGER PRIMARY KEY, " + COLUMN_WORKOUT + " INTEGER, " + COLUMN_EXERCISE + " INTEGER, " +
                  COLUMN_SET_SIZE + " TEXT, " + COLUMN_REP_SIZE + " TEXT" + ")")
@@ -111,9 +116,9 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         val dbold = this.writableDatabase
         onUpgrade(dbold, CURRENT_DATABASE_VERSION, NEW_DATABASE_VERSION)
 
-        addInitialExercises()
-        addInitialWorkouts()
-        addInitialWorkoutExercises()
+        //addInitialExercises()
+        //addInitialWorkouts()
+        //addInitialWorkoutExercises()
     }
 
 
@@ -165,6 +170,8 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         val db = this.writableDatabase
 
         values.put(COLUMN_WORKOUTNAME, workout.workoutName)
+        values.put(COLUMN_DESCRIPTION, workout.description)
+        values.put(COLUMN_IS_FAVOURITED, workout.isFavourited)
 
         var result = db.insert(TABLE_WORKOUTS, null, values)
         db.close()
@@ -243,8 +250,12 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
 
             val workId = cursor.getInt(cursor.getColumnIndex(COLUMN_ID))
             val workName = cursor.getString(cursor.getColumnIndex(COLUMN_WORKOUTNAME))
+            val description = cursor.getString(cursor.getColumnIndex(COLUMN_DESCRIPTION))
+            val isFavourited = cursor.getInt(cursor.getColumnIndex(COLUMN_IS_FAVOURITED)) > 0
 
             val workout = Workout(workId, workName)
+            workout.description = description
+            workout.isFavourited = isFavourited
 
             if(workId < 0 || workId == null || workName == null){
                 return null
@@ -375,6 +386,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
 
     @SuppressLint("Range")
     fun getAllWorkouts(): ArrayList<Workout>?{
+        println("DB: getting all workouts")
         val workoutList: ArrayList<Workout> = ArrayList<Workout>()
 
         val query = "SELECT * FROM $TABLE_WORKOUTS"
@@ -383,16 +395,25 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
 
         var workId: Int
         var workName: String
+        var description: String
+        var isFavourited: Boolean
 
         if(cursor.moveToFirst()){
             do{
                 workId = cursor.getInt(cursor.getColumnIndex(COLUMN_ID))
                 workName = cursor.getString(cursor.getColumnIndex(COLUMN_WORKOUTNAME))
+                description = cursor.getString(cursor.getColumnIndex(COLUMN_DESCRIPTION))
+                isFavourited = cursor.getInt(cursor.getColumnIndex(COLUMN_IS_FAVOURITED)) > 0
 
                 val workout = Workout(workId, workName)
+                workout.description = description
+                workout.isFavourited = isFavourited
+
                 workoutList.add(workout)
             } while(cursor.moveToNext())
         }
+
+        println("DB: number of workouts is ${workoutList.size.toString()}")
 
         return workoutList
     }
@@ -448,6 +469,8 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         val db = this.writableDatabase
 
         values.put(COLUMN_WORKOUTNAME, workout.workoutName)
+        values.put(COLUMN_DESCRIPTION, workout.description)
+        values.put(COLUMN_IS_FAVOURITED, workout.isFavourited)
 
         result = db.update(TABLE_WORKOUTS, values, "$COLUMN_ID=?", arrayOf(workout.id.toString()))
         db.close()
@@ -459,7 +482,6 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         println("DB: Deleting exercise: ${name}")
 
         var result = -1
-
         val query = "SELECT * FROM $TABLE_EXERCISES WHERE $COLUMN_EXERCISENAME = \"$name\""
         val db = this.writableDatabase
         val cursor = db.rawQuery(query, null)

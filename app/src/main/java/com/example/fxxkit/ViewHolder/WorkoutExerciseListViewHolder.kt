@@ -25,6 +25,8 @@ class WorkoutExerciseListAdapter(private val workExList: ArrayList<WorkoutExerci
         holder.sets.text = currentExercise.setSize
         holder.reps.text = currentExercise.repSize
 
+        println("Set size is " + currentExercise.setSize.toString())
+
         holder.row.setOnClickListener { view ->
 
         }

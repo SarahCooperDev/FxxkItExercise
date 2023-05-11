@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        //initialiseDB()
 
         supportActionBar?.setDisplayOptions(androidx.appcompat.app.ActionBar.DISPLAY_SHOW_CUSTOM)
         supportActionBar?.setCustomView(R.layout.custom_action_bar)
@@ -55,10 +56,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        println("On options item selected")
-        println(item.itemId.toString())
-        val id = item.itemId
-        when(id){
+        when(item.itemId){
             R.id.menu_workout_item -> { navToWorkoutList() }
             R.id.menu_add_workout_item -> { navToCreateWorkout() }
             R.id.menu_exercise_item -> { navToExerciseList()}

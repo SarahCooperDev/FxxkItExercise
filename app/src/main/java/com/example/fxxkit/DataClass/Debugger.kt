@@ -1,3 +1,3 @@
 package com.example.fxxkit.DataClass
 
-data class Debugger(var dbNeedsRefresh: Boolean)
+data class Debugger(var dbNeedsRefresh: Boolean = false)

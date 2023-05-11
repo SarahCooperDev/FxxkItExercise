@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,20 +24,19 @@ import com.example.fxxkit.DataClass.WorkoutExercise
  * create an instance of this fragment.
  */
 class CreateWorkoutFragment : Fragment() {
+    private var isFavourited: Boolean = false
     private lateinit var workoutName: EditText
     private lateinit var createWorkoutBtn : Button
+    private lateinit var favBtn: ImageButton
+    private lateinit var descTxt: EditText
     private var exerciseListAdapter: RecyclerView.Adapter<ExerciseListAdapter.ExerciseListViewHolder>? = null
     private var workoutExerciseList: ArrayList<WorkoutExercise> = ArrayList<WorkoutExercise>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {        }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_create_workout, container, false)
         var recycler = view.findViewById<RecyclerView>(R.id.exercise_list_rv)
         recycler.layoutManager = LinearLayoutManager(activity)
@@ -48,6 +48,8 @@ class CreateWorkoutFragment : Fragment() {
 
         workoutName = view.findViewById<EditText>(R.id.workout_name_txt)
         createWorkoutBtn = view.findViewById<Button>(R.id.create_workout_btn)
+        favBtn = view.findViewById<ImageButton>(R.id.fav_btn)
+        descTxt = view.findViewById<EditText>(R.id.description_txt)
 
         createWorkoutBtn.setOnClickListener{ view ->
             if(workoutName.text.toString().length < 1){
@@ -60,11 +62,23 @@ class CreateWorkoutFragment : Fragment() {
             }
         }
 
+        favBtn.setOnClickListener { view ->
+            if(isFavourited){
+                isFavourited = false
+                favBtn.setImageResource(android.R.drawable.btn_star_big_off)
+            } else {
+                isFavourited = true
+                favBtn.setImageResource(android.R.drawable.btn_star_big_on)
+            }
+        }
+
         return view
     }
 
     private fun addWorkoutWithExercises(){
         val workout = Workout(workoutName.text.toString())
+        workout.description = descTxt.text.toString()
+        workout.isFavourited = isFavourited
 
         val dbHandler = DBHandler(this.requireContext(), null, null, 1)
         var workoutId = dbHandler.addWorkout(workout)

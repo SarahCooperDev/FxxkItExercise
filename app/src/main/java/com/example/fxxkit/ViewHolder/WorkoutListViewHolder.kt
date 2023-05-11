@@ -5,10 +5,7 @@ import android.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.TableLayout
-import android.widget.TableRow
-import android.widget.TextView
+import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,11 +20,7 @@ class WorkoutListAdapter(private val activity: MainActivity, private val eList: 
     private lateinit var inflatedViewGroup: View
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WorkoutListViewHolder {
-        setCellSize()
-
-        inflatedViewGroup = LayoutInflater.from(parent.context).inflate(
-            R.layout.workout_row_item, parent, false)
-
+        inflatedViewGroup = LayoutInflater.from(parent.context).inflate(R.layout.workout_row_item, parent, false)
         return WorkoutListViewHolder(inflatedViewGroup)
     }
 
@@ -35,6 +28,16 @@ class WorkoutListAdapter(private val activity: MainActivity, private val eList: 
         val currentWorkout = eList[position]
         holder.workout_id.text = currentWorkout.id.toString()
         holder.workout_name.text = currentWorkout.name
+        holder.description_txt.text = currentWorkout.description
+
+        if(currentWorkout.isFavourited){
+            holder.favourite_iv.setImageResource(android.R.drawable.btn_star_big_on)
+        } else {
+            holder.favourite_iv.setImageResource(android.R.drawable.btn_star_big_off)
+        }
+
+        holder.workout_details_row.visibility = View.GONE
+        holder.workout_exercises_row.visibility = View.GONE
 
         var table = holder.exercise_rv
 
@@ -44,8 +47,12 @@ class WorkoutListAdapter(private val activity: MainActivity, private val eList: 
 
         holder.workout_row.setOnClickListener{
             if(holder.exercise_rv.visibility == View.VISIBLE){
+                holder.workout_details_row.visibility = View.GONE
+                holder.workout_exercises_row.visibility = View.GONE
                 holder.exercise_rv.visibility = View.GONE
             } else if(holder.exercise_rv.visibility == View.GONE){
+                holder.workout_details_row.visibility = View.VISIBLE
+                holder.workout_exercises_row.visibility = View.VISIBLE
                 holder.exercise_rv.visibility = View.VISIBLE
             }
         }
@@ -86,17 +93,14 @@ class WorkoutListAdapter(private val activity: MainActivity, private val eList: 
     class WorkoutListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val workout_name: TextView = itemView.findViewById(R.id.workout_name_txt)
         val workout_row: CardView = itemView.findViewById(R.id.workout_row_item)
+        val workout_details_row: TableRow = itemView.findViewById(R.id.workout_details_row)
+        val workout_exercises_row: TableRow = itemView.findViewById(R.id.workout_exercises_row)
         val exercise_rv: RecyclerView = itemView.findViewById(R.id.workout_exercise_rv)
         val workout_id: TextView = itemView.findViewById(R.id.workout_id_txt)
+        val description_txt: TextView = itemView.findViewById(R.id.description_txt)
+        val favourite_iv: ImageView = itemView.findViewById(R.id.favourite_iv)
         val detail_btn: ImageButton = itemView.findViewById(R.id.detail_btn)
         val edit_btn: ImageButton = itemView.findViewById(R.id.edit_btn)
         val delete_btn: ImageButton = itemView.findViewById(R.id.delete_btn)
-    }
-
-    fun setCellSize(){
-        expandedSize = ArrayList()
-        for(i in 0 until workList.size){
-            expandedSize.add(0)
-        }
     }
 }

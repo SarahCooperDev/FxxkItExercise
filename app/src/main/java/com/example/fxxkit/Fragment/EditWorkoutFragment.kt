@@ -23,6 +23,8 @@ class EditWorkoutFragment : Fragment() {
     private lateinit var updateWorkoutBtn : Button
     private lateinit var addExerciseBtn: Button
     private lateinit var removeExerciseBtn: Button
+    private lateinit var favBtn: ImageButton
+    private lateinit var descTxt: EditText
     private lateinit var selectedExRV: RecyclerView
     private var allExerciseList: ArrayList<Exercise>? = null
     private var unselectedExerciseList: ArrayList<Exercise> = ArrayList<Exercise>()
@@ -49,6 +51,8 @@ class EditWorkoutFragment : Fragment() {
         loadExercisesIntoWorkouts(unselectedExerciseList)
 
         workoutName = view.findViewById<EditText>(R.id.workout_name_txt)
+        descTxt = view.findViewById<EditText>(R.id.description_txt)
+        favBtn = view.findViewById<ImageButton>(R.id.fav_btn)
         updateWorkoutBtn = view.findViewById<Button>(R.id.update_workout_btn)
         addExerciseBtn = view.findViewById<Button>(R.id.add_exercise_btn)
         removeExerciseBtn = view.findViewById<Button>(R.id.remove_exercise_btn)
@@ -58,9 +62,12 @@ class EditWorkoutFragment : Fragment() {
         selectedExRV.adapter = WorkoutExerciseListAdapter(selectedExercises)
 
         workoutName.setText(currentWorkout.name)
+        descTxt.setText(currentWorkout.description)
+        setFavourite(true)
 
         addExerciseBtn.setOnClickListener { view -> buildAddExerciseDialog() }
         removeExerciseBtn.setOnClickListener { view -> buildRemoveExerciseDialog() }
+        favBtn.setOnClickListener { view -> setFavourite(!currentWorkout.isFavourited) }
 
         updateWorkoutBtn.setOnClickListener{ view ->
             updateWorkoutWithExercises()
@@ -68,6 +75,16 @@ class EditWorkoutFragment : Fragment() {
         }
 
         return view
+    }
+
+    private fun setFavourite(isFavourited: Boolean){
+        if(!isFavourited){
+            currentWorkout.isFavourited = false
+            favBtn.setImageResource(android.R.drawable.btn_star_big_off)
+        } else {
+            currentWorkout.isFavourited = true
+            favBtn.setImageResource(android.R.drawable.btn_star_big_on)
+        }
     }
 
     private fun buildAddExerciseDialog(){
@@ -151,6 +168,8 @@ class EditWorkoutFragment : Fragment() {
         var workout = dbHandler.findWorkoutById(workoutId)
         if(workout !=  null){
             currentWorkout = workout.workoutName?.let { WorkoutViewModel(workout.id, it) }!!
+            currentWorkout.description = workout.description
+            currentWorkout.isFavourited = workout.isFavourited
         }
     }
     private fun loadExercisesIntoWorkouts(exerciseList: ArrayList<Exercise>){
@@ -191,20 +210,15 @@ class EditWorkoutFragment : Fragment() {
 
     private fun updateWorkoutWithExercises(){
         val dbHandler = DBHandler(this.requireContext(), null, null, 1)
+        currentWorkout.name = workoutName.text.toString()
+        currentWorkout.description = descTxt.text.toString()
         var updatedWorkout = currentWorkout.castWorkoutVMToWorkout()
-        updatedWorkout.workoutName = workoutName.text.toString()
 
         dbHandler.updateWorkout(updatedWorkout)
 
-        for(workEx in removedWorkExercises){
-            dbHandler.deleteWorkoutExercise(workEx.id)
-        }
-
-        for(workEx in addedWorkExercises){
-            dbHandler.addExerciseToWorkout(workEx)
-        }
+        for(workEx in removedWorkExercises){ dbHandler.deleteWorkoutExercise(workEx.id) }
+        for(workEx in addedWorkExercises){ dbHandler.addExerciseToWorkout(workEx) }
     }
-
 
 
     companion object {
