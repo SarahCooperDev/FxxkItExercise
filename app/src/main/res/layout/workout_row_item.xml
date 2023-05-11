@@ -88,12 +88,10 @@
                     android:layout_margin="3dp"/>
             </TableRow>
             <TableRow>
-                <TableLayout
-                    android:id="@+id/exercise_tbl"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/workout_exercise_rv"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone">
-                </TableLayout>
+                    android:layout_height="wrap_content"></androidx.recyclerview.widget.RecyclerView>
             </TableRow>
         </TableLayout>
     </RelativeLayout>

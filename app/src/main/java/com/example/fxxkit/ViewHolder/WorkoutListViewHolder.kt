@@ -10,6 +10,7 @@ import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fxxkit.DBHandler
 import com.example.fxxkit.MainActivity
@@ -35,34 +36,17 @@ class WorkoutListAdapter(private val activity: MainActivity, private val eList: 
         holder.workout_id.text = currentWorkout.id.toString()
         holder.workout_name.text = currentWorkout.name
 
-        var table = holder.exercise_tbl
+        var table = holder.exercise_rv
 
-        for(ex in currentWorkout.workExList!!){
-            val context = holder.exercise_tbl.context
-
-            if(ex.exercise != null && ex.exercise!!.name != null){
-                var row: TableRow = TableRow(context)
-
-                var exRowLayout: View = LayoutInflater.from(activity).inflate(R.layout.workout_list_exercise_row, null)
-
-                var rowNameTxt = exRowLayout.findViewById<TextView>(R.id.exercise_name_txt)
-                var rowSetTxt = exRowLayout.findViewById<TextView>(R.id.exercise_set_txt)
-                var rowRepTxt = exRowLayout.findViewById<TextView>(R.id.exercise_rep_text)
-
-                rowNameTxt.setText(ex.exercise!!.name)
-                rowSetTxt.setText(ex.setSize)
-                rowRepTxt.setText(ex.repSize)
-
-                row.addView(exRowLayout)
-                table.addView(row)
-            }
-        }
+        table.layoutManager = LinearLayoutManager(activity)
+        table.adapter = WorkoutExerciseListAdapter(currentWorkout.workExList)
+        table.visibility = View.GONE
 
         holder.workout_row.setOnClickListener{
-            if(holder.exercise_tbl.visibility == View.VISIBLE){
-                holder.exercise_tbl.visibility = View.GONE
-            } else if(holder.exercise_tbl.visibility == View.GONE){
-                holder.exercise_tbl.visibility = View.VISIBLE
+            if(holder.exercise_rv.visibility == View.VISIBLE){
+                holder.exercise_rv.visibility = View.GONE
+            } else if(holder.exercise_rv.visibility == View.GONE){
+                holder.exercise_rv.visibility = View.VISIBLE
             }
         }
 
@@ -102,7 +86,7 @@ class WorkoutListAdapter(private val activity: MainActivity, private val eList: 
     class WorkoutListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val workout_name: TextView = itemView.findViewById(R.id.workout_name_txt)
         val workout_row: CardView = itemView.findViewById(R.id.workout_row_item)
-        val exercise_tbl: TableLayout = itemView.findViewById(R.id.exercise_tbl)
+        val exercise_rv: RecyclerView = itemView.findViewById(R.id.workout_exercise_rv)
         val workout_id: TextView = itemView.findViewById(R.id.workout_id_txt)
         val detail_btn: ImageButton = itemView.findViewById(R.id.detail_btn)
         val edit_btn: ImageButton = itemView.findViewById(R.id.edit_btn)

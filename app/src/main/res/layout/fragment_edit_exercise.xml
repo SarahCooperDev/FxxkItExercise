@@ -101,7 +101,6 @@
                     android:text="Targets" />
             </TableRow>
             <TableRow>
-
                 <ImageButton
                     android:id="@+id/cancel_btn"
                     android:layout_width="wrap_content"
