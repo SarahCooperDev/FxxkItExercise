@@ -2,8 +2,12 @@ package com.example.fxxkit.Fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,8 +22,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class WorkoutListFragment : Fragment() {
     private lateinit var createWorkoutBtn : FloatingActionButton
-    private var layoutManager: RecyclerView.LayoutManager? = null
-    private var workoutListAdapter: RecyclerView.Adapter<WorkoutListAdapter.WorkoutListViewHolder>? = null
+    private lateinit var sortBtn: ImageButton
+    private lateinit var workoutListRecycler: RecyclerView
     private lateinit var workoutList: ArrayList<WorkoutViewModel>
     private var expandedSize = ArrayList<Int>()
 
@@ -34,16 +38,57 @@ class WorkoutListFragment : Fragment() {
         var view = inflater.inflate(R.layout.fragment_workout_list, container, false)
 
         createWorkoutBtn = view.findViewById<FloatingActionButton>(R.id.create_workout_btn)
-        var recycler = view.findViewById<RecyclerView>(R.id.workout_list_rv)
-        recycler.layoutManager = LinearLayoutManager(activity)
+        sortBtn = view.findViewById<ImageButton>(R.id.sort_btn)
+        workoutListRecycler = view.findViewById<RecyclerView>(R.id.workout_list_rv)
+        workoutListRecycler.layoutManager = LinearLayoutManager(activity)
 
         workoutList = ArrayList<WorkoutViewModel>()
         loadWorkouts(view)
 
-        recycler.adapter = WorkoutListAdapter((activity as MainActivity), workoutList)
+        workoutListRecycler.adapter = WorkoutListAdapter((activity as MainActivity), workoutList)
 
         createWorkoutBtn.setOnClickListener { view -> (activity as MainActivity).navToCreateWorkout() }
+        sortBtn.setOnClickListener {
+            val sortPopup = PopupMenu(activity, sortBtn)
+            sortPopup.menuInflater.inflate(R.menu.workout_list_sort_menu, sortPopup.menu)
+            sortPopup.setOnMenuItemClickListener { menuItem ->
+                println("Clicked menu item")
+                when(menuItem.itemId){
+                    R.id.alpha_item -> { sortByAlpha() }
+                    R.id.reverse_alpha_item -> { sortByReverseAlpha() }
+                    R.id.chrono_item -> { sortByChrono() }
+                    R.id.reverse_chrono_item -> { sortByReverseChrono() }
+                }
+                true
+            }
+            sortPopup.show()
+        }
+
         return view
+    }
+
+    private fun sortByChrono() {
+        println("Chronologically")
+        workoutList.sortBy{ it.id }
+        workoutListRecycler.adapter?.notifyDataSetChanged()
+    }
+
+    private fun sortByReverseChrono(){
+        println("Reverse Chrono")
+        workoutList.sortByDescending { it.id }
+        workoutListRecycler.adapter?.notifyDataSetChanged()
+    }
+
+    private fun sortByAlpha(){
+        println("Alphabetically")
+        workoutList.sortBy { it.name }
+        workoutListRecycler.adapter?.notifyDataSetChanged()
+    }
+
+    private fun sortByReverseAlpha(){
+        println("Reverse Alpha")
+        workoutList.sortByDescending { it.name }
+        workoutListRecycler.adapter?.notifyDataSetChanged()
     }
 
     fun loadWorkouts(view: View){

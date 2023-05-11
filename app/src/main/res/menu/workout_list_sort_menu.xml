@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/alpha_item"
+        android:title="Alphabetically"></item>
+    <item
+        android:id="@+id/reverse_alpha_item"
+        android:title="Reverse Alphabetically"></item>
+    <item
+        android:id="@+id/chrono_item"
+        android:title="Chronologically"></item>
+    <item
+        android:id="@+id/reverse_chrono_item"
+        android:title="Reverse Chronologically"></item>
+</menu>
