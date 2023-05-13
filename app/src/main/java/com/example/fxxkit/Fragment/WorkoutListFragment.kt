@@ -1,6 +1,7 @@
 package com.example.fxxkit.Fragment
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -9,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,6 +25,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class WorkoutListFragment : Fragment() {
     private var filterSetting = 0
+    private var sortSetting = 2
     private lateinit var createWorkoutBtn : FloatingActionButton
     private lateinit var sortBtn: ImageButton
     private lateinit var searchBtn: ImageButton
@@ -58,31 +61,32 @@ class WorkoutListFragment : Fragment() {
 
         setUpSortBtn()
         setUpFilterBtn()
-
         createWorkoutBtn.setOnClickListener { view -> (activity as MainActivity).navToCreateWorkout() }
+        searchBtn.setOnClickListener { search() }
+        searchClearBtn.setOnClickListener { clearSearch() }
 
-        searchBtn.setOnClickListener {
-            println("Search button clicked")
-            when(filterSetting){
-                0 -> filterByName()
-                1 -> filterByFavourite()
-            }
-            searchEdit.clearFocus()
-            val inputManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            inputManager.hideSoftInputFromWindow(view.windowToken, 0)
-        }
-
-        searchClearBtn.setOnClickListener {
-            searchEdit.text.clear()
-            searchEdit.clearFocus()
-            val inputManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            inputManager.hideSoftInputFromWindow(view.windowToken, 0)
-
-            workoutList.clear()
-            workoutList.addAll(allWorkouts)
-            workoutListRecycler.adapter?.notifyDataSetChanged()
-        }
         return view
+    }
+
+    private fun search(){
+        when(filterSetting){
+            0 -> filterByName()
+            1 -> filterByFavourite()
+        }
+        searchEdit.clearFocus()
+        val inputManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputManager.hideSoftInputFromWindow(view?.windowToken, 0)
+    }
+
+    private fun clearSearch(){
+        searchEdit.text.clear()
+        searchEdit.clearFocus()
+        val inputManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputManager.hideSoftInputFromWindow(view?.windowToken, 0)
+
+        workoutList.clear()
+        workoutList.addAll(allWorkouts)
+        workoutListRecycler.adapter?.notifyDataSetChanged()
     }
 
     private fun filterByName(){
@@ -110,12 +114,11 @@ class WorkoutListFragment : Fragment() {
             filterPopup.setOnMenuItemClickListener { menuItem ->
                 when(menuItem.itemId){
                     R.id.filter_name_item -> {
-                        println("Filter by name")
                         filterSetting = 0
                     }
                     R.id.filter_fav_item -> {
-                        println("Filter by favourite")
                         filterSetting = 1
+                        filterByFavourite()
                     }
                 }
                 true
@@ -128,6 +131,15 @@ class WorkoutListFragment : Fragment() {
         sortBtn.setOnClickListener {
             val sortPopup = PopupMenu(activity, sortBtn)
             sortPopup.menuInflater.inflate(R.menu.workout_list_sort_menu, sortPopup.menu)
+            when(sortSetting){
+                0 -> sortPopup.menu.findItem(R.id.sort_alpha_item)
+                1 -> sortPopup.menu.findItem(R.id.sort_reverse_alpha_item)
+                2 -> {
+                    val menuView = sortPopup.menu.findItem(R.id.sort_chrono_item)
+                }
+                3 -> sortPopup.menu.findItem(R.id.sort_reverse_chrono_item)
+            }
+
             sortPopup.setOnMenuItemClickListener { menuItem ->
                 when(menuItem.itemId){
                     R.id.sort_alpha_item -> { sortByAlpha() }

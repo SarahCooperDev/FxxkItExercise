@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/sort_alpha_item"
         android:title="Alphabetically"></item>
@@ -8,7 +9,8 @@
         android:title="Reverse Alphabetically"></item>
     <item
         android:id="@+id/sort_chrono_item"
-        android:title="Chronologically"></item>
+        android:title="Chronologically"
+        app:actionViewClass="androidx.appcompat.widget.AppCompatTextView"></item>
     <item
         android:id="@+id/sort_reverse_chrono_item"
         android:title="Reverse Chronologically"></item>
