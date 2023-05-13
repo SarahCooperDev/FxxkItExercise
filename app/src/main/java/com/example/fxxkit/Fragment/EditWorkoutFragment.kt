@@ -40,11 +40,9 @@ class EditWorkoutFragment : Fragment() {
         loadWorkout(workoutId)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var view = inflater.inflate(R.layout.fragment_edit_workout, container, false)
+        (activity as MainActivity).getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText("Edit Workout")
 
         loadAllExercises()
         loadWorkoutExercises()

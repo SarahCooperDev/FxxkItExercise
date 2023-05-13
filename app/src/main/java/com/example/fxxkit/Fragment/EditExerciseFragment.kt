@@ -38,11 +38,9 @@ class EditExerciseFragment : Fragment() {
         loadExercise(exerciseId)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_edit_exercise, container, false)
+        (activity as MainActivity).getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText("Edit Exercise")
 
         idTxt = view.findViewById(R.id.exercise_id_txt)
         idTxt.text = currentExercise.id.toString()

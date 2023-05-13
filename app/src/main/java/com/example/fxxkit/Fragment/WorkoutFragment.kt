@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fxxkit.DBHandler
 import com.example.fxxkit.DataClass.WorkoutExercise
+import com.example.fxxkit.MainActivity
 import com.example.fxxkit.R
 import com.example.fxxkit.ViewHolder.DetailWorkoutExerciseListAdapter
 import com.example.fxxkit.ViewHolder.WorkoutExerciseListAdapter
@@ -39,6 +40,7 @@ class WorkoutFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var view = inflater.inflate(R.layout.fragment_workout, container, false)
+        (activity as MainActivity).getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText("Workout Details")
 
         titleTV = view.findViewById(R.id.workout_name_txt)
         descriptionTV = view.findViewById(R.id.description_txt)

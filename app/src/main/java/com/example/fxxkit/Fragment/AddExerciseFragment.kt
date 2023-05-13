@@ -36,17 +36,13 @@ class AddExerciseFragment : Fragment() {
     private lateinit var repSizeMultiselect: TextView
     private lateinit var targettedMusclesMultiselect: TextView
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let { }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view =  inflater.inflate(R.layout.fragment_add_exercise, container, false)
+        (activity as MainActivity).getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText("Create Exercise")
 
         exNameInput = view.findViewById<EditText>(R.id.exercise_name)
         isStrengthBtn = view.findViewById<ToggleButton>(R.id.strengthening_toggle_btn)

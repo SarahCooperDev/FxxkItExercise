@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var previousBtn: ImageButton
     private lateinit var exercisesBtn: ImageButton
-    private var navHistory: ArrayList<String> = ArrayList<String>()
+
     public lateinit var navController: NavController
 
     @SuppressLint("MissingInflatedId")
@@ -38,13 +38,12 @@ class MainActivity : AppCompatActivity() {
 
         supportActionBar?.setDisplayOptions(androidx.appcompat.app.ActionBar.DISPLAY_SHOW_CUSTOM)
         supportActionBar?.setCustomView(R.layout.custom_action_bar)
-        getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText("Workouts")
-
-        previousBtn = findViewById<ImageButton>(R.id.previous_btn)
-        exercisesBtn = findViewById<ImageButton>(R.id.exercises_btn)
 
         var navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
+
+        previousBtn = findViewById<ImageButton>(R.id.previous_btn)
+        exercisesBtn = findViewById<ImageButton>(R.id.exercises_btn)
 
         previousBtn.setOnClickListener{ view -> navToPrevious() }
         exercisesBtn.setOnClickListener { view -> navToExerciseList() }
@@ -67,46 +66,38 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun navToPrevious(){
-        println("Navigating to previous")
         navController.popBackStack()
     }
 
     public fun navToExerciseList(){
         navController.navigate(R.id.action_global_exerciseListFragment)
-        getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText("Exercises")
     }
 
     public fun navToAddExercise(){
         navController.navigate(R.id.action_global_addExerciseFragment)
-        getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText("Add Exercise")
     }
 
     public fun navToEditExercise(exerciseId: Int){
         var bundle = bundleOf("exerciseId" to exerciseId)
         navController.navigate(R.id.action_exerciseListFragment_to_editExerciseFragment, bundle)
-        getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText("Edit Exercise")
     }
 
     public fun navToWorkoutList(){
         navController.navigate(R.id.action_global_workoutListFragment)
-        getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText("Workouts")
     }
 
     public fun navToCreateWorkout(){
         navController.navigate(R.id.action_global_createWorkoutFragment)
-        getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText("Create Workout")
     }
 
     public fun navToWorkoutDetails(workoutId: Int){
         val bundle = bundleOf("workoutId" to workoutId)
         navController.navigate(R.id.action_workoutListFragment_to_workoutFragment, bundle)
-        getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText("Workout Details")
     }
 
     public fun navToEditWorkout(workoutId: Int){
         val bundle = bundleOf("workoutId" to workoutId)
         navController.navigate(R.id.action_workoutListFragment_to_editWorkoutFragment, bundle)
-        getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText("Update Workout")
     }
 
     private fun initialiseDB(){
