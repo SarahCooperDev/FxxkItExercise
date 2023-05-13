@@ -13,6 +13,7 @@ import com.example.fxxkit.*
 import com.example.fxxkit.DataClass.Exercise
 import com.example.fxxkit.DataClass.Workout
 import com.example.fxxkit.DataClass.WorkoutExercise
+import com.example.fxxkit.ViewHolder.DetailWorkoutExerciseListAdapter
 import com.example.fxxkit.ViewHolder.WorkoutExerciseListAdapter
 import com.example.fxxkit.ViewHolder.WorkoutListAdapter
 import com.example.fxxkit.ViewModel.WorkoutViewModel
@@ -59,7 +60,7 @@ class EditWorkoutFragment : Fragment() {
         selectedExRV = view.findViewById<RecyclerView>(R.id.selected_ex_rv)
 
         selectedExRV.layoutManager = LinearLayoutManager(activity)
-        selectedExRV.adapter = WorkoutExerciseListAdapter(selectedExercises)
+        selectedExRV.adapter = DetailWorkoutExerciseListAdapter(selectedExercises)
 
         workoutName.setText(currentWorkout.name)
         descTxt.setText(currentWorkout.description)
