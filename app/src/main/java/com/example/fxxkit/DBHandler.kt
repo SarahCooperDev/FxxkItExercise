@@ -73,56 +73,22 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
     }
 
 
-
-    fun addInitialExercises(){
-        val ex1 = Exercise("Push ups")
-        val ex2 = Exercise("Sit ups")
-        val ex3 = Exercise("Side crunches")
-
-        addExercise(ex1)
-        addExercise(ex2)
-        addExercise(ex3)
-    }
-
-    fun addInitialWorkoutExercises(){
-        val exerciseList: ArrayList<Exercise>? = getAllExercises()
-        val workoutList: ArrayList<Workout>? = getAllWorkouts()
-
-        if(workoutList != null && workoutList.size > 0){
-            if(exerciseList != null && exerciseList.size > 0){
-                if(exerciseList.size >= 3){
-                    for(j in 0..2){
-                        //addExerciseToWorkout(workoutList[0], exerciseList[j])
-                    }
-                    //addExerciseToWorkout(workoutList[1], exerciseList[0])
-                } else {
-                    for(j in exerciseList.indices){
-                        //addExerciseToWorkout(workoutList[0], exerciseList[j])
-                        //addExerciseToWorkout(workoutList[1], exerciseList[0])
-                    }
-                }
-            }
-
-
-        }
-    }
-
-    fun addInitialWorkouts(){
-        val work1 = Workout("10 minute workout")
-        val work2 = Workout("Basic half")
-
-        addWorkout(work1)
-        addWorkout(work2)
-    }
-
-    fun initialiseDatabase(){
-        println("Initialising database")
+    fun migrateDatabase(){
+        println("DB: Migrating database: saving exercises and workouts")
+        println("Note: workout exercises will be lost")
         val dbold = this.writableDatabase
+        var allExercises = getAllExercises()
+        var allWorkouts = getAllWorkouts()
+
         onUpgrade(dbold, CURRENT_DATABASE_VERSION, NEW_DATABASE_VERSION)
 
-        //addInitialExercises()
-        //addInitialWorkouts()
-        //addInitialWorkoutExercises()
+        for(exercise in allExercises!!){
+            addExercise(exercise)
+        }
+
+        for(workout in allWorkouts!!){
+            addWorkout(workout)
+        }
     }
 
 
@@ -187,7 +153,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
     }
 
     @SuppressLint("Range")
-    fun findExercise(name: String): Exercise?{
+    fun findExerciseByName(name: String): Exercise?{
         val query = "SELECT * FROM $TABLE_EXERCISES WHERE $COLUMN_EXERCISENAME = \"$name\""
 
         val db = this.readableDatabase

@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        //initialiseDB()
+        //migrateDB()
 
         supportActionBar?.setDisplayOptions(androidx.appcompat.app.ActionBar.DISPLAY_SHOW_CUSTOM)
         supportActionBar?.setCustomView(R.layout.custom_action_bar)
@@ -100,13 +100,13 @@ class MainActivity : AppCompatActivity() {
         navController.navigate(R.id.action_workoutListFragment_to_editWorkoutFragment, bundle)
     }
 
-    private fun initialiseDB(){
+    private fun migrateDB(){
         if(debugger.dbNeedsRefresh){
             println("Refreshing database")
             debugger.dbNeedsRefresh = false
 
             val dbHandler = DBHandler(this, null, null, 1)
-            dbHandler.initialiseDatabase()
+            dbHandler.migrateDatabase()
         }
     }
 }
