@@ -3,8 +3,10 @@ package com.example.fxxkit.DataClass
 class Exercise {
     var id: Int = -1
     var name: String = ""
+    var description: String = ""
     var isStrengthening: Boolean = false
     var isConditioning: Boolean = false
+    var repTime: Int = 10
     var possibleSetSize: ArrayList<String> = ArrayList<String>()
     var possibleRepSize: ArrayList<String> = ArrayList<String>()
     var targettedMuscles: ArrayList<String> = ArrayList<String>()

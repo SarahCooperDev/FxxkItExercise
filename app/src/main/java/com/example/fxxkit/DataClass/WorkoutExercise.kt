@@ -8,6 +8,8 @@ class WorkoutExercise{
     var setSize: String? = null
     var repSize: String? = null
     var isSelected: Boolean = false
+    var orderNo: Int = -1
+    var totalTime: Int = 0
 
     constructor(id: Int, workoutId: Int, exerciseId: Int, setSize: String, repSize: String){
         this.id = id
@@ -35,4 +37,18 @@ class WorkoutExercise{
 
 
     constructor(){}
+
+    public fun getTotalTimeInSecs(): Int?{
+        try {
+            var seconds = exercise?.repTime
+            var setInt = setSize?.toInt()
+            var repInt = repSize?.toInt()
+            var total = setInt!! * repInt!! * seconds!!
+            return total
+        } catch(e: Exception){
+            return null
+        }
+
+        return null
+    }
 }

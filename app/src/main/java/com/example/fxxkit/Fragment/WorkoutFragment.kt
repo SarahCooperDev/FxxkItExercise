@@ -81,10 +81,9 @@ class WorkoutFragment : Fragment() {
 
         for(workEx in workExercises){
             workEx.isSelected = true
-            println("Exercise ${workEx.exercise!!.name}")
-            println("Sets ${workEx.setSize.toString()}")
-            println("Reps ${workEx.repSize.toString()}")
         }
+
+        workExercises.sortBy{ it.orderNo }
     }
 
     companion object {

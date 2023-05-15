@@ -21,6 +21,15 @@
                 android:inputType="text"/>
         </TableRow>
         <TableRow>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/description_txt"
+                android:layout_margin="8dp"
+                android:hint="Description..."
+                android:inputType="textMultiLine"/>
+        </TableRow>
+        <TableRow>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -51,6 +60,15 @@
                 android:drawableRight="@android:drawable/arrow_down_float"
                 android:drawablePadding="16dp"
                 android:text="Reps" />
+        </TableRow>
+        <TableRow>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/rep_time_txt"
+                android:layout_margin="8dp"
+                android:hint="Seconds to do single rep"
+                android:inputType="number"/>
         </TableRow>
         <TableRow>
             <ToggleButton

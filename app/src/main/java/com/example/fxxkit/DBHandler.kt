@@ -14,8 +14,8 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
     SQLiteOpenHelper(context, DATABASE_NAME, factory, CURRENT_DATABASE_VERSION){
 
     companion object{
-        private val CURRENT_DATABASE_VERSION = 5
-        private val NEW_DATABASE_VERSION = 6
+        private val CURRENT_DATABASE_VERSION = 6
+        private val NEW_DATABASE_VERSION = 7
         private val DATABASE_NAME = "exerciseDB.db"
 
         val TABLE_EXERCISES = "exercise"
@@ -29,6 +29,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         val COLUMN_POSSIBLESETSIZE = "possible_set_size"
         val COLUMN_POSSIBLEREPSIZE = "possible_rep_size"
         val COLUMN_TARGETTEDMUSCLES = "targetted_muscles"
+        val COLUMN_REP_TIME = "rep_time"
 
         val COLUMN_WORKOUTNAME = "workout_name"
 
@@ -39,11 +40,13 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         val COLUMN_EXERCISE = "exercise_id"
         val COLUMN_SET_SIZE = "set_size"
         val COLUMN_REP_SIZE = "rep_size"
+        val COLUMN_ORDER_NO = "order_no"
     }
 
     override fun onCreate(db: SQLiteDatabase) {
         val CREATE_EXERCISE_TABLE = ("CREATE TABLE " + TABLE_EXERCISES +
                 "(" + COLUMN_ID + " INTEGER PRIMARY KEY," + COLUMN_EXERCISENAME + " TEXT, " +
+                COLUMN_DESCRIPTION + " TEXT, " + COLUMN_REP_TIME + " INTEGER, " +
                 COLUMN_ISSTRENGTH + " BOOLEAN, " + COLUMN_ISCONDITION + " BOOLEAN, " +
                 COLUMN_POSSIBLESETSIZE + " TEXT, " + COLUMN_POSSIBLEREPSIZE + " TEXT, " +
                 COLUMN_TARGETTEDMUSCLES + " TEXT)")
@@ -52,7 +55,8 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
                 COLUMN_DESCRIPTION + " TEXT, " + COLUMN_IS_FAVOURITED + " BOOLEAN)")
         val CREATE_WORKOUT_EXERCISE_TABLE = ("CREATE TABLE " + TABLE_WORKOUT_EXERCISE +
                 "(" + COLUMN_ID + " INTEGER PRIMARY KEY, " + COLUMN_WORKOUT + " INTEGER, " + COLUMN_EXERCISE + " INTEGER, " +
-                 COLUMN_SET_SIZE + " TEXT, " + COLUMN_REP_SIZE + " TEXT" + ")")
+                COLUMN_SET_SIZE + " TEXT, " + COLUMN_REP_SIZE + " TEXT, " +
+                COLUMN_ORDER_NO + " INTEGER" + ")")
 
         db.execSQL(CREATE_EXERCISE_TABLE)
         db.execSQL(CREATE_WORKOUT_TABLE)
@@ -125,6 +129,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
 
     fun addExercise(exercise: Exercise){
         println("DB: Adding exercise: ${exercise.name}")
+        println("DB: rep time: ${exercise.repTime}")
 
         var setString = exercise.getSetAsString()
         var repString = exercise.getRepsAsString()
@@ -134,8 +139,10 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         val db = this.writableDatabase
 
         values.put(COLUMN_EXERCISENAME, exercise.name)
+        values.put(COLUMN_DESCRIPTION, exercise.description)
         values.put(COLUMN_ISCONDITION, exercise.isConditioning)
         values.put(COLUMN_ISSTRENGTH, exercise.isStrengthening)
+        values.put(COLUMN_REP_TIME, exercise.repTime)
 
         if(setString != null){ values.put(COLUMN_POSSIBLESETSIZE, setString) }
         if(repString != null){ values.put(COLUMN_POSSIBLEREPSIZE, repString) }
@@ -153,9 +160,9 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
 
         values.put(COLUMN_WORKOUT, workoutExercise.workoutId)
         values.put(COLUMN_EXERCISE, workoutExercise.exerciseId)
-
         if(workoutExercise.setSize != null){ values.put(COLUMN_SET_SIZE, workoutExercise.setSize) }
         if(workoutExercise.repSize != null){ values.put(COLUMN_REP_SIZE, workoutExercise.repSize) }
+        values.put(COLUMN_ORDER_NO, workoutExercise.orderNo)
 
         val newId = db.insert(TABLE_WORKOUT_EXERCISE, null, values)
         db.close()
@@ -179,6 +186,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         return result.toInt()
     }
 
+    @SuppressLint("Range")
     fun findExercise(name: String): Exercise?{
         val query = "SELECT * FROM $TABLE_EXERCISES WHERE $COLUMN_EXERCISENAME = \"$name\""
 
@@ -191,8 +199,23 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
 
             val id = Integer.parseInt(cursor.getString(0))
             val name = cursor.getString(1)
+            val exDesc = cursor.getString(cursor.getColumnIndex(COLUMN_DESCRIPTION))
+            val isStrength = cursor.getInt(cursor.getColumnIndex(COLUMN_ISSTRENGTH)) > 0
+            val isCondition = cursor.getInt(cursor.getColumnIndex(COLUMN_ISCONDITION)) > 0
+            val repTime = cursor.getInt(cursor.getColumnIndex(COLUMN_REP_TIME))
+            val setString = cursor.getString(cursor.getColumnIndex(COLUMN_POSSIBLESETSIZE))
+            val repString = cursor.getString(cursor.getColumnIndex(COLUMN_POSSIBLEREPSIZE))
+            val muscleString = cursor.getString(cursor.getColumnIndex(COLUMN_TARGETTEDMUSCLES))
 
             exercise = Exercise(id, name)
+            exercise.description = exDesc
+            if(repTime > 0){ exercise.repTime = repTime}
+            if(isCondition != null){ exercise.isConditioning = isCondition }
+            if(isStrength != null){ exercise.isStrengthening = isStrength }
+            if(setString != null){ exercise.setStringToSet(setString) }
+            if(repString != null){ exercise.setStringToRep(repString) }
+            if(muscleString != null){ exercise.setStringToMuscle(muscleString) }
+
             cursor.close()
         }
 
@@ -212,8 +235,10 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
 
             val exId = cursor.getInt(cursor.getColumnIndex(COLUMN_ID))
             val exName = cursor.getString(cursor.getColumnIndex(COLUMN_EXERCISENAME))
+            val exDesc = cursor.getString(cursor.getColumnIndex(COLUMN_DESCRIPTION))
             val isStrength = cursor.getInt(cursor.getColumnIndex(COLUMN_ISSTRENGTH)) > 0
             val isCondition = cursor.getInt(cursor.getColumnIndex(COLUMN_ISCONDITION)) > 0
+            val repTime = cursor.getInt(cursor.getColumnIndex(COLUMN_REP_TIME))
             val setString = cursor.getString(cursor.getColumnIndex(COLUMN_POSSIBLESETSIZE))
             val repString = cursor.getString(cursor.getColumnIndex(COLUMN_POSSIBLEREPSIZE))
             val muscleString = cursor.getString(cursor.getColumnIndex(COLUMN_TARGETTEDMUSCLES))
@@ -223,6 +248,8 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
             }
 
             val exercise = Exercise(exId, exName)
+            exercise.description = exDesc
+            if(repTime > 0){ exercise.repTime = repTime}
             if(isCondition != null){ exercise.isConditioning = isCondition }
             if(isStrength != null){ exercise.isStrengthening = isStrength }
             if(setString != null){ exercise.setStringToSet(setString) }
@@ -285,6 +312,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
             var exerciseId: Int = -1
             var setSize: String? = null
             var repSize: String? = null
+            var orderNo: Int = -1
 
             if(cursor.moveToFirst()){
                 cursor.moveToFirst()
@@ -293,6 +321,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
                     exerciseId = cursor.getInt(cursor.getColumnIndex(COLUMN_EXERCISE))
                     setSize = cursor.getString(cursor.getColumnIndex(COLUMN_SET_SIZE))
                     repSize = cursor.getString(cursor.getColumnIndex(COLUMN_REP_SIZE))
+                    orderNo = cursor.getInt(cursor.getColumnIndex(COLUMN_ORDER_NO))
 
                     var workEx = WorkoutExercise()
                     workEx.id = id
@@ -300,6 +329,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
                     workEx.exerciseId = exerciseId
                     workEx.setSize = setSize
                     workEx.repSize = repSize
+                    workEx.orderNo = orderNo
 
                     var exercise = findExerciseById(exerciseId)
 
@@ -327,28 +357,34 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
 
         var exId: Int
         var exName: String
+        var description: String
         var isStrength: Boolean?
         var isCondition: Boolean?
         var setString: String?
         var repString: String?
         var muscleString: String?
+        var repTime: Int
 
         if(cursor.moveToFirst()){
             do{
                 exId = cursor.getInt(cursor.getColumnIndex(COLUMN_ID))
                 exName = cursor.getString(cursor.getColumnIndex(COLUMN_EXERCISENAME))
+                description = cursor.getString(cursor.getColumnIndex(COLUMN_DESCRIPTION))
                 isStrength = cursor.getInt(cursor.getColumnIndex(COLUMN_ISSTRENGTH)) > 0
                 isCondition = cursor.getInt(cursor.getColumnIndex(COLUMN_ISCONDITION)) > 0
                 setString = cursor.getString(cursor.getColumnIndex(COLUMN_POSSIBLESETSIZE))
                 repString = cursor.getString(cursor.getColumnIndex(COLUMN_POSSIBLEREPSIZE))
                 muscleString = cursor.getString(cursor.getColumnIndex(COLUMN_TARGETTEDMUSCLES))
+                repTime = cursor.getInt(cursor.getColumnIndex(COLUMN_REP_TIME))
 
                 val exercise = Exercise(exId, exName)
+                exercise.description = description
                 if(isCondition != null){ exercise.isConditioning = isCondition }
                 if(isStrength != null){ exercise.isStrengthening = isStrength }
                 if(setString != null){ exercise.setStringToSet(setString) }
                 if(repString != null){ exercise.setStringToRep(repString) }
                 if(muscleString != null){ exercise.setStringToMuscle(muscleString) }
+                if(repTime > 0){ exercise.repTime = repTime}
 
                 exerciseList.add(exercise)
             } while(cursor.moveToNext())
@@ -368,6 +404,9 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         var id: Int
         var workoutId: Int
         var exerciseId: Int
+        var setSize: String? = null
+        var repSize: String? = null
+        var orderNo: Int = -1
 
         if(cursor.moveToFirst()){
             cursor.moveToFirst()
@@ -375,8 +414,14 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
                 id = cursor.getInt(cursor.getColumnIndex(COLUMN_ID))
                 workoutId = cursor.getInt(cursor.getColumnIndex(COLUMN_WORKOUT))
                 exerciseId = cursor.getInt(cursor.getColumnIndex(COLUMN_EXERCISE))
+                setSize = cursor.getString(cursor.getColumnIndex(COLUMN_SET_SIZE))
+                repSize = cursor.getString(cursor.getColumnIndex(COLUMN_REP_SIZE))
+                orderNo = cursor.getInt(cursor.getColumnIndex(COLUMN_ORDER_NO))
 
                 val workEx = WorkoutExercise(id, workoutId, exerciseId)
+                workEx.setSize = setSize
+                workEx.repSize = repSize
+                workEx.orderNo = orderNo
                 workExList.add(workEx)
             } while(cursor.moveToNext())
         }
@@ -430,9 +475,10 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         val db = this.writableDatabase
 
         values.put(COLUMN_EXERCISENAME, exercise.name)
+        values.put(COLUMN_DESCRIPTION, exercise.description)
         values.put(COLUMN_ISCONDITION, exercise.isConditioning)
         values.put(COLUMN_ISSTRENGTH, exercise.isStrengthening)
-
+        if(exercise.repTime > 0){ values.put(COLUMN_REP_TIME, exercise.repTime) }
         if(setString != null){ values.put(COLUMN_POSSIBLESETSIZE, setString) }
         if(repString != null){ values.put(COLUMN_POSSIBLEREPSIZE, repString) }
         if(muscleString != null){ values.put(COLUMN_TARGETTEDMUSCLES, muscleString) }
@@ -451,9 +497,9 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
 
         values.put(COLUMN_WORKOUT, workoutExercise.workoutId)
         values.put(COLUMN_EXERCISE, workoutExercise.exerciseId)
-
         if(workoutExercise.setSize != null){ values.put(COLUMN_SET_SIZE, workoutExercise.setSize) }
         if(workoutExercise.repSize != null){ values.put(COLUMN_REP_SIZE, workoutExercise.repSize) }
+        values.put(COLUMN_ORDER_NO, workoutExercise.orderNo)
 
         result = db.update(TABLE_WORKOUT_EXERCISE, values, "$COLUMN_ID=?", arrayOf(workoutExercise.id.toString()))
         db.close()
@@ -521,7 +567,6 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         println("DB: Deleting workout exercise: ${id}")
 
         val db = this.writableDatabase
-
         var result = db.delete(TABLE_WORKOUT_EXERCISE, "$COLUMN_ID = ?", arrayOf(id.toString()))
 
         db.close()

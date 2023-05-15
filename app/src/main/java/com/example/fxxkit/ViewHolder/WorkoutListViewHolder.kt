@@ -10,6 +10,7 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fxxkit.DBHandler
+import com.example.fxxkit.DataClass.WorkoutExercise
 import com.example.fxxkit.MainActivity
 import com.example.fxxkit.R
 import com.example.fxxkit.ViewModel.WorkoutViewModel

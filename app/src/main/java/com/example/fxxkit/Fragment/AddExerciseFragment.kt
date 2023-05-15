@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.accessibility.AccessibilityManager.AudioDescriptionRequestedChangeListener
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -30,6 +31,8 @@ class AddExerciseFragment : Fragment() {
     private var newExercise: Exercise = Exercise("Null")
 
     private lateinit var exNameInput: EditText
+    private lateinit var descriptionInput: EditText
+    private lateinit var repTimeInput: EditText
     private lateinit var isStrengthBtn: ToggleButton
     private lateinit var isConditioningBtn: ToggleButton
     private lateinit var setSizeMultiselect: TextView
@@ -45,6 +48,8 @@ class AddExerciseFragment : Fragment() {
         (activity as MainActivity).getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText("Create Exercise")
 
         exNameInput = view.findViewById<EditText>(R.id.exercise_name)
+        descriptionInput = view.findViewById<EditText>(R.id.description_txt)
+        repTimeInput = view.findViewById<EditText>(R.id.rep_time_txt)
         isStrengthBtn = view.findViewById<ToggleButton>(R.id.strengthening_toggle_btn)
         isConditioningBtn = view.findViewById<ToggleButton>(R.id.conditioning_toggle_btn)
         setSizeMultiselect = view.findViewById(R.id.set_size_multiselect)
@@ -78,12 +83,18 @@ class AddExerciseFragment : Fragment() {
     private fun addExercise(view: View){
         val dbHandler = DBHandler(this.requireContext(), null, null, 1)
 
-        val exerciseName = exNameInput.text.toString()
-
-        newExercise.name = exerciseName
+        newExercise.name = exNameInput.text.toString()
+        newExercise.description = descriptionInput.text.toString()
 
         if(isStrengthBtn.isChecked()){ newExercise.isStrengthening = true }
         if(isConditioningBtn.isChecked()){ newExercise.isConditioning = true }
+
+        try {
+            var repTime = repTimeInput.text.toString().toInt()
+            if(repTime != null){ newExercise.repTime = repTime}
+        } catch(e: Exception){
+            Toast.makeText(requireContext(), "Rep time must be number", Toast.LENGTH_LONG)
+        }
 
         dbHandler.addExercise(newExercise)
     }

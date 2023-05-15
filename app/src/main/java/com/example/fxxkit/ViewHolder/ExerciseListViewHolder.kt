@@ -21,10 +21,12 @@ class ExerciseListAdapter(private val eList: ArrayList<Exercise>, private val ac
         val currentExercise = eList[position]
         holder.id.text = currentExercise.id.toString()
         holder.name.text = currentExercise.name
+        holder.description.text = currentExercise.description
         holder.isStrength.text = currentExercise.isStrengthening.toString()
         holder.isCondition.text = currentExercise.isConditioning.toString()
         holder.setList.text = currentExercise.getSetAsString()
         holder.repList.text = currentExercise.getRepsAsString()
+        holder.repTime.text = currentExercise.repTime.toString()
         holder.muscleList.text = currentExercise.getMusclesAsString()
 
         holder.editBtn.setOnClickListener{view ->
@@ -63,10 +65,12 @@ class ExerciseListAdapter(private val eList: ArrayList<Exercise>, private val ac
     class ExerciseListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val id: TextView = itemView.findViewById(R.id.exercise_id_txt)
         val name: TextView = itemView.findViewById(R.id.exercise_name)
+        val description: TextView = itemView.findViewById(R.id.description_txt)
         val isStrength: TextView = itemView.findViewById(R.id.is_strength_txt)
         val isCondition: TextView = itemView.findViewById(R.id.is_condition_txt)
         val setList: TextView = itemView.findViewById(R.id.set_list_txt)
         val repList: TextView = itemView.findViewById(R.id.rep_list_txt)
+        val repTime: TextView = itemView.findViewById(R.id.rep_time_txt)
         val muscleList: TextView = itemView.findViewById(R.id.muscle_list_txt)
         val editBtn: ImageButton = itemView.findViewById(R.id.edit_btn)
         val deleteBtn: ImageButton = itemView.findViewById(R.id.delete_btn)

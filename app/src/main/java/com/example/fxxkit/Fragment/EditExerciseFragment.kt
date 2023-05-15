@@ -23,11 +23,13 @@ class EditExerciseFragment : Fragment() {
 
     private lateinit var idTxt: TextView
     private lateinit var nameEditTxt: EditText
+    private lateinit var descriptionInput: EditText
     private lateinit var isStrengthBtn: ToggleButton
     private lateinit var isConditioningBtn: ToggleButton
     private lateinit var targettedMusclesMultiselect: TextView
     private lateinit var setSizeMultiselect: TextView
     private lateinit var repSizeMultiselect: TextView
+    private lateinit var repTimeInput: EditText
 
     private lateinit var cancelBtn: ImageButton
     private lateinit var updateBtn: ImageButton
@@ -48,6 +50,9 @@ class EditExerciseFragment : Fragment() {
         nameEditTxt = view.findViewById(R.id.exercise_name_edtxt)
         nameEditTxt.setText(currentExercise.name)
 
+        descriptionInput = view.findViewById(R.id.description_txt)
+        descriptionInput.setText(currentExercise.description)
+
         isStrengthBtn = view.findViewById(R.id.strengthening_toggle_btn)
         if(currentExercise.isStrengthening){ isStrengthBtn.isChecked = true }
 
@@ -63,6 +68,9 @@ class EditExerciseFragment : Fragment() {
         if(currentExercise.possibleRepSize.size > 0){
             repSizeMultiselect.text = MultiselectLists.getStringFromArray(currentExercise.possibleRepSize)
         }
+
+        repTimeInput = view.findViewById(R.id.rep_time_txt)
+        repTimeInput.setText(currentExercise.repTime.toString())
 
         targettedMusclesMultiselect = view.findViewById(R.id.muscle_select)
         if(currentExercise.targettedMuscles.size > 0){
@@ -108,8 +116,16 @@ class EditExerciseFragment : Fragment() {
 
     private fun updateExercise(){
         currentExercise.name = nameEditTxt.text.toString()
+        currentExercise.description = descriptionInput.text.toString()
         if(isStrengthBtn.isChecked()){ currentExercise.isStrengthening = true }
         if(isConditioningBtn.isChecked()){ currentExercise.isConditioning = true }
+
+        try{
+            var repTime = repTimeInput.text.toString().toInt()
+            if(repTime != null){ currentExercise.repTime = repTime}
+        } catch(e: Exception){
+            Toast.makeText(requireContext(), "Rep time must be number", Toast.LENGTH_LONG)
+        }
 
         val dbHandler = DBHandler(this.requireContext(), null, null, 1)
 

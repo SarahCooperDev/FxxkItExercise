@@ -86,9 +86,13 @@ class CreateWorkoutFragment : Fragment() {
         if(workoutId != null && workoutId >= 0){
             workout.id = workoutId
 
+            var orderNo = 0
             for(workEx in workoutExerciseList){
                 if(workEx.isSelected) {
                     workEx.workoutId = workoutId
+                    workEx.orderNo = orderNo
+                    orderNo++
+
                     var result = dbHandler.addExerciseToWorkout(workEx)
                 }
             }

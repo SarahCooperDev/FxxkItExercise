@@ -24,6 +24,8 @@ class AddWorkoutExerciseListAdapter(private val activity: MainActivity, private 
 
         holder.id.text = currentExercise.exercise!!.id.toString()
         holder.name.text = currentExercise.exercise!!.name
+        holder.description.text = currentExercise.exercise!!.description
+
         holder.isStrength.text = currentExercise.exercise!!.isStrengthening.toString()
         holder.isCondition.text = currentExercise.exercise!!.isConditioning.toString()
         holder.muscleList.text = currentExercise.exercise!!.getMusclesAsString()
@@ -37,6 +39,8 @@ class AddWorkoutExerciseListAdapter(private val activity: MainActivity, private 
             holder.repList.text = currentExercise.exercise!!.getRepsAsString()
             holder.isSelected.setChecked(false)
         }
+
+        holder.repTime.text = currentExercise.exercise!!.repTime.toString()
 
         holder.row.setOnClickListener{
             if(holder.isSelected.isChecked){
@@ -134,11 +138,13 @@ class AddWorkoutExerciseListAdapter(private val activity: MainActivity, private 
         val row: CardView = itemView.findViewById(R.id.exercise_row_item)
         val id: TextView = itemView.findViewById(R.id.exercise_id_txt)
         val name: TextView = itemView.findViewById(R.id.exercise_name)
+        val description: TextView = itemView.findViewById(R.id.description_txt)
         val isSelected: CheckBox = itemView.findViewById(R.id.is_selected_chbx)
         val isStrength: TextView = itemView.findViewById(R.id.is_strength_txt)
         val isCondition: TextView = itemView.findViewById(R.id.is_condition_txt)
         val setList: TextView = itemView.findViewById(R.id.set_list_txt)
         val repList: TextView = itemView.findViewById(R.id.rep_list_txt)
+        val repTime: TextView = itemView.findViewById(R.id.rep_time_txt)
         val muscleList: TextView = itemView.findViewById(R.id.muscle_list_txt)
     }
 }
