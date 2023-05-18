@@ -4,12 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="12dp"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
-    android:layout_marginBottom="16dp"
+    style="@style/DesertRow"
     android:id="@+id/workout_row_item"
-    card_view:cardBackgroundColor="#FFFF"
+    card_view:cardBackgroundColor="@color/desert_white"
     card_view:cardCornerRadius="8dp"
     card_view:contentPadding="10dp"
     android:foreground="?selectableItemBackground"
@@ -17,7 +14,6 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
-
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">

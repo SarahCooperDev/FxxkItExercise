@@ -11,4 +11,8 @@
     <color name="light_grey">#e6e6e6</color>
     <color name="dark_red">#cc0000</color>
     <color name="green">#00cc66</color>
+    <color name="desert_red">#D25380</color>
+    <color name="desert_orange">#E08E6D</color>
+    <color name="desert_yellow">#F6C391</color>
+    <color name="desert_white">#FFFAF4</color>
 </resources>

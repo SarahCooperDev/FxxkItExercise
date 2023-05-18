@@ -69,6 +69,7 @@ object MultiselectLists {
 
                 // Sets the TextView text to the selected sets
                 clickedTxtVw.text = getStringFromArray(selectedOptions)
+                selectedIndexArray.clear()
             }
 
             // Sets up the button to cancel the input

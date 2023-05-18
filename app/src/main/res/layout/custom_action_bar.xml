@@ -4,6 +4,7 @@
     android:orientation="horizontal"
     android:layout_margin="0dp"
     android:padding="0dp"
+    style="@style/DesertActionBar"
     android:layout_height="wrap_content"
     android:layout_width="match_parent">
     <ImageButton

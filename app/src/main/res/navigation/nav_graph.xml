@@ -57,4 +57,9 @@
         android:id="@+id/editExerciseFragment"
         android:name="com.example.fxxkit.Fragment.EditExerciseFragment"
         android:label="EditExerciseFragment" />
+    <fragment
+        android:id="@+id/generateWorkoutFragment"
+        android:name="com.example.fxxkit.Fragment.GenerateWorkoutFragment"
+        android:label="fragment_generate_workout"
+        tools:layout="@layout/fragment_generate_workout" /><action android:id="@+id/action_global_generateWorkoutFragment" app:destination="@id/generateWorkoutFragment"/>
 </navigation>

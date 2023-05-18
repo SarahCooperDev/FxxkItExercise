@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.view.accessibility.AccessibilityManager.AudioDescriptionRequestedChangeListener
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import android.widget.ToggleButton
@@ -38,6 +39,8 @@ class AddExerciseFragment : Fragment() {
     private lateinit var setSizeMultiselect: TextView
     private lateinit var repSizeMultiselect: TextView
     private lateinit var targettedMusclesMultiselect: TextView
+    private lateinit var cancelBtn: ImageButton
+    private lateinit var createBtn: ImageButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,9 +58,10 @@ class AddExerciseFragment : Fragment() {
         setSizeMultiselect = view.findViewById(R.id.set_size_multiselect)
         repSizeMultiselect = view.findViewById(R.id.rep_size_multiselect)
         targettedMusclesMultiselect = view.findViewById<TextView>(R.id.muscle_select)
+        cancelBtn = view.findViewById<ImageButton>(R.id.cancel_btn)
+        createBtn = view.findViewById<ImageButton>(R.id.create_btn)
 
-        val showBtn = view.findViewById<Button>(R.id.add_exercise_btn)
-        showBtn.setOnClickListener{view ->
+        createBtn.setOnClickListener{view ->
             if(exNameInput.text.toString().length < 1){
                 Toast.makeText(activity, "Exercise name may not be blank", Toast.LENGTH_LONG).show()
                 exNameInput.setBackgroundColor(ContextCompat.getColor(context!!, R.color.dark_red))
@@ -66,6 +70,9 @@ class AddExerciseFragment : Fragment() {
                 Toast.makeText(activity, "Added exercise to database", Toast.LENGTH_SHORT).show()
                 (activity as MainActivity).navToExerciseList()
             }
+        }
+        cancelBtn.setOnClickListener { view ->
+            (activity as MainActivity).navToPrevious()
         }
 
         MultiselectLists.buildMultiselect((activity as MainActivity), view, setSizeMultiselect, MultiselectLists.setSizesArray,

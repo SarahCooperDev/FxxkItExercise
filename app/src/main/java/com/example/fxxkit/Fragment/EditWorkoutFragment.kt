@@ -21,7 +21,8 @@ import com.example.fxxkit.ViewModel.WorkoutViewModel
 class EditWorkoutFragment : Fragment() {
     private lateinit var currentWorkout: WorkoutViewModel
     private lateinit var workoutName: EditText
-    private lateinit var updateWorkoutBtn : Button
+    private lateinit var cancelBtn: ImageButton
+    private lateinit var updateBtn : ImageButton
     private lateinit var addExerciseBtn: Button
     private lateinit var removeExerciseBtn: Button
     private lateinit var favBtn: ImageButton
@@ -52,7 +53,8 @@ class EditWorkoutFragment : Fragment() {
         workoutName = view.findViewById<EditText>(R.id.workout_name_txt)
         descTxt = view.findViewById<EditText>(R.id.description_txt)
         favBtn = view.findViewById<ImageButton>(R.id.fav_btn)
-        updateWorkoutBtn = view.findViewById<Button>(R.id.update_workout_btn)
+        updateBtn = view.findViewById<ImageButton>(R.id.update_btn)
+        cancelBtn = view.findViewById<ImageButton>(R.id.cancel_btn)
         addExerciseBtn = view.findViewById<Button>(R.id.add_exercise_btn)
         removeExerciseBtn = view.findViewById<Button>(R.id.remove_exercise_btn)
         selectedExRV = view.findViewById<RecyclerView>(R.id.selected_ex_rv)
@@ -68,8 +70,11 @@ class EditWorkoutFragment : Fragment() {
         removeExerciseBtn.setOnClickListener { view -> buildRemoveExerciseDialog() }
         favBtn.setOnClickListener { view -> setFavourite(!currentWorkout.isFavourited) }
 
-        updateWorkoutBtn.setOnClickListener{ view ->
+        updateBtn.setOnClickListener{ view ->
             updateWorkoutWithExercises()
+            (activity as MainActivity).navToPrevious()
+        }
+        cancelBtn.setOnClickListener { view ->
             (activity as MainActivity).navToPrevious()
         }
 

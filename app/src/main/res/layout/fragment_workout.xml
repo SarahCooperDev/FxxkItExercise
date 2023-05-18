@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".Fragment.WorkoutFragment">
     <LinearLayout
+        style="@style/DesertDisplay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -35,40 +37,27 @@
             android:layout_height="1dp"
             android:background="?android:attr/listDivider"
             android:layout_margin="3dp"/>
-        <TableLayout
-            android:layout_margin="10dp"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent">
-            <TableRow>
-                <TextView
-                    android:id="@+id/description_txt"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"></TextView>
-            </TableRow>
-            <TableRow>
-                <View
-                    android:id="@+id/divider_two"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="?android:attr/listDivider"
-                    android:layout_margin="3dp"/>
-            </TableRow>
-            <TableRow>
-                <TextView
-                    android:id="@+id/exercise_title_txt"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Exercises"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"></TextView>
-            </TableRow>
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/exercise_rv"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"></androidx.recyclerview.widget.RecyclerView>
-            </TableRow>
-        </TableLayout>
+        <TextView
+            android:id="@+id/description_txt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></TextView>
     </LinearLayout>
-</FrameLayout>
+    <LinearLayout
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:padding="5dp"
+            android:id="@+id/exercise_title_txt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Exercises"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"></TextView>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/exercise_rv"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></androidx.recyclerview.widget.RecyclerView>
+    </LinearLayout>
+</LinearLayout>

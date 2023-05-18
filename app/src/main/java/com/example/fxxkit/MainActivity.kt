@@ -60,13 +60,17 @@ class MainActivity : AppCompatActivity() {
             R.id.menu_add_workout_item -> { navToCreateWorkout() }
             R.id.menu_exercise_item -> { navToExerciseList()}
             R.id.menu_add_exercise_item -> { navToAddExercise() }
-            R.id.menu_generate_workout_item -> {}
+            R.id.menu_generate_workout_item -> { navToGenerateWorkout() }
         }
         return super.onOptionsItemSelected(item)
     }
 
     fun navToPrevious(){
         navController.popBackStack()
+    }
+
+    fun navToGenerateWorkout(){
+        navController.navigate(R.id.action_global_generateWorkoutFragment)
     }
 
     public fun navToExerciseList(){

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Fragment.GenerateWorkoutFragment">
+    <LinearLayout
+        style="@style/DesertInput"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TableRow>
+                <TextView
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Duration in minutes:" />
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/duration_input"
+                    android:text="30"></EditText>
+            </TableRow>
+            <TableRow>
+                <TextView
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Muscles to target: "></TextView>
+                <TextView
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="[All]"
+                    android:id="@+id/muscle_target_txt"></TextView>
+            </TableRow>
+            <TableRow>
+                <TextView
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Muscles to exclude: "></TextView>
+                <TextView
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="[None]"
+                    android:id="@+id/muscle_exclude_txt"></TextView>
+            </TableRow>
+            <TableRow>
+                <TextView
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Focus on: "></TextView>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <CheckBox
+                        android:checked="true"
+                        android:id="@+id/strength_chkbx"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Strength" />
+                    <CheckBox
+                        android:checked="true"
+                        android:id="@+id/condition_chkbx"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Condition" />
+                </LinearLayout>
+            </TableRow>
+            <TableRow>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Exclude exercises: "></TextView>
+                <TextView
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:id="@+id/exclude_ex_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="[None]"></TextView>
+            </TableRow>
+        </TableLayout>
+    </LinearLayout>
+    <LinearLayout
+        style="@style/DesertActionBar"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageButton
+            android:id="@+id/cancel_btn"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:backgroundTint="@color/dark_red"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:textColor="@color/white" />
+
+        <ImageButton
+            android:id="@+id/generate_btn"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:backgroundTint="@color/green"
+            android:src="?android:attr/textCheckMark"
+            android:text="Generate"
+            android:textColor="@color/white" />
+    </LinearLayout>
+</LinearLayout>

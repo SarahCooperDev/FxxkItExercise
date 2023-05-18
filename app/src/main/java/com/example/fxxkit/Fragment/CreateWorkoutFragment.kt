@@ -23,7 +23,8 @@ import com.example.fxxkit.DataClass.WorkoutExercise
 class CreateWorkoutFragment : Fragment() {
     private var isFavourited: Boolean = false
     private lateinit var workoutName: EditText
-    private lateinit var createWorkoutBtn : Button
+    private lateinit var createBtn: ImageButton
+    private lateinit var cancelBtn: ImageButton
     private lateinit var favBtn: ImageButton
     private lateinit var descTxt: EditText
     private var exerciseListAdapter: RecyclerView.Adapter<ExerciseListAdapter.ExerciseListViewHolder>? = null
@@ -45,11 +46,12 @@ class CreateWorkoutFragment : Fragment() {
         recycler.adapter = AddWorkoutExerciseListAdapter((activity as MainActivity), workoutExerciseList)
 
         workoutName = view.findViewById<EditText>(R.id.workout_name_txt)
-        createWorkoutBtn = view.findViewById<Button>(R.id.create_workout_btn)
+        createBtn = view.findViewById<ImageButton>(R.id.create_btn)
+        cancelBtn = view.findViewById<ImageButton>(R.id.cancel_btn)
         favBtn = view.findViewById<ImageButton>(R.id.fav_btn)
         descTxt = view.findViewById<EditText>(R.id.description_txt)
 
-        createWorkoutBtn.setOnClickListener{ view ->
+        createBtn.setOnClickListener{ view ->
             if(workoutName.text.toString().length < 1){
                 Toast.makeText(activity, "Workout name may not be blank", Toast.LENGTH_LONG).show()
                 workoutName.setBackgroundColor(ContextCompat.getColor(context!!, R.color.dark_red))
@@ -58,6 +60,10 @@ class CreateWorkoutFragment : Fragment() {
                 Toast.makeText(activity, "Added workout to database", Toast.LENGTH_SHORT).show()
                 (activity as MainActivity).navToWorkoutList()
             }
+        }
+
+        cancelBtn.setOnClickListener { view ->
+            (activity as MainActivity).navToPrevious()
         }
 
         favBtn.setOnClickListener { view ->

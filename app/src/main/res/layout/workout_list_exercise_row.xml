@@ -2,6 +2,7 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    style="@style/DesertRow"
     android:id="@+id/exercise_row">
     <TableLayout
         android:layout_height="wrap_content"
