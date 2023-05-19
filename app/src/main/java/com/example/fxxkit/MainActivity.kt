@@ -79,6 +79,10 @@ class MainActivity : AppCompatActivity() {
         navController.popBackStack()
     }
 
+    fun navToSuggestedWorkout(){
+        navController.navigate(R.id.action_generateWorkoutFragment_to_suggestedWorkoutFragment)
+    }
+
     fun navToGenerateWorkout(){
         navController.navigate(R.id.action_global_generateWorkoutFragment)
     }

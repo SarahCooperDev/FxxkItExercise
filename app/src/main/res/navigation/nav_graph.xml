@@ -61,5 +61,14 @@
         android:id="@+id/generateWorkoutFragment"
         android:name="com.example.fxxkit.Fragment.GenerateWorkoutFragment"
         android:label="fragment_generate_workout"
-        tools:layout="@layout/fragment_generate_workout" /><action android:id="@+id/action_global_generateWorkoutFragment" app:destination="@id/generateWorkoutFragment"/>
+        tools:layout="@layout/fragment_generate_workout" >
+        <action
+            android:id="@+id/action_generateWorkoutFragment_to_suggestedWorkoutFragment"
+            app:destination="@id/suggestedWorkoutFragment" />
+    </fragment><action android:id="@+id/action_global_generateWorkoutFragment" app:destination="@id/generateWorkoutFragment"/>
+    <fragment
+        android:id="@+id/suggestedWorkoutFragment"
+        android:name="com.example.fxxkit.Fragment.SuggestedWorkoutFragment"
+        android:label="fragment_suggested_workout"
+        tools:layout="@layout/fragment_suggested_workout" />
 </navigation>

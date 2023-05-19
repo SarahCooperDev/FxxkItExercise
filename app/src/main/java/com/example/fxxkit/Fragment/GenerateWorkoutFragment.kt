@@ -60,6 +60,10 @@ class GenerateWorkoutFragment : Fragment() {
         muscleExcludeTxt.setOnClickListener { view -> buildExcludeMusclesDialog() }
         excludeExTxt.setOnClickListener { view -> buildExcludeExerciseDialog() }
 
+        generateBtn.setOnClickListener { view ->
+            (activity as MainActivity).navToSuggestedWorkout()
+        }
+
         cancelBtn.setOnClickListener { view ->
             (activity as MainActivity).navToPrevious()
         }
@@ -108,7 +112,6 @@ class GenerateWorkoutFragment : Fragment() {
 
             builder.dismiss()
         }
-
 
         builder.setView(view)
         builder.setCanceledOnTouchOutside(true)
