@@ -16,6 +16,7 @@ import com.example.fxxkit.DataClass.MultiselectLists
 import com.example.fxxkit.DataClass.WorkoutExercise
 import com.example.fxxkit.MainActivity
 import com.example.fxxkit.R
+import com.example.fxxkit.ViewHolder.SelectWorkoutExerciseListAdapter
 import com.google.android.material.tabs.TabItem
 import com.google.android.material.tabs.TabLayout
 
@@ -79,28 +80,8 @@ class GenerateWorkoutFragment : Fragment() {
         val view = layoutInflater.inflate(R.layout.custom_dialog_select_exercises, null)
         var exerciseRV = view.findViewById<RecyclerView>(R.id.exercise_rv)
         exerciseRV.layoutManager = LinearLayoutManager(activity)
-        var excludeAdapter: AddWorkoutExerciseListAdapter = AddWorkoutExerciseListAdapter((activity as MainActivity), excludedWorkoutExercises)
-        var allAdapter: AddWorkoutExerciseListAdapter = AddWorkoutExerciseListAdapter((activity as MainActivity), allWorkoutExercises)
-        exerciseRV.adapter = allAdapter
-
-
-        var tabLayout = view.findViewById<TabLayout>(R.id.tab_layout)
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                println("On tab selected")
-                println("Tab: " + tab?.position.toString())
-                if(tab?.position == 0){
-                    exerciseRV.adapter = allAdapter
-                } else {
-                    exerciseRV.adapter = excludeAdapter
-                }
-                Toast.makeText(context, "Tabbing", Toast.LENGTH_SHORT)
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab?) { }
-
-            override fun onTabReselected(tab: TabLayout.Tab?) {  }
-        })
+        var excludedExercisesAdapter = SelectWorkoutExerciseListAdapter((activity as MainActivity), allWorkoutExercises)
+        exerciseRV.adapter = excludedExercisesAdapter
 
         var doneBtn = view.findViewById<Button>(R.id.done_btn)
         var cancelBtn = view.findViewById<Button>(R.id.cancel_btn)
@@ -109,6 +90,22 @@ class GenerateWorkoutFragment : Fragment() {
             builder.dismiss()
         }
         doneBtn.setOnClickListener { view ->
+            var selectedWorkExes = ArrayList<WorkoutExercise>()
+            for(workExes in allWorkoutExercises){
+                if(workExes.isSelected){
+                    selectedWorkExes.add(workExes)
+                }
+            }
+            var excludeTxt = "[None]"
+            if(selectedWorkExes.size > 0){
+                excludeTxt = ""
+                for(workEx in selectedWorkExes){
+                    excludeTxt += "- " + workEx.exercise?.name + "\n"
+                }
+            }
+
+            excludeExTxt.setText(excludeTxt)
+
             builder.dismiss()
         }
 

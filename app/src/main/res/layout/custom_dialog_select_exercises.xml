@@ -8,26 +8,8 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add/Remove Exercises"
+        android:text="Exclude Exercises"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"></TextView>
-
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tab_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/add_tab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Add"></com.google.android.material.tabs.TabItem>
-
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/remove_tab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Remove" />
-    </com.google.android.material.tabs.TabLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"

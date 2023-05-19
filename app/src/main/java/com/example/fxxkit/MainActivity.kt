@@ -2,13 +2,16 @@ package com.example.fxxkit
 
 import android.annotation.SuppressLint
 import android.app.ActionBar
+import android.app.ActionBar.LayoutParams
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toolbar
 import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -36,8 +39,15 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         //migrateDB()
 
-        supportActionBar?.setDisplayOptions(androidx.appcompat.app.ActionBar.DISPLAY_SHOW_CUSTOM)
-        supportActionBar?.setCustomView(R.layout.custom_action_bar)
+        var actionBar = supportActionBar
+        actionBar?.setDisplayOptions(androidx.appcompat.app.ActionBar.DISPLAY_SHOW_CUSTOM)
+
+        var customView = layoutInflater.inflate(R.layout.custom_action_bar, null)
+        actionBar?.setCustomView(customView, androidx.appcompat.app.ActionBar.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
+        var barParent = customView.parent as androidx.appcompat.widget.Toolbar
+        barParent.setContentInsetsAbsolute(0, 0)
+
+
 
         var navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController

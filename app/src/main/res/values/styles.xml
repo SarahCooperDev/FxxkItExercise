@@ -8,18 +8,14 @@
         <item name="contentInsetEnd">0dp</item>
     </style>
     <style name="Desert" parent="Theme.AppCompat.Light">
+        <!-- Sets the overflow icon to the right color -->
+        <item name="colorPrimary">@color/desert_orange</item>
         <!-- Floating action buttons -->
         <item name="colorAccent">@color/desert_yellow</item>
-        <!-- All text color
-        <item name="android:textColor">@color/desert_red</item>-->
         <!-- The very top of the action bar (where time and battery is shown) -->
-        <item name="android:colorPrimaryDark">@color/desert_red</item>
-        <!--
-        <item name="android:colorPrimary">@color/desert_yellow</item> -->
+        <item name="android:colorPrimaryDark">@color/desert_yellow</item>
         <!-- The background of activity/fragment, if not overridden by background -->
         <item name="android:windowBackground">@color/desert_red</item>
-        <!-- The background of every view (action bar, recyclerview element
-        <item name="android:background">@color/desert_yellow</item>-->
     </style>
     <style name="DesertList" parent="Desert">
         <item name="android:colorPrimaryDark">@color/desert_white</item>
@@ -44,5 +40,8 @@
         <item name="android:textColor">@color/desert_red</item>
         <item name="android:background">@color/desert_white</item>
         <item name="android:layout_margin">10dp</item>
+    </style>
+    <style name="DesertSearchBar" parent="Desert">
+        <item name="android:background">@color/desert_yellow</item>
     </style>
 </resources>
