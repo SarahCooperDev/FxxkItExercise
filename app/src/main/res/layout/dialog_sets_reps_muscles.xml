@@ -8,8 +8,8 @@
         android:id="@+id/dialog_title_txt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Select Possible Sets and Reps"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium">
+        android:text="Select Possible Options"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large">
     </TextView>
     <ScrollView
         android:layout_width="match_parent"

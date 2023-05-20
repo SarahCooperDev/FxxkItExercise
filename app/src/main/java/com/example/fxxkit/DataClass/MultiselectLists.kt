@@ -9,7 +9,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.fxxkit.MainActivity
 import com.example.fxxkit.R
-import java.util.*
 import kotlin.collections.ArrayList
 
 object MultiselectLists {
@@ -22,10 +21,23 @@ object MultiselectLists {
     private var muscleDialogString = "Targetted muscles for exercise"
 
 
+    /**
+     *Function that creates a custom dialog showing a list of checkboxes
+     *
+     *Inputs params:
+     *      - activity: MainActivity (used for context, to inflate custom dialog view)
+     *      - layoutInflater: LayoutInflater (used to inflate the custom dialog view)
+     *      - itemList: Array<String> (the static multiselect list used to construct the checkboxes)
+     *      - selectedItems: ArrayList<String> (the list that is loaded with the selected checkbox text when confirming)
+     *      - textView: TextView (the element that needs to have its text updated to match the new selected options)
+     *
+     * Updates the selected items
+     */
+
     fun showDialog(activity: MainActivity, layoutInflater: LayoutInflater, itemList: Array<String>, selectedItems: ArrayList<String>, textView: TextView){
         val checkboxes = ArrayList<CheckBox>()
         val builder = AlertDialog.Builder(activity).create()
-        val dialog = layoutInflater.inflate(R.layout.dialog_sets_and_reps, null)
+        val dialog = layoutInflater.inflate(R.layout.dialog_sets_reps_muscles, null)
 
         val listLayout = dialog.findViewById<LinearLayout>(R.id.list_layout)
         val cancelBtn = dialog.findViewById<ImageButton>(R.id.cancel_btn)
@@ -80,81 +92,6 @@ object MultiselectLists {
         builder.setView(dialog)
         builder.setCanceledOnTouchOutside(true)
         builder.show()
-    }
-
-
-
-
-
-    /**
-     * Function that creates a multiselect dialog upon clicking an element
-     *
-     * Inputs params: view - the current view context
-     *
-     * Updates the selectedSetNos array
-     */
-    public fun buildMultiselect(activity: MainActivity, view: View, clickedTxtVw: TextView,
-                                 staticSelectionArray: Array<String>, selectedOptions: ArrayList<String>) {
-        // Array that keeps track of the options selected, but only by index
-        var selectedIndexArray = ArrayList<Int>()
-
-        // Triggers the dialog on click
-        clickedTxtVw.setOnClickListener { view ->
-            val builder = AlertDialog.Builder(activity)
-            var titleString = "Title"
-
-            when(staticSelectionArray){
-                setSizesArray -> titleString = setDialogString
-                repSizesArray -> titleString = repDialogString
-                targettedMusclesArray -> titleString = muscleDialogString
-            }
-            builder.setTitle(titleString)
-            builder.setCancelable(false)
-
-            // Creates the array of bools that indicates whether an option should already be checked
-            val preselectedArray = BooleanArray(staticSelectionArray.size) { false }
-            for (option in selectedOptions) {
-                var optionIndex = staticSelectionArray.indexOf(option)
-                preselectedArray[optionIndex] = true
-                selectedIndexArray.add(optionIndex)
-            }
-
-            // Shows the options, and chooses what to do when one is selected
-            builder.setMultiChoiceItems(staticSelectionArray, preselectedArray) { dialog, which, isChecked ->
-                if (isChecked) {
-                    selectedIndexArray.add(which)
-                } else if (selectedIndexArray.contains(which)) {
-                    selectedIndexArray.remove(Integer.valueOf(which))
-                }
-            }
-
-            // Sets up button to complete the dialog
-            builder.setPositiveButton("Done") { dialogInterface, i ->
-                // Converts the selection of indexes into the the corresponding values
-                selectedOptions.clear()
-                selectedIndexArray.sort()
-                for (j in selectedIndexArray.indices) {
-                    selectedOptions.add(staticSelectionArray[selectedIndexArray[j]])
-                }
-
-                // Sets the TextView text to the selected sets
-                clickedTxtVw.text = getStringFromArray(selectedOptions)
-                selectedIndexArray.clear()
-            }
-
-            // Sets up the button to cancel the input
-            builder.setNegativeButton("Cancel") { dialogInterface, i ->
-                dialogInterface.dismiss()
-            }
-
-            // Sets up the button that clears all selected options
-            builder.setNeutralButton("Clear") { dialogInterface, i ->
-                selectedIndexArray.clear()
-                selectedOptions.clear()
-            }
-
-            builder.show()
-        }
     }
 
     public fun getStringFromArray(array: ArrayList<String>): String?{
