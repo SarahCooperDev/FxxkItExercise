@@ -9,16 +9,12 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.fxxkit.AddWorkoutExerciseListAdapter
 import com.example.fxxkit.DBHandler
 import com.example.fxxkit.DataClass.Exercise
-import com.example.fxxkit.DataClass.MultiselectLists
 import com.example.fxxkit.DataClass.WorkoutExercise
 import com.example.fxxkit.MainActivity
 import com.example.fxxkit.R
 import com.example.fxxkit.ViewHolder.SelectWorkoutExerciseListAdapter
-import com.google.android.material.tabs.TabItem
-import com.google.android.material.tabs.TabLayout
 
 class GenerateWorkoutFragment : Fragment() {
     private lateinit var durationInput: EditText
@@ -81,7 +77,7 @@ class GenerateWorkoutFragment : Fragment() {
 
     fun buildExcludeExerciseDialog(){
         val builder = AlertDialog.Builder(context).create()
-        val view = layoutInflater.inflate(R.layout.custom_dialog_select_exercises, null)
+        val view = layoutInflater.inflate(R.layout.dialog_select_exercises, null)
         var exerciseRV = view.findViewById<RecyclerView>(R.id.exercise_rv)
         exerciseRV.layoutManager = LinearLayoutManager(activity)
         var excludedExercisesAdapter = SelectWorkoutExerciseListAdapter((activity as MainActivity), allWorkoutExercises)

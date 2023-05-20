@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp">
+    <TextView
+        android:id="@+id/dialog_title_txt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Select Possible Sets and Reps"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium">
+    </TextView>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <LinearLayout
+            android:paddingLeft="20dp"
+            android:id="@+id/list_layout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+        </LinearLayout>
+    </ScrollView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <ImageButton
+            android:id="@+id/cancel_btn"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:backgroundTint="@color/dark_red"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:text="Cancel"
+            android:textColor="@color/white" />
+        <ImageButton
+            android:id="@+id/done_btn"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:backgroundTint="@color/green"
+            android:src="?android:attr/textCheckMark"
+            android:text="Done"
+            android:textColor="@color/white" />
+    </LinearLayout>
+</LinearLayout>

@@ -8,12 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.accessibility.AccessibilityManager.AudioDescriptionRequestedChangeListener
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.TextView
-import android.widget.Toast
-import android.widget.ToggleButton
+import android.widget.*
 import androidx.core.content.ContextCompat
 import com.example.fxxkit.DBHandler
 import com.example.fxxkit.DataClass.Exercise
@@ -30,6 +25,9 @@ import kotlin.collections.ArrayList
  */
 class AddExerciseFragment : Fragment() {
     private var newExercise: Exercise = Exercise("Null")
+    private var selectedSets = ArrayList<String>()
+    private var selectedReps = ArrayList<String>()
+    private var selectedMuscles = ArrayList<String>()
 
     private lateinit var exNameInput: EditText
     private lateinit var descriptionInput: EditText
@@ -50,6 +48,10 @@ class AddExerciseFragment : Fragment() {
         val view =  inflater.inflate(R.layout.fragment_add_exercise, container, false)
         (activity as MainActivity).getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText("Create Exercise")
 
+        selectedSets.add(MultiselectLists.setSizesArray[0])
+        selectedReps.add(MultiselectLists.repSizesArray[0])
+        selectedMuscles.add(MultiselectLists.targettedMusclesArray[0])
+
         exNameInput = view.findViewById<EditText>(R.id.exercise_name)
         descriptionInput = view.findViewById<EditText>(R.id.description_txt)
         repTimeInput = view.findViewById<EditText>(R.id.rep_time_txt)
@@ -66,7 +68,7 @@ class AddExerciseFragment : Fragment() {
                 Toast.makeText(activity, "Exercise name may not be blank", Toast.LENGTH_LONG).show()
                 exNameInput.setBackgroundColor(ContextCompat.getColor(context!!, R.color.dark_red))
             } else {
-                addExercise(view)
+                addExercise()
                 Toast.makeText(activity, "Added exercise to database", Toast.LENGTH_SHORT).show()
                 (activity as MainActivity).navToExerciseList()
             }
@@ -75,19 +77,25 @@ class AddExerciseFragment : Fragment() {
             (activity as MainActivity).navToPrevious()
         }
 
-        MultiselectLists.buildMultiselect((activity as MainActivity), view, setSizeMultiselect, MultiselectLists.setSizesArray,
-            newExercise.possibleSetSize)
+        setSizeMultiselect.setText(selectedSets[0])
+        setSizeMultiselect.setOnClickListener { view ->
+            MultiselectLists.showDialog(activity as MainActivity, layoutInflater, MultiselectLists.setSizesArray,  selectedSets, setSizeMultiselect)
+        }
 
-        MultiselectLists.buildMultiselect((activity as MainActivity), view, repSizeMultiselect, MultiselectLists.repSizesArray,
-            newExercise.possibleRepSize)
+        repSizeMultiselect.setText(selectedReps[0])
+        repSizeMultiselect.setOnClickListener { view ->
+            MultiselectLists.showDialog(activity as MainActivity, layoutInflater, MultiselectLists.repSizesArray, selectedReps, repSizeMultiselect)
+        }
 
-        MultiselectLists.buildMultiselect((activity as MainActivity), view, targettedMusclesMultiselect,
-            MultiselectLists.targettedMusclesArray,newExercise.targettedMuscles)
+        targettedMusclesMultiselect.setText(selectedMuscles[0])
+        targettedMusclesMultiselect.setOnClickListener { view ->
+            MultiselectLists.showDialog(activity as MainActivity, layoutInflater, MultiselectLists.targettedMusclesArray, selectedMuscles, targettedMusclesMultiselect)
+        }
 
         return view
     }
 
-    private fun addExercise(view: View){
+    private fun addExercise(){
         val dbHandler = DBHandler(this.requireContext(), null, null, 1)
 
         newExercise.name = exNameInput.text.toString()
@@ -95,6 +103,13 @@ class AddExerciseFragment : Fragment() {
 
         if(isStrengthBtn.isChecked()){ newExercise.isStrengthening = true }
         if(isConditioningBtn.isChecked()){ newExercise.isConditioning = true }
+        if(selectedSets.size == 0){selectedSets.add(MultiselectLists.setSizesArray[0])}
+        if(selectedReps.size == 0){selectedReps.add(MultiselectLists.repSizesArray[0])}
+        if(selectedMuscles.size == 0){selectedMuscles.add(MultiselectLists.targettedMusclesArray[0])}
+
+        newExercise.possibleSetSize = selectedSets
+        newExercise.possibleRepSize = selectedReps
+        newExercise.targettedMuscles = selectedMuscles
 
         try {
             var repTime = repTimeInput.text.toString().toInt()
@@ -110,8 +125,6 @@ class AddExerciseFragment : Fragment() {
     companion object {
         @JvmStatic
         fun newInstance() =
-            AddExerciseFragment().apply {
-                arguments = Bundle().apply {  }
-            }
+            AddExerciseFragment().apply { }
     }
 }

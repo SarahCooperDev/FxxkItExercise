@@ -13,7 +13,7 @@
         <!-- Floating action buttons -->
         <item name="colorAccent">@color/desert_yellow</item>
         <!-- The very top of the action bar (where time and battery is shown) -->
-        <item name="android:colorPrimaryDark">@color/desert_yellow</item>
+        <item name="android:colorPrimaryDark">@color/desert_red</item>
         <!-- The background of activity/fragment, if not overridden by background -->
         <item name="android:windowBackground">@color/desert_red</item>
     </style>

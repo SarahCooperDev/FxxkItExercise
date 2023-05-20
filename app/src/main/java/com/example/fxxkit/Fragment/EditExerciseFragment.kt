@@ -21,6 +21,10 @@ class EditExerciseFragment : Fragment() {
     private lateinit var currentExercise: Exercise
     private var errorColor: String = "#cc0000"
 
+    private var selectedSets = ArrayList<String>()
+    private var selectedReps = ArrayList<String>()
+    private var selectedMuscles = ArrayList<String>()
+
     private lateinit var idTxt: TextView
     private lateinit var nameEditTxt: EditText
     private lateinit var descriptionInput: EditText
@@ -45,53 +49,56 @@ class EditExerciseFragment : Fragment() {
         (activity as MainActivity).getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText("Edit Exercise")
 
         idTxt = view.findViewById(R.id.exercise_id_txt)
-        idTxt.text = currentExercise.id.toString()
-
         nameEditTxt = view.findViewById(R.id.exercise_name_edtxt)
-        nameEditTxt.setText(currentExercise.name)
-
         descriptionInput = view.findViewById(R.id.description_txt)
-        descriptionInput.setText(currentExercise.description)
-
         isStrengthBtn = view.findViewById(R.id.strengthening_toggle_btn)
-        if(currentExercise.isStrengthening){ isStrengthBtn.isChecked = true }
-
         isConditioningBtn = view.findViewById(R.id.conditioning_toggle_btn)
-        if(currentExercise.isConditioning) { isConditioningBtn.isChecked = true }
-
         setSizeMultiselect = view.findViewById(R.id.set_size_multiselect)
-        if(currentExercise.possibleSetSize.size > 0){
-            setSizeMultiselect.text = MultiselectLists.getStringFromArray(currentExercise.possibleSetSize)
-        }
-
         repSizeMultiselect = view.findViewById(R.id.rep_size_multiselect)
-        if(currentExercise.possibleRepSize.size > 0){
-            repSizeMultiselect.text = MultiselectLists.getStringFromArray(currentExercise.possibleRepSize)
-        }
-
         repTimeInput = view.findViewById(R.id.rep_time_txt)
+        targettedMusclesMultiselect = view.findViewById(R.id.muscle_select)
+        cancelBtn = view.findViewById(R.id.cancel_btn)
+        updateBtn = view.findViewById(R.id.update_btn)
+
+        idTxt.text = currentExercise.id.toString()
+        nameEditTxt.setText(currentExercise.name)
+        descriptionInput.setText(currentExercise.description)
         repTimeInput.setText(currentExercise.repTime.toString())
 
-        targettedMusclesMultiselect = view.findViewById(R.id.muscle_select)
-        if(currentExercise.targettedMuscles.size > 0){
-            targettedMusclesMultiselect.text = MultiselectLists.getStringFromArray(currentExercise.targettedMuscles)
+        if(currentExercise.isStrengthening){ isStrengthBtn.isChecked = true }
+        if(currentExercise.isConditioning) { isConditioningBtn.isChecked = true }
+
+        if(currentExercise.possibleSetSize.size > 0){
+            setSizeMultiselect.text = MultiselectLists.getStringFromArray(currentExercise.possibleSetSize)
+            selectedSets = currentExercise.possibleSetSize.clone() as ArrayList<String>
         }
 
-        MultiselectLists.buildMultiselect((activity as MainActivity), view, setSizeMultiselect, MultiselectLists.setSizesArray,
-            currentExercise.possibleSetSize)
+        if(currentExercise.possibleRepSize.size > 0){
+            repSizeMultiselect.text = MultiselectLists.getStringFromArray(currentExercise.possibleRepSize)
+            selectedReps = currentExercise.possibleRepSize.clone() as ArrayList<String>
+        }
 
-        MultiselectLists.buildMultiselect((activity as MainActivity), view, repSizeMultiselect, MultiselectLists.repSizesArray,
-            currentExercise.possibleRepSize)
+        if(currentExercise.targettedMuscles.size > 0){
+            targettedMusclesMultiselect.text = MultiselectLists.getStringFromArray(currentExercise.targettedMuscles)
+            selectedMuscles = currentExercise.targettedMuscles.clone() as ArrayList<String>
+        }
 
-        MultiselectLists.buildMultiselect((activity as MainActivity), view, targettedMusclesMultiselect,
-            MultiselectLists.targettedMusclesArray,currentExercise.targettedMuscles)
+        setSizeMultiselect.setOnClickListener { view ->
+            MultiselectLists.showDialog(activity as MainActivity, layoutInflater, MultiselectLists.setSizesArray, selectedSets, setSizeMultiselect)
+        }
 
-        cancelBtn = view.findViewById(R.id.cancel_btn)
+        repSizeMultiselect.setOnClickListener { view ->
+            MultiselectLists.showDialog(activity as MainActivity, layoutInflater, MultiselectLists.repSizesArray, selectedReps, repSizeMultiselect)
+        }
+
+        targettedMusclesMultiselect.setOnClickListener { view ->
+            MultiselectLists.showDialog(activity as MainActivity, layoutInflater, MultiselectLists.targettedMusclesArray, selectedMuscles, targettedMusclesMultiselect)
+        }
+
         cancelBtn.setOnClickListener{ view ->
             (activity as MainActivity).navToPrevious()
         }
 
-        updateBtn = view.findViewById(R.id.update_btn)
         updateBtn.setOnClickListener{ view ->
             if(nameEditTxt.text.toString().length < 1){
                 Toast.makeText(activity, "Exercise name may not be blank", Toast.LENGTH_LONG).show()
@@ -119,6 +126,9 @@ class EditExerciseFragment : Fragment() {
         currentExercise.description = descriptionInput.text.toString()
         if(isStrengthBtn.isChecked()){ currentExercise.isStrengthening = true }
         if(isConditioningBtn.isChecked()){ currentExercise.isConditioning = true }
+        currentExercise.possibleSetSize = selectedSets
+        currentExercise.possibleRepSize = selectedReps
+        currentExercise.targettedMuscles = selectedMuscles
 
         try{
             var repTime = repTimeInput.text.toString().toInt()
