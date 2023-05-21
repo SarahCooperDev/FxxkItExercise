@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.fxxkit.DataClass.MultiselectLists
 import com.example.fxxkit.DataClass.WorkoutExercise
 
 class AddWorkoutExerciseListAdapter(private val activity: MainActivity, private val workExList: ArrayList<WorkoutExercise>) :   RecyclerView.Adapter<AddWorkoutExerciseListAdapter.AddWorkoutExerciseListViewHolder>(){
@@ -80,23 +81,41 @@ class AddWorkoutExerciseListAdapter(private val activity: MainActivity, private 
 
         val inflater: LayoutInflater = activity.getLayoutInflater()
         // Shows the options, and chooses what to do when one is selected
-        var view = inflater.inflate(R.layout.custom_workout_exercise_dialog, null)
+        var view = inflater.inflate(R.layout.dialog_set_and_rep, null)
         var setRadioGrp = view.findViewById<RadioGroup>(R.id.set_radiogrp)
         var repRadioGrp = view.findViewById<RadioGroup>(R.id.rep_radiogrp)
 
         if(currentExercise.exercise != null && currentExercise.exercise!!.possibleSetSize != null && currentExercise.exercise!!.possibleSetSize.size > 0){
-            for(set in currentExercise.exercise!!.possibleSetSize){
-                var radiobtn = RadioButton(activity)
-                radiobtn.setText(set)
-                setRadioGrp.addView(radiobtn)
+            if(currentExercise.exercise!!.possibleSetSize[0] == MultiselectLists.setSizesArray[0]){
+                for(i in 1 .. MultiselectLists.setSizesArray.size - 1){
+                    var set = MultiselectLists.setSizesArray[i]
+                    var radiobtn = RadioButton(activity)
+                    radiobtn.setText(set)
+                    setRadioGrp.addView(radiobtn)
+                }
+            } else {
+                for(set in currentExercise.exercise!!.possibleSetSize){
+                    var radiobtn = RadioButton(activity)
+                    radiobtn.setText(set)
+                    setRadioGrp.addView(radiobtn)
+                }
             }
         }
 
         if(currentExercise.exercise != null && currentExercise.exercise!!.possibleRepSize != null && currentExercise.exercise!!.possibleRepSize.size > 0){
-            for(rep in currentExercise.exercise!!.possibleRepSize){
-                var radioBtn = RadioButton(activity)
-                radioBtn.setText(rep)
-                repRadioGrp.addView(radioBtn)
+            if(currentExercise.exercise!!.possibleRepSize[0] == MultiselectLists.repSizesArray[0]){
+                for(i in 1 .. MultiselectLists.repSizesArray.size - 1){
+                    var rep = MultiselectLists.repSizesArray[i]
+                    var radiobtn = RadioButton(activity)
+                    radiobtn.setText(rep)
+                    repRadioGrp.addView(radiobtn)
+                }
+            } else {
+                for (rep in currentExercise.exercise!!.possibleRepSize) {
+                    var radioBtn = RadioButton(activity)
+                    radioBtn.setText(rep)
+                    repRadioGrp.addView(radioBtn)
+                }
             }
         }
 

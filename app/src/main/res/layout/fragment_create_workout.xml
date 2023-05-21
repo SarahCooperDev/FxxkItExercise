@@ -33,9 +33,10 @@
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:layout_margin="0dp"
-                    android:padding="0dp"
+                    android:padding="5dp"
                     android:scaleType="fitXY"
-                    android:src="@android:drawable/btn_star_big_off"
+                    android:background="@null"
+                    android:src="@drawable/ic_star"
                     android:text="Favourite button"></ImageButton>
             </TableRow>
             <TableRow

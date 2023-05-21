@@ -29,6 +29,12 @@ class ExerciseListAdapter(private val eList: ArrayList<Exercise>, private val ac
         holder.repTime.text = currentExercise.repTime.toString()
         holder.muscleList.text = currentExercise.getMusclesAsString()
 
+        if(currentExercise.tags.size > 0){
+            holder.tagTxt.text = currentExercise.getTagDisplayString()
+        } else {
+            holder.tagTxt.text = "None"
+        }
+
         holder.editBtn.setOnClickListener{view ->
             activity.navToEditExercise(currentExercise.id)
         }
@@ -72,6 +78,7 @@ class ExerciseListAdapter(private val eList: ArrayList<Exercise>, private val ac
         val repList: TextView = itemView.findViewById(R.id.rep_list_txt)
         val repTime: TextView = itemView.findViewById(R.id.rep_time_txt)
         val muscleList: TextView = itemView.findViewById(R.id.muscle_list_txt)
+        val tagTxt: TextView = itemView.findViewById(R.id.tag_txt)
         val editBtn: ImageButton = itemView.findViewById(R.id.edit_btn)
         val deleteBtn: ImageButton = itemView.findViewById(R.id.delete_btn)
     }

@@ -11,6 +11,7 @@ import android.widget.*
 import com.example.fxxkit.DBHandler
 import com.example.fxxkit.DataClass.Exercise
 import com.example.fxxkit.DataClass.MultiselectLists
+import com.example.fxxkit.DataClass.Tag
 import com.example.fxxkit.MainActivity
 import com.example.fxxkit.R
 import com.example.fxxkit.ViewModel.WorkoutViewModel
@@ -24,6 +25,7 @@ class EditExerciseFragment : Fragment() {
     private var selectedSets = ArrayList<String>()
     private var selectedReps = ArrayList<String>()
     private var selectedMuscles = ArrayList<String>()
+    private var allTags = ArrayList<Tag>()
 
     private lateinit var idTxt: TextView
     private lateinit var nameEditTxt: EditText
@@ -34,6 +36,7 @@ class EditExerciseFragment : Fragment() {
     private lateinit var setSizeMultiselect: TextView
     private lateinit var repSizeMultiselect: TextView
     private lateinit var repTimeInput: EditText
+    private lateinit var tagInput: EditText
 
     private lateinit var cancelBtn: ImageButton
     private lateinit var updateBtn: ImageButton
@@ -57,6 +60,7 @@ class EditExerciseFragment : Fragment() {
         repSizeMultiselect = view.findViewById(R.id.rep_size_multiselect)
         repTimeInput = view.findViewById(R.id.rep_time_txt)
         targettedMusclesMultiselect = view.findViewById(R.id.muscle_select)
+        tagInput = view.findViewById(R.id.tag_input)
         cancelBtn = view.findViewById(R.id.cancel_btn)
         updateBtn = view.findViewById(R.id.update_btn)
 
@@ -67,6 +71,7 @@ class EditExerciseFragment : Fragment() {
 
         if(currentExercise.isStrengthening){ isStrengthBtn.isChecked = true }
         if(currentExercise.isConditioning) { isConditioningBtn.isChecked = true }
+        if(currentExercise.tags.size > 0){ tagInput.setText(currentExercise.getTagInputString()) }
 
         if(currentExercise.possibleSetSize.size > 0){
             setSizeMultiselect.text = MultiselectLists.getStringFromArray(currentExercise.possibleSetSize)
@@ -116,8 +121,15 @@ class EditExerciseFragment : Fragment() {
     private fun loadExercise(exerciseId: Int){
         val dbHandler = DBHandler(this.requireContext(), null, null, 1)
         var exercise = dbHandler.findExerciseById(exerciseId)
+        allTags = dbHandler.getAllTags()
+
         if(exercise !=  null){
             currentExercise = exercise
+
+            var tagList = dbHandler.getTagsForExercise(currentExercise)
+            if(tagList.size > 0){
+                currentExercise.tags = tagList
+            }
         }
     }
 
@@ -138,8 +150,35 @@ class EditExerciseFragment : Fragment() {
         }
 
         val dbHandler = DBHandler(this.requireContext(), null, null, 1)
-
         dbHandler.updateExercise(currentExercise)
+
+        var splitTags = tagInput.text.split(" ")
+        for(tag in splitTags){
+            var foundTag = currentExercise.tags.firstOrNull{it.name!!.lowercase() == tag.toString().lowercase()}
+
+            if(foundTag == null){
+                foundTag = allTags.firstOrNull{ it.name!!.lowercase() == tag.toString().lowercase() }
+
+                if(foundTag == null){
+                    foundTag = Tag(tag.toString().lowercase())
+                    foundTag.id = dbHandler.addTag(foundTag)!!
+                    println("New tag ${tag} is ${foundTag.id}")
+                }
+
+                if(foundTag.id != null){
+                    var result = dbHandler.addTagToExerciseByIds(currentExercise.id, foundTag.id)
+                    println("Result is ${result}")
+                }
+            }
+        }
+
+        for(tag in currentExercise.tags){
+            var foundTag = splitTags.firstOrNull{it.lowercase() == tag.name!!.lowercase()}
+
+            if(foundTag == null){
+                dbHandler.deleteTagFromExercise(currentExercise, tag)
+            }
+        }
     }
 
     companion object {

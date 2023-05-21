@@ -10,6 +10,7 @@ class Exercise {
     var possibleSetSize: ArrayList<String> = ArrayList<String>()
     var possibleRepSize: ArrayList<String> = ArrayList<String>()
     var targettedMuscles: ArrayList<String> = ArrayList<String>()
+    var tags: ArrayList<Tag> = ArrayList<Tag>()
 
     constructor(id:Int, name: String){
         this.id = id
@@ -99,6 +100,34 @@ class Exercise {
 
         for(muscle in muscleList){
             targettedMuscles.add(muscle.trim())
+        }
+    }
+
+    public fun getTagDisplayString(): String?{
+        if(tags.size < 1){
+            return null
+        } else {
+            var tagString = ""
+            for(tag in this.tags){
+                tagString += tag.name + ", "
+            }
+            tagString = tagString.dropLast(2)
+
+            return tagString
+        }
+    }
+
+    public fun getTagInputString(): String?{
+        if(tags.size < 1){
+            return null
+        } else {
+            var tagString = ""
+            for(tag in this.tags){
+                tagString += tag.name + " "
+            }
+            tagString = tagString.dropLast(1)
+
+            return tagString
         }
     }
 }

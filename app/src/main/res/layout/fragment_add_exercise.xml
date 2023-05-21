@@ -110,6 +110,16 @@
                     android:text="Targets" />
             </TableRow>
         </TableLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tags: "></TextView>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Tags separated by space..."
+            android:inputType="textMultiLine"
+            android:id="@+id/tag_input"></EditText>
     </LinearLayout>
     <LinearLayout
         style="@style/DesertActionBar"

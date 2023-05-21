@@ -69,10 +69,10 @@ class CreateWorkoutFragment : Fragment() {
         favBtn.setOnClickListener { view ->
             if(isFavourited){
                 isFavourited = false
-                favBtn.setImageResource(android.R.drawable.btn_star_big_off)
+                favBtn.setImageResource(R.drawable.ic_star)
             } else {
                 isFavourited = true
-                favBtn.setImageResource(android.R.drawable.btn_star_big_on)
+                favBtn.setImageResource(R.drawable.ic_star_filled)
             }
         }
 

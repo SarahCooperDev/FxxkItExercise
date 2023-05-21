@@ -84,10 +84,10 @@ class EditWorkoutFragment : Fragment() {
     private fun setFavourite(isFavourited: Boolean){
         if(!isFavourited){
             currentWorkout.isFavourited = false
-            favBtn.setImageResource(android.R.drawable.btn_star_big_off)
+            favBtn.setImageResource(R.drawable.ic_star_filled)
         } else {
             currentWorkout.isFavourited = true
-            favBtn.setImageResource(android.R.drawable.btn_star_big_on)
+            favBtn.setImageResource(R.drawable.ic_star)
         }
     }
 
@@ -147,7 +147,7 @@ class EditWorkoutFragment : Fragment() {
         builder.setPositiveButton("Done") { dialogInterface, i ->
             for(workEx in selectedExercises){
                 println("Exercise is selected to be ${workEx.isSelected.toString()}")
-                if(!workEx.isSelected){
+                if(workEx.isSelected){
                     println("Workex id is: ${workEx.id.toString()}")
                     removedWorkExercises.add(workEx)
                 }

@@ -146,5 +146,14 @@
                     android:text="False"/>
             </TableRow>
         </TableLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tags:"></TextView>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tags"
+            android:id="@+id/tag_txt"></TextView>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

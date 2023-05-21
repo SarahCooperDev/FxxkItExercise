@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import com.example.fxxkit.DBHandler
 import com.example.fxxkit.DataClass.Exercise
 import com.example.fxxkit.DataClass.MultiselectLists
+import com.example.fxxkit.DataClass.Tag
 import com.example.fxxkit.MainActivity
 import com.example.fxxkit.R
 import java.util.*
@@ -28,6 +29,7 @@ class AddExerciseFragment : Fragment() {
     private var selectedSets = ArrayList<String>()
     private var selectedReps = ArrayList<String>()
     private var selectedMuscles = ArrayList<String>()
+    private var allTags = ArrayList<Tag>()
 
     private lateinit var exNameInput: EditText
     private lateinit var descriptionInput: EditText
@@ -37,6 +39,7 @@ class AddExerciseFragment : Fragment() {
     private lateinit var setSizeMultiselect: TextView
     private lateinit var repSizeMultiselect: TextView
     private lateinit var targettedMusclesMultiselect: TextView
+    private lateinit var tagInput: EditText
     private lateinit var cancelBtn: ImageButton
     private lateinit var createBtn: ImageButton
 
@@ -51,6 +54,7 @@ class AddExerciseFragment : Fragment() {
         selectedSets.add(MultiselectLists.setSizesArray[0])
         selectedReps.add(MultiselectLists.repSizesArray[0])
         selectedMuscles.add(MultiselectLists.targettedMusclesArray[0])
+        getAllTags()
 
         exNameInput = view.findViewById<EditText>(R.id.exercise_name)
         descriptionInput = view.findViewById<EditText>(R.id.description_txt)
@@ -60,6 +64,7 @@ class AddExerciseFragment : Fragment() {
         setSizeMultiselect = view.findViewById(R.id.set_size_multiselect)
         repSizeMultiselect = view.findViewById(R.id.rep_size_multiselect)
         targettedMusclesMultiselect = view.findViewById<TextView>(R.id.muscle_select)
+        tagInput = view.findViewById<EditText>(R.id.tag_input)
         cancelBtn = view.findViewById<ImageButton>(R.id.cancel_btn)
         createBtn = view.findViewById<ImageButton>(R.id.create_btn)
 
@@ -118,7 +123,28 @@ class AddExerciseFragment : Fragment() {
             Toast.makeText(requireContext(), "Rep time must be number", Toast.LENGTH_LONG)
         }
 
-        dbHandler.addExercise(newExercise)
+        var newId = dbHandler.addExercise(newExercise)
+        println("Exercise id is ${newId}")
+
+        var splitTags = tagInput.text.split(" ")
+        for(tag in splitTags){
+            var foundTag = allTags.firstOrNull{ it.name!!.lowercase() == tag.toString().lowercase() }
+            if(foundTag == null){
+                foundTag = Tag(tag.toString().lowercase())
+                foundTag.id = dbHandler.addTag(foundTag)!!
+                println("New tag ${tag} is ${foundTag.id}")
+            }
+
+            if(newId != null && foundTag.id != null){
+                var result = dbHandler.addTagToExerciseByIds(newId, foundTag.id)
+                println("Result is ${result}")
+            }
+        }
+    }
+
+    private fun getAllTags(){
+        val dbHandler = DBHandler(this.requireContext(), null, null, 1)
+        allTags = dbHandler.getAllTags()
     }
 
 

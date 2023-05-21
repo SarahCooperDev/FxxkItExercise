@@ -51,96 +51,111 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1">
-            <TableLayout
-                android:paddingBottom="20dp"
-                android:orientation="vertical"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1">
-                <TableRow>
-                    <TextView
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:text="No. of Sets: "
-                        android:layout_margin="8dp"/>
-                    <TextView
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/set_size_multiselect"
-                        android:layout_margin="8dp"
-                        android:drawableRight="@android:drawable/arrow_down_float"
-                        android:drawablePadding="16dp"
-                        android:text="Sets" />
-                </TableRow>
-                <TableRow>
-                    <TextView
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:text="No. of Reps: "
-                        android:layout_margin="8dp"/>
-                    <TextView
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/rep_size_multiselect"
-                        android:layout_margin="8dp"
-                        android:drawableRight="@android:drawable/arrow_down_float"
-                        android:drawablePadding="16dp"
-                        android:text="Reps" />
-                </TableRow>
-                <TableRow>
-                    <TextView
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:text="Rep time: "
-                        android:layout_margin="8dp"/>
-                    <EditText
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/rep_time_txt"
-                        android:layout_margin="8dp"
-                        android:hint="Seconds to do single rep"
-                        android:inputType="number"/>
-                </TableRow>
-                <TableRow>
-                    <ToggleButton
-                        android:id="@+id/strengthening_toggle_btn"
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:textOn="Is Strength"
-                        android:textOff="Not Strength"/>
-                    <ToggleButton
-                        android:id="@+id/conditioning_toggle_btn"
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:textOn="Is Condition"
-                        android:textOff="Not Condition"/>
-                </TableRow>
-                <TableRow>
-                    <TextView
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:text="Targetted Areas "
-                        android:layout_margin="8dp"/>
-                    <TextView
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/muscle_select"
-                        android:layout_margin="8dp"
-                        android:drawableRight="@android:drawable/arrow_down_float"
-                        android:drawablePadding="16dp"
-                        android:text="Targets" />
-                </TableRow>
-            </TableLayout>
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <TableLayout
+                    android:paddingBottom="20dp"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+                    <TableRow>
+                        <TextView
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="No. of Sets: "
+                            android:layout_margin="8dp"/>
+                        <TextView
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/set_size_multiselect"
+                            android:layout_margin="8dp"
+                            android:drawableRight="@android:drawable/arrow_down_float"
+                            android:drawablePadding="16dp"
+                            android:text="Sets" />
+                    </TableRow>
+                    <TableRow>
+                        <TextView
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="No. of Reps: "
+                            android:layout_margin="8dp"/>
+                        <TextView
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/rep_size_multiselect"
+                            android:layout_margin="8dp"
+                            android:drawableRight="@android:drawable/arrow_down_float"
+                            android:drawablePadding="16dp"
+                            android:text="Reps" />
+                    </TableRow>
+                    <TableRow>
+                        <TextView
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="Rep time: "
+                            android:layout_margin="8dp"/>
+                        <EditText
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/rep_time_txt"
+                            android:layout_margin="8dp"
+                            android:hint="Seconds to do single rep"
+                            android:inputType="number"/>
+                    </TableRow>
+                    <TableRow>
+                        <ToggleButton
+                            android:id="@+id/strengthening_toggle_btn"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:textOn="Is Strength"
+                            android:textOff="Not Strength"/>
+                        <ToggleButton
+                            android:id="@+id/conditioning_toggle_btn"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:textOn="Is Condition"
+                            android:textOff="Not Condition"/>
+                    </TableRow>
+                    <TableRow>
+                        <TextView
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="Targetted Areas "
+                            android:layout_margin="8dp"/>
+                        <TextView
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/muscle_select"
+                            android:layout_margin="8dp"
+                            android:drawableRight="@android:drawable/arrow_down_float"
+                            android:drawablePadding="16dp"
+                            android:text="Targets" />
+                    </TableRow>
+                </TableLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Tags"></TextView>
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textMultiLine"
+                    android:hint="No tags applied..."
+                    android:id="@+id/tag_input"></EditText>
+            </LinearLayout>
         </ScrollView>
     </LinearLayout>
     <LinearLayout

@@ -19,8 +19,8 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         val TABLE_WORKOUTS = "workout"
         val TABLE_WORKOUT_EXERCISE = "workout_exercise"
         val TABLE_TAGS = "tag"
-        val TABLE_WORKOUT_TAGS = "workout_tags"
-        val TABLE_EXERCISE_TAGS = "exercise_tags"
+        val TABLE_WORKOUT_TAGS = "workout_tag"
+        val TABLE_EXERCISE_TAGS = "exercise_tag"
 
         val COLUMN_ID = "_id"
         val COLUMN_EXERCISENAME = "exercise_name"
@@ -118,7 +118,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
 
 
 
-    fun addExercise(exercise: Exercise){
+    fun addExercise(exercise: Exercise): Int?{
         println("DB: Adding exercise: ${exercise.name}")
         println("DB: rep time: ${exercise.repTime}")
 
@@ -139,8 +139,10 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         if(repString != null){ values.put(COLUMN_POSSIBLEREPSIZE, repString) }
         if(muscleString != null){ values.put(COLUMN_TARGETTEDMUSCLES, muscleString) }
 
-        db.insert(TABLE_EXERCISES, null, values)
+        var id = db.insert(TABLE_EXERCISES, null, values)
         db.close()
+
+        return id.toInt()
     }
 
     fun addExerciseToWorkout(workoutExercise: WorkoutExercise): Int?{
@@ -167,10 +169,23 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         val values = ContentValues()
         val db = this.writableDatabase
 
-        values.put(COLUMN_ID, tag.id)
         values.put(COLUMN_NAME, tag.name)
 
         var result = db.insert(TABLE_TAGS, null, values)
+        db.close()
+
+        return result.toInt()
+    }
+
+    fun addTagToExerciseByIds(exerciseId: Int, tagId: Int): Int?{
+        println("DB: Adding tag ${tagId} to exercise ${exerciseId}")
+        val values = ContentValues()
+        val db = this.writableDatabase
+
+        values.put(COLUMN_EXERCISE, exerciseId)
+        values.put(COLUMN_TAG, tagId)
+
+        var result = db.insert(TABLE_EXERCISE_TAGS, null, values)
         db.close()
 
         return result.toInt()
@@ -190,7 +205,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         return result.toInt()
     }
 
-    fun addTagToWorkoutTags(workout: Workout, tag: Tag): Int?{
+    fun addTagToWorkout(workout: Workout, tag: Tag): Int?{
         println("DB: Adding tag ${tag.name} to workout ${workout.workoutName}")
         val values = ContentValues()
         val db = this.writableDatabase
@@ -222,7 +237,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
 
     @SuppressLint("Range")
     fun findExerciseByName(name: String): Exercise?{
-        val query = "SELECT * FROM $TABLE_EXERCISES WHERE $COLUMN_EXERCISENAME = \"$name\""
+        val query = "SELECT * FROM $TABLE_EXERCISES WHERE $COLUMN_EXERCISENAME = \"${name}\""
 
         val db = this.readableDatabase
         val cursor = db.rawQuery(query, null)
@@ -259,7 +274,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
 
     @SuppressLint("Range")
     fun findExerciseById(exId: Int): Exercise?{
-        val query = "SELECT * FROM $TABLE_EXERCISES WHERE $COLUMN_ID = \"$exId\""
+        val query = "SELECT * FROM $TABLE_EXERCISES WHERE $COLUMN_ID = \"${exId}\""
 
         val db = this.readableDatabase
         val cursor = db.rawQuery(query, null)
@@ -302,7 +317,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
     @SuppressLint("Range")
     fun findTagById(id: Int): Tag?{
         println("DB: finding tag of id ${id}")
-        val query = "SELECT * FROM $TABLE_TAGS WHERE $COLUMN_ID = \"$id\""
+        val query = "SELECT * FROM $TABLE_TAGS WHERE $COLUMN_ID = \"${id}\""
         val db = this.readableDatabase
         val cursor = db.rawQuery(query, null)
 
@@ -326,7 +341,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
     @SuppressLint("Range")
     fun findTagByName(name: String): Tag?{
         println("DB: finding tag of name ${name}")
-        val query = "SELECT * FROM $TABLE_TAGS WHERE $COLUMN_NAME = \"$name\""
+        val query = "SELECT * FROM $TABLE_TAGS WHERE $COLUMN_NAME = \"${name}\""
         val db = this.readableDatabase
         val cursor = db.rawQuery(query, null)
 
@@ -350,7 +365,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
     @SuppressLint("Range")
     fun findWorkoutById(id: Int): Workout?{
         println("DB: finding workout of id ${id}")
-        val query = "SELECT * FROM $TABLE_WORKOUTS WHERE $COLUMN_ID = \"$id\""
+        val query = "SELECT * FROM $TABLE_WORKOUTS WHERE $COLUMN_ID = \"${id}\""
         val db = this.readableDatabase
         val cursor = db.rawQuery(query, null)
 
@@ -385,7 +400,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
 
         if(workout.id >= 0) {
             var workid = workout.id
-            val query = "SELECT * FROM $TABLE_WORKOUT_EXERCISE WHERE $COLUMN_WORKOUT = \"$workid\""
+            val query = "SELECT * FROM $TABLE_WORKOUT_EXERCISE WHERE $COLUMN_WORKOUT = \"${workid}\""
 
             val db = this.readableDatabase
             val cursor = db.rawQuery(query, null)
@@ -430,6 +445,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
 
     @SuppressLint("Range")
     fun getAllExercises(): ArrayList<Exercise>?{
+        println("DB: getting all exercises")
         val exerciseList: ArrayList<Exercise> = ArrayList<Exercise>()
 
         val query = "SELECT * FROM $TABLE_EXERCISES"
@@ -574,10 +590,10 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
 
     @SuppressLint("Range")
     fun getTagsForExercise(exercise: Exercise): ArrayList<Tag>{
-        println("DB: finding tags for exercise ${exercise.name}")
+        println("DB: finding tags for exercise ${exercise.name} of id ${exercise.id}")
         var tagList = ArrayList<Tag>()
 
-        val query = "SELECT * $TABLE_EXERCISE_TAGS WHERE $COLUMN_EXERCISE = \"$exercise.id\""
+        val query = "SELECT * FROM $TABLE_EXERCISE_TAGS WHERE $COLUMN_EXERCISE = \"${exercise.id}\""
         val db = this.readableDatabase
         val cursor = db.rawQuery(query, null)
 
@@ -590,6 +606,8 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
                 id = cursor.getInt(cursor.getColumnIndex(COLUMN_ID))
                 exerciseId = cursor.getInt(cursor.getColumnIndex(COLUMN_EXERCISE))
                 tagId = cursor.getInt(cursor.getColumnIndex(COLUMN_TAG))
+
+                println("Found tag of id ${tagId}")
 
                 var tag = findTagById(tagId)
 
@@ -609,7 +627,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         println("DB: finding tags for workout ${workout.workoutName}")
         var tagList = ArrayList<Tag>()
 
-        val query = "SELECT * FROM $TABLE_WORKOUT_TAGS WHERE $COLUMN_EXERCISE = \"$workout.workoutName\""
+        val query = "SELECT * FROM $TABLE_WORKOUT_TAGS WHERE $COLUMN_WORKOUT = \"${workout.workoutName}\""
         val db = this.readableDatabase
         val cursor = db.rawQuery(query, null)
 
@@ -698,7 +716,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         println("DB: Deleting exercise: ${name}")
 
         var result = -1
-        val query = "SELECT * FROM $TABLE_EXERCISES WHERE $COLUMN_EXERCISENAME = \"$name\""
+        val query = "SELECT * FROM $TABLE_EXERCISES WHERE $COLUMN_EXERCISENAME = \"${name}\""
         val db = this.writableDatabase
         val cursor = db.rawQuery(query, null)
 
@@ -715,7 +733,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         println("DB: Deleting workout: ${id}")
 
         var result = false
-        val query = "SELECT * FROM $TABLE_WORKOUTS WHERE $COLUMN_ID = \"$id\""
+        val query = "SELECT * FROM $TABLE_WORKOUTS WHERE $COLUMN_ID = \"${id}\""
         val db = this.writableDatabase
         val cursor = db.rawQuery(query, null)
 
@@ -736,6 +754,17 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
 
         val db = this.writableDatabase
         var result = db.delete(TABLE_WORKOUT_EXERCISE, "$COLUMN_ID = ?", arrayOf(id.toString()))
+
+        db.close()
+        println("result is ${result.toString()}")
+        return result == 0
+    }
+
+    fun deleteTagFromExercise(exercise: Exercise, tag: Tag): Boolean{
+        println("DB: Deleting tag ${tag.id} from exercise ${exercise.name}")
+        val db = this.writableDatabase
+        var result = db.delete(TABLE_EXERCISE_TAGS, "$COLUMN_EXERCISE =? AND $COLUMN_TAG =?",
+            arrayOf(exercise.id.toString(), tag.id.toString()))
 
         db.close()
         println("result is ${result.toString()}")

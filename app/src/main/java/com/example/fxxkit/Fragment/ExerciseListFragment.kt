@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fxxkit.DBHandler
 import com.example.fxxkit.DataClass.Exercise
+import com.example.fxxkit.DataClass.Tag
 import com.example.fxxkit.ExerciseListAdapter
 import com.example.fxxkit.MainActivity
 import com.example.fxxkit.R
@@ -27,6 +28,7 @@ class ExerciseListFragment : Fragment() {
     private var filterSetting = 0
     private var sortSetting = 2
 
+    private var allTags: ArrayList<Tag> = ArrayList<Tag>()
     private var allExercises: ArrayList<Exercise> = ArrayList<Exercise>()
     private var exerciseList: ArrayList<Exercise> = ArrayList<Exercise>()
 
@@ -167,6 +169,15 @@ class ExerciseListFragment : Fragment() {
         val retrievedList = dbHandler.getAllExercises()
 
         if(retrievedList != null && retrievedList.size > 0){
+            for(exercise in retrievedList){
+                println("Getting tags for exercise ${exercise.name}")
+                var exerciseTags = dbHandler.getTagsForExercise(exercise)
+                println("There are ${exerciseTags.size} tags")
+                if(exerciseTags != null){
+                    exercise.tags = exerciseTags
+                }
+            }
+
             allExercises = retrievedList
             exerciseList = allExercises.clone() as ArrayList<Exercise>
         }

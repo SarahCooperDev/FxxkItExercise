@@ -32,9 +32,9 @@ class WorkoutListAdapter(private val activity: MainActivity, private val eList: 
         holder.description_txt.text = currentWorkout.description
 
         if(currentWorkout.isFavourited){
-            holder.favourite_iv.setImageResource(android.R.drawable.btn_star_big_on)
+            holder.favourite_iv.setImageResource(R.drawable.ic_star_filled)
         } else {
-            holder.favourite_iv.setImageResource(android.R.drawable.btn_star_big_off)
+            holder.favourite_iv.setImageResource(R.drawable.ic_star)
         }
 
         holder.workout_details_row.visibility = View.GONE
