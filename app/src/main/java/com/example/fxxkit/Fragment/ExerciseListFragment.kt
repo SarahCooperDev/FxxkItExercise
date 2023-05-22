@@ -91,6 +91,32 @@ class ExerciseListFragment : Fragment() {
         exerciseRecycler.adapter?.notifyDataSetChanged()
     }
 
+    private fun filterByName(){
+        if(searchEdit.text.toString().length > 0){
+            var filteredList: ArrayList<Exercise> = allExercises.filter{ it.name!!.lowercase().contains(searchEdit.text.toString().lowercase())} as ArrayList<Exercise>
+            exerciseList.clear()
+            exerciseList.addAll(filteredList)
+            exerciseRecycler.adapter?.notifyDataSetChanged()
+        } else {
+            Toast.makeText(activity, "There must be a search term to search by name", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun filterByFavourite(){
+        println("Favourites not implemented")
+    }
+
+    private fun filterByTags(){
+        if(searchEdit.text.toString().length > 0){
+            var filteredList: ArrayList<Exercise> = allExercises.filter{ (it.tags.firstOrNull{it.name == searchEdit.text.toString().lowercase()}) != null} as ArrayList<Exercise>
+            exerciseList.clear()
+            exerciseList.addAll(filteredList)
+            exerciseRecycler.adapter?.notifyDataSetChanged()
+        } else {
+            Toast.makeText(activity, "There must be a search term to search by tags", Toast.LENGTH_LONG).show()
+        }
+    }
+
     private fun setUpFilterBtn(){
         filterSearchBtn.setOnClickListener {
             val filterPopup = PopupMenu(activity, filterSearchBtn)
@@ -99,6 +125,10 @@ class ExerciseListFragment : Fragment() {
                 when(menuItem.itemId){
                     R.id.filter_name_item -> {
                         filterSetting = 0
+                        filterByName()
+                    } R.id.filter_tags_item -> {
+                        filterSetting = 2
+                        filterByTags()
                     }
                 }
                 true
@@ -130,17 +160,6 @@ class ExerciseListFragment : Fragment() {
                 true
             }
             sortPopup.show()
-        }
-    }
-
-    private fun filterByName(){
-        if(searchEdit.text.toString().length > 0){
-            var filteredList: ArrayList<Exercise> = allExercises.filter{ it.name!!.lowercase().contains(searchEdit.text.toString().lowercase())} as ArrayList<Exercise>
-            exerciseList.clear()
-            exerciseList.addAll(filteredList)
-            exerciseRecycler.adapter?.notifyDataSetChanged()
-        } else {
-            Toast.makeText(activity, "There must be a search term to search by name", Toast.LENGTH_LONG).show()
         }
     }
 

@@ -72,6 +72,7 @@ class WorkoutListFragment : Fragment() {
         when(filterSetting){
             0 -> filterByName()
             1 -> filterByFavourite()
+            2 -> filterByTags()
         }
         searchEdit.clearFocus()
         val inputManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -106,6 +107,17 @@ class WorkoutListFragment : Fragment() {
         workoutList.addAll(filteredList)
         workoutListRecycler.adapter?.notifyDataSetChanged()
     }
+    
+    private fun filterByTags(){
+        if(searchEdit.text.toString().length > 0){
+            var filteredList: ArrayList<WorkoutViewModel> = allWorkouts.filter{ (it.tags.firstOrNull{it.name == searchEdit.text.toString().lowercase()}) != null} as ArrayList<WorkoutViewModel>
+            workoutList.clear()
+            workoutList.addAll(filteredList)
+            workoutListRecycler.adapter?.notifyDataSetChanged()
+        } else {
+            Toast.makeText(activity, "There must be a search term to search by name", Toast.LENGTH_LONG).show()
+        }
+    }
 
     private fun setUpFilterBtn(){
         filterSearchBtn.setOnClickListener {
@@ -114,11 +126,18 @@ class WorkoutListFragment : Fragment() {
             filterPopup.setOnMenuItemClickListener { menuItem ->
                 when(menuItem.itemId){
                     R.id.filter_name_item -> {
+                        menuItem.setChecked(true)
                         filterSetting = 0
                     }
                     R.id.filter_fav_item -> {
+                        menuItem.setChecked(true)
                         filterSetting = 1
                         filterByFavourite()
+                    }
+                    R.id.filter_tags_item -> {
+                        menuItem.setChecked(true)
+                        filterSetting = 2
+                        filterByTags()
                     }
                 }
                 true

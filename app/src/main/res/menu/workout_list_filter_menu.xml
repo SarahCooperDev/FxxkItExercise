@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
+        android:checked="true"
         android:id="@+id/filter_name_item"
         android:title="Name"></item>
     <item
         android:id="@+id/filter_fav_item"
         android:title="Favourites"></item>
+    <item
+        android:id="@+id/filter_tags_item"
+        android:title="Tags"></item>
 </menu>
