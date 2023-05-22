@@ -30,6 +30,9 @@ class WorkoutListAdapter(private val activity: MainActivity, private val eList: 
         holder.workout_id.text = currentWorkout.id.toString()
         holder.workout_name.text = currentWorkout.name
         holder.description_txt.text = currentWorkout.description
+        if(currentWorkout.tags.size > 0){
+            holder.tag_txt.text = currentWorkout.getTagDisplayString()
+        }
 
         if(currentWorkout.isFavourited){
             holder.favourite_iv.setImageResource(R.drawable.ic_star_filled)
@@ -99,6 +102,7 @@ class WorkoutListAdapter(private val activity: MainActivity, private val eList: 
         val exercise_rv: RecyclerView = itemView.findViewById(R.id.workout_exercise_rv)
         val workout_id: TextView = itemView.findViewById(R.id.workout_id_txt)
         val description_txt: TextView = itemView.findViewById(R.id.description_txt)
+        val tag_txt: TextView = itemView.findViewById(R.id.tag_txt)
         val favourite_iv: ImageView = itemView.findViewById(R.id.favourite_iv)
         val detail_btn: ImageButton = itemView.findViewById(R.id.detail_btn)
         val edit_btn: ImageButton = itemView.findViewById(R.id.edit_btn)

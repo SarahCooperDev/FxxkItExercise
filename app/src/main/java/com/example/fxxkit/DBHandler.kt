@@ -205,6 +205,20 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         return result.toInt()
     }
 
+    fun addTagToWorkoutByIds(workoutId: Int, tagId: Int): Int?{
+        println("DB: Adding tag ${tagId} to workout ${workoutId}")
+        val values = ContentValues()
+        val db = this.writableDatabase
+
+        values.put(COLUMN_WORKOUT, workoutId)
+        values.put(COLUMN_TAG, tagId)
+
+        var result = db.insert(TABLE_WORKOUT_TAGS, null, values)
+        db.close()
+
+        return result.toInt()
+    }
+
     fun addTagToWorkout(workout: Workout, tag: Tag): Int?{
         println("DB: Adding tag ${tag.name} to workout ${workout.workoutName}")
         val values = ContentValues()
@@ -607,13 +621,12 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
                 exerciseId = cursor.getInt(cursor.getColumnIndex(COLUMN_EXERCISE))
                 tagId = cursor.getInt(cursor.getColumnIndex(COLUMN_TAG))
 
-                println("Found tag of id ${tagId}")
-
                 var tag = findTagById(tagId)
 
                 if (tag != null) {
                     tagList.add(tag)
                 }
+                println("Found tag of id ${tagId} and name ${tag?.name}")
             } while(cursor.moveToNext())
         }
 
@@ -627,7 +640,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         println("DB: finding tags for workout ${workout.workoutName}")
         var tagList = ArrayList<Tag>()
 
-        val query = "SELECT * FROM $TABLE_WORKOUT_TAGS WHERE $COLUMN_WORKOUT = \"${workout.workoutName}\""
+        val query = "SELECT * FROM $TABLE_WORKOUT_TAGS WHERE $COLUMN_WORKOUT = \"${workout.id}\""
         val db = this.readableDatabase
         val cursor = db.rawQuery(query, null)
 
@@ -646,6 +659,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
                 if (tag != null) {
                     tagList.add(tag)
                 }
+                println("Found tag of id ${tag?.id} and name ${tag?.name}")
             } while(cursor.moveToNext())
         }
 
@@ -765,6 +779,18 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         val db = this.writableDatabase
         var result = db.delete(TABLE_EXERCISE_TAGS, "$COLUMN_EXERCISE =? AND $COLUMN_TAG =?",
             arrayOf(exercise.id.toString(), tag.id.toString()))
+
+        db.close()
+        println("result is ${result.toString()}")
+        return result == 0
+    }
+
+    fun deleteTagFromWorkoutById(workoutId: Int, tag: Tag): Boolean{
+        println("DB: Deleting tag ${tag.id} from workout ${workoutId}")
+        val db = this.writableDatabase
+        var result = db.delete(
+            TABLE_WORKOUT_TAGS, "$COLUMN_WORKOUT =? AND $COLUMN_TAG =?",
+            arrayOf(workoutId.toString(), tag.id.toString()))
 
         db.close()
         println("result is ${result.toString()}")

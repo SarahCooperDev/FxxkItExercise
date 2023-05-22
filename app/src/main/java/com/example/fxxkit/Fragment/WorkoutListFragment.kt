@@ -194,6 +194,13 @@ class WorkoutListFragment : Fragment() {
                     }
                 }
                 println("Workout exercise list size is ${workoutVM.workExList.size.toString()}")
+                println("Getting tags for workout ${workoutVM.name}")
+                    var workoutTags = dbHandler.getTagsForWorkout(workout)
+                    println("There are ${workoutTags.size} tags")
+                    if(workoutTags != null){
+                        workout.tags = workoutTags
+                        workoutVM.tags = workoutTags
+                    }
                 allWorkouts.add(workoutVM)
             }
             workoutList = allWorkouts.clone() as ArrayList<WorkoutViewModel>

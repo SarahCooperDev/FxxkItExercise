@@ -29,6 +29,7 @@ class WorkoutFragment : Fragment() {
 
     private lateinit var titleTV: TextView
     private lateinit var descriptionTV: TextView
+    private lateinit var tagTxt: TextView
     private lateinit var favImage: ImageView
     private lateinit var exerciseRV: RecyclerView
 
@@ -44,6 +45,7 @@ class WorkoutFragment : Fragment() {
 
         titleTV = view.findViewById(R.id.workout_name_txt)
         descriptionTV = view.findViewById(R.id.description_txt)
+        tagTxt = view.findViewById(R.id.tag_txt)
         favImage = view.findViewById(R.id.favourite_iv)
         exerciseRV = view.findViewById(R.id.exercise_rv)
 
@@ -53,11 +55,10 @@ class WorkoutFragment : Fragment() {
 
         titleTV.setText(currentWorkout.name)
         descriptionTV.setText(currentWorkout.description)
-        if(currentWorkout.isFavourited){
-            favImage.setImageResource(android.R.drawable.btn_star_big_on)
-        } else {
-            favImage.setImageResource(android.R.drawable.btn_star_big_off)
-        }
+
+        if(currentWorkout.tags.size > 0){ tagTxt.setText(currentWorkout.getTagDisplayString()) }
+        if(currentWorkout.isFavourited){ favImage.setImageResource(android.R.drawable.btn_star_big_on) }
+        else { favImage.setImageResource(android.R.drawable.btn_star_big_off) }
 
         exerciseRV.layoutManager = LinearLayoutManager(activity)
         exerciseRV.adapter = DetailWorkoutExerciseListAdapter(workExercises)
@@ -72,6 +73,13 @@ class WorkoutFragment : Fragment() {
             currentWorkout = workout.workoutName?.let { WorkoutViewModel(workout.id, it) }!!
             currentWorkout.description = workout.description
             currentWorkout.isFavourited = workout.isFavourited
+            println("Getting tags for workout ${workout.workoutName}")
+            var workoutTags = dbHandler.getTagsForWorkout(workout)
+            println("There are ${workoutTags.size} tags")
+            if(workoutTags != null){
+                workout.tags = workoutTags
+                currentWorkout.tags = workoutTags
+            }
         }
     }
 

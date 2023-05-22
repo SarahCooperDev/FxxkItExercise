@@ -12,81 +12,103 @@
         android:layout_weight="1"
         android:layout_width="match_parent"
         android:orientation="vertical">
-        <TableLayout
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_width="match_parent">
-            <TableRow>
-                <EditText
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TableLayout
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_width="match_parent">
+                <TableRow>
+                    <EditText
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/workout_name_txt"
+                        android:layout_margin="10dp"
+                        android:hint="Workout Title"
+                        android:inputType="text"/>
+                    <ImageButton
+                        android:layout_gravity="center_vertical"
+                        android:id="@+id/fav_btn"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_margin="0dp"
+                        android:padding="5dp"
+                        android:scaleType="fitXY"
+                        android:background="@null"
+                        android:src="@drawable/ic_star"
+                        android:text="Favourite button"></ImageButton>
+                </TableRow>
+                <TableRow>
+                    <EditText
+                        android:textAppearance="?android:attr/textAppearanceSmallInverse"
+                        android:layout_width="0dp"
+                        android:paddingTop="0dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/description_txt"
+                        android:layout_margin="10dp"
+                        android:hint="Description..."
+                        android:inputType="textMultiLine"/>
+                </TableRow>
+                <TableRow
                     android:layout_height="wrap_content"
-                    android:id="@+id/workout_name_txt"
-                    android:layout_margin="10dp"
-                    android:hint="Workout Title"
-                    android:inputType="text"/>
-                <ImageButton
-                    android:layout_gravity="center_vertical"
-                    android:id="@+id/fav_btn"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_margin="0dp"
-                    android:padding="5dp"
-                    android:scaleType="fitXY"
-                    android:background="@null"
-                    android:src="@drawable/ic_star"
-                    android:text="Favourite button"></ImageButton>
-            </TableRow>
-            <TableRow>
-                <EditText
-                    android:textAppearance="?android:attr/textAppearanceSmallInverse"
-                    android:layout_width="0dp"
-                    android:paddingTop="0dp"
-                    android:layout_marginTop="0dp"
-                    android:layout_weight="1"
+                    android:layout_width="match_parent">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Tags"></TextView>
+                </TableRow>
+                <TableRow
                     android:layout_height="wrap_content"
-                    android:id="@+id/description_txt"
-                    android:layout_margin="10dp"
-                    android:hint="Description..."
-                    android:inputType="textMultiLine"/>
-            </TableRow>
-            <TableRow>
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:text="Add Exercise"
-                    android:id="@+id/add_exercise_btn"></Button>
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:text="Remove Exercise"
-                    android:id="@+id/remove_exercise_btn"></Button>
-            </TableRow>
-            <TableRow>
-                <View
-                    android:id="@+id/divider"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="?android:attr/listDivider"
-                    android:layout_margin="3dp"/>
-            </TableRow>
-            <TableRow>
-                <TextView
-                    android:id="@+id/selected_ex_title_txt"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Selected Exercises"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"></TextView>
-            </TableRow>
-            <TableRow>
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/selected_ex_rv"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"></androidx.recyclerview.widget.RecyclerView>
-            </TableRow>
-        </TableLayout>
+                    android:layout_width="match_parent">
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textMultiLine"
+                        android:hint="No tags applied..."
+                        android:id="@+id/tag_input"></EditText>
+                </TableRow>
+                <TableRow>
+                    <Button
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Add Exercise"
+                        android:id="@+id/add_exercise_btn"></Button>
+                    <Button
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Remove Exercise"
+                        android:id="@+id/remove_exercise_btn"></Button>
+                </TableRow>
+                <TableRow>
+                    <View
+                        android:id="@+id/divider"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="?android:attr/listDivider"
+                        android:layout_margin="3dp"/>
+                </TableRow>
+                <TableRow>
+                    <TextView
+                        android:id="@+id/selected_ex_title_txt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Selected Exercises"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"></TextView>
+                </TableRow>
+                <TableRow>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/selected_ex_rv"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"></androidx.recyclerview.widget.RecyclerView>
+                </TableRow>
+            </TableLayout>
+        </ScrollView>
     </LinearLayout>
     <LinearLayout
         style="@style/DesertActionBar"

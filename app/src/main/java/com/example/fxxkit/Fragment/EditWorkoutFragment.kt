@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fxxkit.*
 import com.example.fxxkit.DataClass.Exercise
+import com.example.fxxkit.DataClass.Tag
 import com.example.fxxkit.DataClass.Workout
 import com.example.fxxkit.DataClass.WorkoutExercise
 import com.example.fxxkit.ViewHolder.DetailWorkoutExerciseListAdapter
@@ -27,8 +28,10 @@ class EditWorkoutFragment : Fragment() {
     private lateinit var removeExerciseBtn: Button
     private lateinit var favBtn: ImageButton
     private lateinit var descTxt: EditText
+    private lateinit var tagInput: EditText
     private lateinit var selectedExRV: RecyclerView
     private var allExerciseList: ArrayList<Exercise>? = null
+    private var allTags: ArrayList<Tag> = ArrayList<Tag>()
     private var unselectedExerciseList: ArrayList<Exercise> = ArrayList<Exercise>()
     private var selectedExercises: ArrayList<WorkoutExercise> = ArrayList<WorkoutExercise>()
     private var unselectedWorkExercises: ArrayList<WorkoutExercise> = ArrayList<WorkoutExercise>()
@@ -47,11 +50,13 @@ class EditWorkoutFragment : Fragment() {
 
         loadAllExercises()
         loadWorkoutExercises()
+        getAllTags()
         filterExercisesBySelected()
         loadExercisesIntoWorkouts(unselectedExerciseList)
 
         workoutName = view.findViewById<EditText>(R.id.workout_name_txt)
         descTxt = view.findViewById<EditText>(R.id.description_txt)
+        tagInput = view.findViewById<EditText>(R.id.tag_input)
         favBtn = view.findViewById<ImageButton>(R.id.fav_btn)
         updateBtn = view.findViewById<ImageButton>(R.id.update_btn)
         cancelBtn = view.findViewById<ImageButton>(R.id.cancel_btn)
@@ -64,6 +69,7 @@ class EditWorkoutFragment : Fragment() {
 
         workoutName.setText(currentWorkout.name)
         descTxt.setText(currentWorkout.description)
+        tagInput.setText(currentWorkout.getTagInputString())
         setFavourite(true)
 
         addExerciseBtn.setOnClickListener { view -> buildAddExerciseDialog() }
@@ -174,6 +180,13 @@ class EditWorkoutFragment : Fragment() {
             currentWorkout = workout.workoutName?.let { WorkoutViewModel(workout.id, it) }!!
             currentWorkout.description = workout.description
             currentWorkout.isFavourited = workout.isFavourited
+
+            var workoutTags = dbHandler.getTagsForWorkout(workout)
+            println("There are ${workoutTags.size} tags")
+            if(workoutTags != null){
+                workout.tags = workoutTags
+                currentWorkout.tags = workoutTags
+            }
         }
     }
     private fun loadExercisesIntoWorkouts(exerciseList: ArrayList<Exercise>){
@@ -212,6 +225,11 @@ class EditWorkoutFragment : Fragment() {
         allExerciseList = dbHandler.getAllExercises()
     }
 
+    private fun getAllTags(){
+        val dbHandler = DBHandler(this.requireContext(), null, null, 1)
+        allTags = dbHandler.getAllTags()
+    }
+
     private fun updateWorkoutWithExercises(){
         val dbHandler = DBHandler(this.requireContext(), null, null, 1)
         currentWorkout.name = workoutName.text.toString()
@@ -222,6 +240,34 @@ class EditWorkoutFragment : Fragment() {
 
         for(workEx in removedWorkExercises){ dbHandler.deleteWorkoutExercise(workEx.id) }
         for(workEx in addedWorkExercises){ dbHandler.addExerciseToWorkout(workEx) }
+
+        var splitTags = tagInput.text.split(" ")
+        for(tag in splitTags){
+            var foundTag = currentWorkout.tags.firstOrNull{it.name!!.lowercase() == tag.toString().lowercase()}
+
+            if(foundTag == null){
+                foundTag = allTags.firstOrNull{ it.name!!.lowercase() == tag.toString().lowercase() }
+
+                if(foundTag == null){
+                    foundTag = Tag(tag.toString().lowercase())
+                    foundTag.id = dbHandler.addTag(foundTag)!!
+                    println("New tag ${tag} is ${foundTag.id}")
+                }
+
+                if(foundTag.id != null){
+                    var result = dbHandler.addTagToWorkoutByIds(currentWorkout.id, foundTag.id)
+                    println("Result is ${result}")
+                }
+            }
+        }
+
+        for(tag in currentWorkout.tags){
+            var foundTag = splitTags.firstOrNull{it.lowercase() == tag.name!!.lowercase()}
+
+            if(foundTag == null){
+                dbHandler.deleteTagFromWorkoutById(currentWorkout.id, tag)
+            }
+        }
     }
 
 

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fxxkit.*
 import com.example.fxxkit.DataClass.Exercise
+import com.example.fxxkit.DataClass.Tag
 import com.example.fxxkit.DataClass.Workout
 import com.example.fxxkit.DataClass.WorkoutExercise
 
@@ -27,8 +28,10 @@ class CreateWorkoutFragment : Fragment() {
     private lateinit var cancelBtn: ImageButton
     private lateinit var favBtn: ImageButton
     private lateinit var descTxt: EditText
+    private lateinit var tagInput: EditText
     private var exerciseListAdapter: RecyclerView.Adapter<ExerciseListAdapter.ExerciseListViewHolder>? = null
     private var workoutExerciseList: ArrayList<WorkoutExercise> = ArrayList<WorkoutExercise>()
+    private var allTags = ArrayList<Tag>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +44,7 @@ class CreateWorkoutFragment : Fragment() {
         recycler.layoutManager = LinearLayoutManager(activity)
 
         var exerciseList = loadExercises()
+        getAllTags()
         loadExercisesIntoWorkout(exerciseList)
 
         recycler.adapter = AddWorkoutExerciseListAdapter((activity as MainActivity), workoutExerciseList)
@@ -50,6 +54,7 @@ class CreateWorkoutFragment : Fragment() {
         cancelBtn = view.findViewById<ImageButton>(R.id.cancel_btn)
         favBtn = view.findViewById<ImageButton>(R.id.fav_btn)
         descTxt = view.findViewById<EditText>(R.id.description_txt)
+        tagInput = view.findViewById<EditText>(R.id.tag_input)
 
         createBtn.setOnClickListener{ view ->
             if(workoutName.text.toString().length < 1){
@@ -102,6 +107,21 @@ class CreateWorkoutFragment : Fragment() {
                     var result = dbHandler.addExerciseToWorkout(workEx)
                 }
             }
+
+            var splitTags = tagInput.text.split(" ")
+            for(tag in splitTags){
+                var foundTag = allTags.firstOrNull{ it.name!!.lowercase() == tag.toString().lowercase() }
+                if(foundTag == null){
+                    foundTag = Tag(tag.toString().lowercase())
+                    foundTag.id = dbHandler.addTag(foundTag)!!
+                    println("New tag ${tag} is ${foundTag.id}")
+                }
+
+                if(foundTag.id != null){
+                    var result = dbHandler.addTagToWorkout(workout, foundTag)
+                    println("Result is ${result}")
+                }
+            }
         }
     }
 
@@ -117,6 +137,11 @@ class CreateWorkoutFragment : Fragment() {
         val dbHandler = DBHandler(this.requireContext(), null, null, 1)
         var exerciseList = dbHandler.getAllExercises()!!
         return exerciseList
+    }
+
+    private fun getAllTags(){
+        val dbHandler = DBHandler(this.requireContext(), null, null, 1)
+        allTags = dbHandler.getAllTags()
     }
 
     companion object {

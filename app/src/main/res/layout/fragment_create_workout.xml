@@ -12,72 +12,94 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="vertical">
-        <TableLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <TableRow
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent">
-                <EditText
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
+            android:layout_height="wrap_content">
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TableRow
                     android:layout_height="wrap_content"
-                    android:id="@+id/workout_name_txt"
-                    android:textSize="18sp"
-                    android:hint="Workout Title"
-                    android:inputType="text"/>
+                    android:layout_width="match_parent">
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/workout_name_txt"
+                        android:textSize="18sp"
+                        android:hint="Workout Title"
+                        android:inputType="text"/>
 
-                <ImageButton
-                    android:layout_gravity="center_vertical"
-                    android:id="@+id/fav_btn"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_margin="0dp"
-                    android:padding="5dp"
-                    android:scaleType="fitXY"
-                    android:background="@null"
-                    android:src="@drawable/ic_star"
-                    android:text="Favourite button"></ImageButton>
-            </TableRow>
-            <TableRow
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent">
-                <EditText
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
+                    <ImageButton
+                        android:layout_gravity="center_vertical"
+                        android:id="@+id/fav_btn"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_margin="0dp"
+                        android:padding="5dp"
+                        android:scaleType="fitXY"
+                        android:background="@null"
+                        android:src="@drawable/ic_star"
+                        android:text="Favourite button"></ImageButton>
+                </TableRow>
+                <TableRow
                     android:layout_height="wrap_content"
-                    android:id="@+id/description_txt"
-                    android:textSize="16sp"
-                    android:hint="Description..."
-                    android:inputType="textMultiLine"/>
-            </TableRow>
-            <TableRow
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent">
-                <View
-                    android:id="@+id/divider"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="?android:attr/listDivider"
-                    android:layout_margin="3dp"/>
-            </TableRow>
-            <TableRow
-                android:layout_width="match_parent">
-                <ScrollView
-                    android:layout_width="0dp"
-                    android:layout_weight="1">
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/exercise_list_rv"
+                    android:layout_width="match_parent">
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/description_txt"
+                        android:textSize="16sp"
+                        android:hint="Description..."
+                        android:inputType="textMultiLine"/>
+                </TableRow>
+                <TableRow
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent">
+                    <TextView
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:clipChildren="false"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:listitem="@layout/exercise_row_item" />
-                </ScrollView>
-            </TableRow>
-        </TableLayout>
+                        android:layout_height="wrap_content"
+                        android:text="Tags"></TextView>
+                </TableRow>
+                <TableRow
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent">
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textMultiLine"
+                        android:hint="No tags applied..."
+                        android:id="@+id/tag_input"></EditText>
+                </TableRow>
+                <TableRow
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent">
+                    <View
+                        android:id="@+id/divider"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="?android:attr/listDivider"
+                        android:layout_margin="3dp"/>
+                </TableRow>
+                <TableRow
+                    android:layout_width="match_parent">
+                    <ScrollView
+                        android:layout_width="0dp"
+                        android:layout_weight="1">
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/exercise_list_rv"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:clipChildren="false"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:listitem="@layout/exercise_row_item" />
+                    </ScrollView>
+                </TableRow>
+            </TableLayout>
+        </ScrollView>
     </LinearLayout>
     <LinearLayout
         style="@style/DesertActionBar"
