@@ -20,6 +20,7 @@ import androidx.navigation.fragment.NavHostFragment
 import com.example.fxxkit.DataClass.Debugger
 import com.example.fxxkit.DataClass.Exercise
 import com.example.fxxkit.DataClass.Workout
+import com.example.fxxkit.DataClass.WorkoutExercise
 import com.example.fxxkit.Fragment.*
 import com.example.fxxkit.ViewModel.WorkoutViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -79,8 +80,9 @@ class MainActivity : AppCompatActivity() {
         navController.popBackStack()
     }
 
-    fun navToSuggestedWorkout(){
-        navController.navigate(R.id.action_generateWorkoutFragment_to_suggestedWorkoutFragment)
+    fun navToSuggestedWorkout(selectedWorkExes: ArrayList<WorkoutExercise>){
+        var bundle = bundleOf("workoutExercises" to selectedWorkExes)
+        navController.navigate(R.id.action_generateWorkoutFragment_to_suggestedWorkoutFragment, bundle)
     }
 
     fun navToGenerateWorkout(){

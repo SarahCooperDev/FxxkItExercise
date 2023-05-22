@@ -130,4 +130,24 @@ object MultiselectLists {
 
         return list
     }
+
+    public fun getRepAsArrayList(): ArrayList<String>{
+        var list = ArrayList<String>()
+        for(item in repSizesArray){
+            if(item != "All"){
+                list.add(item)
+            }
+        }
+        return list
+    }
+
+    public fun getSetAsArrayList(): ArrayList<String>{
+        var list = ArrayList<String>()
+        for(item in setSizesArray){
+            if(item != "All"){
+                list.add(item)
+            }
+        }
+        return list
+    }
 }

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fxxkit.DBHandler
 import com.example.fxxkit.DataClass.Exercise
+import com.example.fxxkit.DataClass.MultiselectLists
 import com.example.fxxkit.DataClass.WorkoutExercise
 import com.example.fxxkit.MainActivity
 import com.example.fxxkit.R
@@ -30,7 +31,9 @@ class GenerateWorkoutFragment : Fragment() {
     private var allWorkoutExercises: ArrayList<WorkoutExercise> = ArrayList<WorkoutExercise>()
     private var targettedMuscles: ArrayList<String> = ArrayList<String>()
     private var excludedMuscles: ArrayList<String> = ArrayList<String>()
+    var selectedWorkExes = ArrayList<WorkoutExercise>()
     private var excludedWorkoutExercises: ArrayList<WorkoutExercise> = ArrayList<WorkoutExercise>()
+    var workoutSelectedExercises: ArrayList<WorkoutExercise> = ArrayList<WorkoutExercise>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +60,8 @@ class GenerateWorkoutFragment : Fragment() {
         excludeExTxt.setOnClickListener { view -> buildExcludeExerciseDialog() }
 
         generateBtn.setOnClickListener { view ->
-            (activity as MainActivity).navToSuggestedWorkout()
+            generateWorkout()
+            (activity as MainActivity).navToSuggestedWorkout(workoutSelectedExercises)
         }
 
         cancelBtn.setOnClickListener { view ->
@@ -66,6 +70,168 @@ class GenerateWorkoutFragment : Fragment() {
 
         return view
     }
+
+    private fun generateWorkout(){
+        for(exercise in selectedWorkExes){
+            println("Excluded exercise ${exercise.id}")
+            allWorkoutExercises.removeAll{it.exerciseId == exercise.exerciseId}
+        }
+
+        var filteredWorkExes: ArrayList<WorkoutExercise> = allWorkoutExercises.clone() as ArrayList<WorkoutExercise>
+        println("Number of exercises after excluded ones is ${filteredWorkExes.size}")
+
+        if(excludedMuscles.size == 0 && targettedMuscles.size == 0){
+            println("No muscles targetted and none excluded")
+        } else if(targettedMuscles.size == 0){
+            println("No muscles targetted, but several excluded")
+            for(workEx in filteredWorkExes){
+                if(doesStringListContainListItem(workEx.exercise!!.targettedMuscles, excludedMuscles)){
+                    allWorkoutExercises.remove(workEx)
+                }
+            }
+        } else if(excludedMuscles.size == 0) {
+            println("No muscles excluded, but several targetted")
+            for(workEx in filteredWorkExes){
+                if(!doesStringListContainListItem(workEx.exercise!!.targettedMuscles, targettedMuscles)){
+                    allWorkoutExercises.remove(workEx)
+                }
+            }
+        } else if(excludedMuscles.size > 0 && targettedMuscles.size > 0){
+            println("Some muscles targetted, several excluded")
+            for(workEx in filteredWorkExes){
+                if(!doesStringListContainListItem(workEx.exercise!!.targettedMuscles, targettedMuscles)){
+                    allWorkoutExercises.remove(workEx)
+                } else if(doesStringListContainListItem(workEx.exercise!!.targettedMuscles, excludedMuscles)){
+                    allWorkoutExercises.remove(workEx)
+                }
+            }
+        }
+
+        filteredWorkExes = allWorkoutExercises.clone() as ArrayList<WorkoutExercise>
+        println("Number of exercises available after muscle filtering is ${filteredWorkExes.size}")
+
+        if(strengthChkbx.isChecked && conditionChkbx.isChecked){
+            println("Both are focused")
+            for(workEx in filteredWorkExes){
+                if(!workEx.exercise!!.isStrengthening && !workEx.exercise!!.isConditioning){
+                    allWorkoutExercises.remove(workEx)
+                }
+            }
+        } else if(strengthChkbx.isChecked){
+            println("Only strengthening exercises")
+            for(workEx in filteredWorkExes){
+                if(!workEx.exercise!!.isStrengthening){
+                    allWorkoutExercises.remove(workEx)
+                }
+            }
+        } else if(conditionChkbx.isChecked){
+            println("Only conditioning exercises")
+            for(workEx in filteredWorkExes){
+                if(!workEx.exercise!!.isConditioning){
+                    allWorkoutExercises.remove(workEx)
+                }
+            }
+        } else {
+            println("Neither conditioning nor strengthening")
+            for(workEx in filteredWorkExes){
+                if(workEx.exercise!!.isStrengthening || workEx.exercise!!.isConditioning){
+                    allWorkoutExercises.remove(workEx)
+                }
+            }
+        }
+
+        filteredWorkExes = allWorkoutExercises.clone() as ArrayList<WorkoutExercise>
+        println("Number of exercises available after strength/condition filtering ${filteredWorkExes.size}")
+
+        var targetTime = durationInput.text.toString().toInt() * 60
+        var runningTime = 0
+        println("Workout time is ${targetTime}")
+        var random = 0
+
+        while(runningTime < targetTime && filteredWorkExes.size > 0){
+            random = (0..filteredWorkExes.size - 1).random()
+            println("Selected exercise from filtered (size is ${filteredWorkExes.size}) number ${random}")
+
+            var workEx = filteredWorkExes[random]
+            filteredWorkExes.removeAt(random)
+            var setSize = 0
+            var repSize = 0
+            if(workEx.exercise!!.possibleSetSize.size < 1 || workEx.exercise!!.possibleSetSize.contains(MultiselectLists.setSizesArray[0])){
+                var weightedList = getWeigtedList(MultiselectLists.getSetAsArrayList())
+                setSize = weightedList[(0..weightedList.size-1).random()].toInt()
+            } else {
+                var weightedList = getWeigtedList(workEx.exercise!!.possibleSetSize)
+                setSize = weightedList[(0..weightedList.size-1).random()].toInt()
+            }
+
+            if(workEx.exercise!!.possibleRepSize.size < 1 || workEx.exercise!!.possibleRepSize.contains(MultiselectLists.repSizesArray[0])){
+                var weightedList = getWeigtedList(MultiselectLists.getRepAsArrayList())
+                repSize = weightedList[(0..weightedList.size-1).random()].toInt()
+            } else {
+                var weightedList = getWeigtedList(MultiselectLists.getRepAsArrayList())
+                repSize = weightedList[(0..weightedList.size-1).random()].toInt()
+            }
+
+            workEx.setSize = setSize.toString()
+            workEx.repSize = repSize.toString()
+            workEx.totalTime = setSize * repSize * workEx.exercise!!.repTime
+
+            workoutSelectedExercises.add(workEx)
+            runningTime += workEx.totalTime
+
+            println("Added workout exercise ${workEx.exercise!!.name}")
+            println("Set size is ${workEx.setSize} and rep size is ${workEx.repSize}")
+            println("Running time is ${runningTime}")
+        }
+
+        println("Total workout exercises is ${workoutSelectedExercises.size}")
+    }
+
+    private fun getWeigtedList(sizeList: ArrayList<String>): ArrayList<String>{
+        var weightedList = ArrayList<String>()
+
+        for(i in 0..(sizeList.size*0.25).toInt()){
+            weightedList.add(sizeList[i])
+        }
+        for(i in 0..(sizeList.size*0.5).toInt()){
+            weightedList.add(sizeList[i])
+        }
+        for(i in 0..(sizeList.size*0.75).toInt()){
+            weightedList.add(sizeList[i])
+        }
+        for(i in 0..sizeList.size-1){
+            weightedList.add(sizeList[i])
+        }
+        return weightedList
+    }
+
+    private fun doesStringListContainListItem(list1: ArrayList<String>, list2: ArrayList<String>): Boolean{
+        for(item in list1){
+            if(list2.contains(item)){
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun getMuscles(): ArrayList<String>{
+        var muscleList: ArrayList<String> = ArrayList<String>()
+        if(targettedMuscles.size == 0){
+            for(i in 1 .. MultiselectLists.targettedMusclesArray.size - 1){
+                if(excludedMuscles.contains(MultiselectLists.targettedMusclesArray[i])){
+
+                } else {
+                    muscleList.add(MultiselectLists.targettedMusclesArray[i])
+                }
+            }
+        } else {
+            muscleList = targettedMuscles.clone() as ArrayList<String>
+        }
+
+        println(muscleList.toString())
+        return muscleList
+    }
+
 
     private fun loadExercisesIntoWorkout(){
         for(exercise in allExercises){
@@ -90,7 +256,6 @@ class GenerateWorkoutFragment : Fragment() {
             builder.dismiss()
         }
         doneBtn.setOnClickListener { view ->
-            var selectedWorkExes = ArrayList<WorkoutExercise>()
             for(workExes in allWorkoutExercises){
                 if(workExes.isSelected){
                     selectedWorkExes.add(workExes)
