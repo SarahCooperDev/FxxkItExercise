@@ -70,5 +70,5 @@
         android:id="@+id/suggestedWorkoutFragment"
         android:name="com.example.fxxkit.Fragment.SuggestedWorkoutFragment"
         android:label="fragment_suggested_workout"
-        tools:layout="@layout/fragment_suggested_workout" />
+        tools:layout="@layout/fragment_suggested_workout" /><action android:id="@+id/action_global_workoutFragment" app:destination="@id/workoutFragment"/>
 </navigation>

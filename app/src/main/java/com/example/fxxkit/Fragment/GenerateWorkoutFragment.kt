@@ -32,7 +32,6 @@ class GenerateWorkoutFragment : Fragment() {
     private var targettedMuscles: ArrayList<String> = ArrayList<String>()
     private var excludedMuscles: ArrayList<String> = ArrayList<String>()
     var selectedWorkExes = ArrayList<WorkoutExercise>()
-    private var excludedWorkoutExercises: ArrayList<WorkoutExercise> = ArrayList<WorkoutExercise>()
     var workoutSelectedExercises: ArrayList<WorkoutExercise> = ArrayList<WorkoutExercise>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,6 +41,11 @@ class GenerateWorkoutFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var view = inflater.inflate(R.layout.fragment_generate_workout, container, false)
         (activity as MainActivity).getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText("Generate Workout")
+
+        allExercises.clear()
+        allWorkoutExercises.clear()
+        selectedWorkExes.clear()
+        workoutSelectedExercises.clear()
 
         loadExercises(view)
         loadExercisesIntoWorkout()
@@ -150,7 +154,6 @@ class GenerateWorkoutFragment : Fragment() {
 
         while(runningTime < targetTime && filteredWorkExes.size > 0){
             random = (0..filteredWorkExes.size - 1).random()
-            println("Selected exercise from filtered (size is ${filteredWorkExes.size}) number ${random}")
 
             var workEx = filteredWorkExes[random]
             filteredWorkExes.removeAt(random)
@@ -180,7 +183,7 @@ class GenerateWorkoutFragment : Fragment() {
             runningTime += workEx.totalTime
 
             println("Added workout exercise ${workEx.exercise!!.name}")
-            println("Set size is ${workEx.setSize} and rep size is ${workEx.repSize}")
+            //println("Set size is ${workEx.setSize} and rep size is ${workEx.repSize} and time is ${workEx.exercise!!.repTime}")
             println("Running time is ${runningTime}")
         }
 
@@ -190,13 +193,16 @@ class GenerateWorkoutFragment : Fragment() {
     private fun getWeigtedList(sizeList: ArrayList<String>): ArrayList<String>{
         var weightedList = ArrayList<String>()
 
-        for(i in 0..(sizeList.size*0.25).toInt()){
+        for(i in 0..((sizeList.size-1)*0.2).toInt()){
             weightedList.add(sizeList[i])
         }
-        for(i in 0..(sizeList.size*0.5).toInt()){
+        for(i in 0..((sizeList.size-1)*0.4).toInt()){
             weightedList.add(sizeList[i])
         }
-        for(i in 0..(sizeList.size*0.75).toInt()){
+        for(i in 0..((sizeList.size-1)*0.6).toInt()){
+            weightedList.add(sizeList[i])
+        }
+        for(i in 0..((sizeList.size-1)*0.8).toInt()){
             weightedList.add(sizeList[i])
         }
         for(i in 0..sizeList.size-1){
@@ -212,24 +218,6 @@ class GenerateWorkoutFragment : Fragment() {
             }
         }
         return false
-    }
-
-    private fun getMuscles(): ArrayList<String>{
-        var muscleList: ArrayList<String> = ArrayList<String>()
-        if(targettedMuscles.size == 0){
-            for(i in 1 .. MultiselectLists.targettedMusclesArray.size - 1){
-                if(excludedMuscles.contains(MultiselectLists.targettedMusclesArray[i])){
-
-                } else {
-                    muscleList.add(MultiselectLists.targettedMusclesArray[i])
-                }
-            }
-        } else {
-            muscleList = targettedMuscles.clone() as ArrayList<String>
-        }
-
-        println(muscleList.toString())
-        return muscleList
     }
 
 

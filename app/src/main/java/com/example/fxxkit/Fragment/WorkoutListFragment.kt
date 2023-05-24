@@ -26,6 +26,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 class WorkoutListFragment : Fragment() {
     private var filterSetting = 0
     private var sortSetting = 2
+    private lateinit var randomWorkoutBtn: FloatingActionButton
     private lateinit var createWorkoutBtn : FloatingActionButton
     private lateinit var sortBtn: ImageButton
     private lateinit var searchBtn: ImageButton
@@ -45,6 +46,7 @@ class WorkoutListFragment : Fragment() {
         var view = inflater.inflate(R.layout.fragment_workout_list, container, false)
         (activity as MainActivity).getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText("Workouts")
 
+        randomWorkoutBtn = view.findViewById<FloatingActionButton>(R.id.random_workout_btn)
         createWorkoutBtn = view.findViewById<FloatingActionButton>(R.id.create_workout_btn)
         sortBtn = view.findViewById<ImageButton>(R.id.sort_btn)
         workoutListRecycler = view.findViewById<RecyclerView>(R.id.workout_list_rv)
@@ -61,11 +63,17 @@ class WorkoutListFragment : Fragment() {
 
         setUpSortBtn()
         setUpFilterBtn()
+        randomWorkoutBtn.setOnClickListener { view -> goToRandom() }
         createWorkoutBtn.setOnClickListener { view -> (activity as MainActivity).navToCreateWorkout() }
         searchBtn.setOnClickListener { search() }
         searchClearBtn.setOnClickListener { clearSearch() }
 
         return view
+    }
+
+    private fun goToRandom(){
+        var workoutNumber = (0..workoutList.size-1).random()
+        (activity as MainActivity).navToWorkoutDetails(workoutList[workoutNumber].id)
     }
 
     private fun search(){

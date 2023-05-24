@@ -5,21 +5,36 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".Fragment.SuggestedWorkoutFragment">
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Suggested Exercises"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-
-    <View
-        android:id="@+id/divider2"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="?android:attr/listDivider" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/exercise_rv"
         android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"></androidx.recyclerview.widget.RecyclerView>
+    <LinearLayout
+        style="@style/DesertActionBar"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageButton
+            android:id="@+id/cancel_btn"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:backgroundTint="@color/dark_red"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:textColor="@color/white" />
+
+        <ImageButton
+            android:id="@+id/save_btn"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:backgroundTint="@color/green"
+            android:src="?android:attr/textCheckMark"
+            android:text="Save"
+            android:textColor="@color/white" />
+    </LinearLayout>
 </LinearLayout>

@@ -32,6 +32,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var previousBtn: ImageButton
     private lateinit var exercisesBtn: ImageButton
 
+    private var generatedWorkoutExercises: ArrayList<WorkoutExercise> = ArrayList<WorkoutExercise>()
+
     public lateinit var navController: NavController
 
     @SuppressLint("MissingInflatedId")
@@ -47,8 +49,6 @@ class MainActivity : AppCompatActivity() {
         actionBar?.setCustomView(customView, androidx.appcompat.app.ActionBar.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
         var barParent = customView.parent as androidx.appcompat.widget.Toolbar
         barParent.setContentInsetsAbsolute(0, 0)
-
-
 
         var navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
@@ -76,13 +76,18 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    public fun getGeneratedWorkoutExercises(): ArrayList<WorkoutExercise>{
+        return this.generatedWorkoutExercises
+    }
+
     fun navToPrevious(){
         navController.popBackStack()
     }
 
     fun navToSuggestedWorkout(selectedWorkExes: ArrayList<WorkoutExercise>){
-        var bundle = bundleOf("workoutExercises" to selectedWorkExes)
-        navController.navigate(R.id.action_generateWorkoutFragment_to_suggestedWorkoutFragment, bundle)
+        this.generatedWorkoutExercises.clear()
+        this.generatedWorkoutExercises = selectedWorkExes.clone() as ArrayList<WorkoutExercise>
+        navController.navigate(R.id.action_generateWorkoutFragment_to_suggestedWorkoutFragment)
     }
 
     fun navToGenerateWorkout(){
@@ -112,7 +117,7 @@ class MainActivity : AppCompatActivity() {
 
     public fun navToWorkoutDetails(workoutId: Int){
         val bundle = bundleOf("workoutId" to workoutId)
-        navController.navigate(R.id.action_workoutListFragment_to_workoutFragment, bundle)
+        navController.navigate(R.id.action_global_workoutFragment, bundle)
     }
 
     public fun navToEditWorkout(workoutId: Int){
