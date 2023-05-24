@@ -121,6 +121,11 @@ class ExerciseListFragment : Fragment() {
         filterSearchBtn.setOnClickListener {
             val filterPopup = PopupMenu(activity, filterSearchBtn)
             filterPopup.menuInflater.inflate(R.menu.workout_list_filter_menu, filterPopup.menu)
+            when(filterSetting){
+                0 -> filterPopup.menu.findItem(R.id.filter_name_item).setChecked(true)
+                1 -> filterPopup.menu.findItem(R.id.filter_fav_item).setChecked(true)
+                2 -> filterPopup.menu.findItem(R.id.filter_tags_item).setChecked(true)
+            }
             filterPopup.setOnMenuItemClickListener { menuItem ->
                 when(menuItem.itemId){
                     R.id.filter_name_item -> {
