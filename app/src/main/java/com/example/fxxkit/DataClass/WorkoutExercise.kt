@@ -11,6 +11,14 @@ class WorkoutExercise{
     var orderNo: Int = -1
     var totalTime: Int = 0
 
+    constructor(id: Int, workoutId: Int, exerciseId: Int, setSize: String, repSize: String, orderNo: Int){
+        this.id = id
+        this.workoutId = workoutId
+        this.exerciseId = exerciseId
+        this.setSize = setSize
+        this.repSize = repSize
+        this.orderNo = orderNo
+    }
     constructor(id: Int, workoutId: Int, exerciseId: Int, setSize: String, repSize: String){
         this.id = id
         this.workoutId = workoutId

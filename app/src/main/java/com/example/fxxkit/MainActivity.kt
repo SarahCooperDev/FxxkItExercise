@@ -122,7 +122,7 @@ class MainActivity : AppCompatActivity() {
 
     public fun navToEditWorkout(workoutId: Int){
         val bundle = bundleOf("workoutId" to workoutId)
-        navController.navigate(R.id.action_workoutListFragment_to_editWorkoutFragment, bundle)
+        navController.navigate(R.id.action_global_editWorkoutFragment, bundle)
     }
 
     private fun migrateDB(){

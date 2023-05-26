@@ -218,6 +218,7 @@ class WorkoutListFragment : Fragment() {
                 workoutVM.description = workout.description
                 workoutVM.isFavourited = workout.isFavourited
                 workoutVM.workExList = dbHandler.findAllWorkoutExercises(workout)
+                workoutVM.workExList.sortBy { it.orderNo }
 
                 for(workEx in workoutVM.workExList){
                     if(workEx.exerciseId > -1){

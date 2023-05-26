@@ -44,6 +44,7 @@
             android:layout_height="wrap_content"
             android:text="Description"/>
         <TableLayout
+            android:id="@+id/showing_table"
             android:layout_width="match_parent"
             android:stretchColumns="*"
             android:layout_height="wrap_content">
@@ -57,8 +58,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="N/A"/>
-            </TableRow>
-            <TableRow>
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -70,7 +69,7 @@
                     android:text="N/A"/>
             </TableRow>
             <TableRow
-                android:id="@+id/rep_time_row">
+                android:id="@+id/time_row">
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -80,9 +79,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="N/A"/>
-            </TableRow>
-            <TableRow
-                android:id="@+id/total_time_row">
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -93,12 +89,18 @@
                     android:layout_height="wrap_content"
                     android:text="N/A"/>
             </TableRow>
+        </TableLayout>
+        <TableLayout
+            android:id="@+id/hidden_table"
+            android:layout_width="match_parent"
+            android:stretchColumns="*"
+            android:layout_height="wrap_content">
             <TableRow
                 android:id="@+id/muscles_row">
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Targetted Muscles: "/>
+                    android:text="Targetted Areas: "/>
                 <TextView
                     android:id="@+id/muscle_list_txt"
                     android:layout_width="0dp"

@@ -15,6 +15,7 @@ import com.example.fxxkit.DataClass.Tag
 import com.example.fxxkit.DataClass.Workout
 import com.example.fxxkit.DataClass.WorkoutExercise
 import com.example.fxxkit.ViewHolder.DetailWorkoutExerciseListAdapter
+import com.example.fxxkit.ViewHolder.OrderExercisesListAdapter
 import com.example.fxxkit.ViewHolder.WorkoutExerciseListAdapter
 import com.example.fxxkit.ViewHolder.WorkoutListAdapter
 import com.example.fxxkit.ViewModel.WorkoutViewModel
@@ -25,6 +26,7 @@ class EditWorkoutFragment : Fragment() {
     private lateinit var cancelBtn: ImageButton
     private lateinit var updateBtn : ImageButton
     private lateinit var addExerciseBtn: Button
+    private lateinit var orderExercisesBtn: Button
     private lateinit var removeExerciseBtn: Button
     private lateinit var favBtn: ImageButton
     private lateinit var descTxt: EditText
@@ -32,6 +34,7 @@ class EditWorkoutFragment : Fragment() {
     private lateinit var selectedExRV: RecyclerView
     private var allExerciseList: ArrayList<Exercise>? = null
     private var allTags: ArrayList<Tag> = ArrayList<Tag>()
+    private var unedittedWorkoutExercises: ArrayList<WorkoutExercise> = ArrayList<WorkoutExercise>()
     private var unselectedExerciseList: ArrayList<Exercise> = ArrayList<Exercise>()
     private var selectedExercises: ArrayList<WorkoutExercise> = ArrayList<WorkoutExercise>()
     private var unselectedWorkExercises: ArrayList<WorkoutExercise> = ArrayList<WorkoutExercise>()
@@ -61,6 +64,7 @@ class EditWorkoutFragment : Fragment() {
         updateBtn = view.findViewById<ImageButton>(R.id.update_btn)
         cancelBtn = view.findViewById<ImageButton>(R.id.cancel_btn)
         addExerciseBtn = view.findViewById<Button>(R.id.add_exercise_btn)
+        orderExercisesBtn = view.findViewById<Button>(R.id.order_exercises_btn)
         removeExerciseBtn = view.findViewById<Button>(R.id.remove_exercise_btn)
         selectedExRV = view.findViewById<RecyclerView>(R.id.selected_ex_rv)
 
@@ -73,6 +77,7 @@ class EditWorkoutFragment : Fragment() {
         setFavourite(true)
 
         addExerciseBtn.setOnClickListener { view -> buildAddExerciseDialog() }
+        orderExercisesBtn.setOnClickListener { view -> buildOrderExercisesDialog() }
         removeExerciseBtn.setOnClickListener { view -> buildRemoveExerciseDialog() }
         favBtn.setOnClickListener { view -> setFavourite(!currentWorkout.isFavourited) }
 
@@ -127,6 +132,33 @@ class EditWorkoutFragment : Fragment() {
                 selectedExercises.add(workEx)
                 selectedExRV.adapter!!.notifyDataSetChanged()
             }
+        }
+
+        builder.setNegativeButton("Cancel") { dialogInterface, i ->
+            dialogInterface.dismiss()
+        }
+
+        builder.show()
+    }
+
+    private fun buildOrderExercisesDialog(){
+        val builder = AlertDialog.Builder(activity)
+        builder.setTitle("Order Exercises")
+        builder.setCancelable(false)
+
+        val inflater: LayoutInflater = requireActivity().getLayoutInflater()
+        var view = inflater.inflate(R.layout.custom_order_exercises_dialog, null)
+
+        var orderExRV = view.findViewById<RecyclerView>(R.id.order_exercises_rv)
+        orderExRV.layoutManager = LinearLayoutManager(activity)
+        orderExRV.adapter = OrderExercisesListAdapter((activity as MainActivity), selectedExercises)
+
+        builder.setView(view)
+
+        builder.setPositiveButton("Done") { dialogInterface, i ->
+            dialogInterface.dismiss()
+            selectedExercises.sortBy { it.orderNo }
+            selectedExRV.adapter?.notifyDataSetChanged()
         }
 
         builder.setNegativeButton("Cancel") { dialogInterface, i ->
@@ -214,9 +246,11 @@ class EditWorkoutFragment : Fragment() {
     private fun loadWorkoutExercises(){
         val dbHandler = DBHandler(this.requireContext(), null, null, 1)
         selectedExercises = dbHandler.findAllWorkoutExercises(currentWorkout.castWorkoutVMToWorkout())
+        selectedExercises.sortBy { it.orderNo }
 
         for(workEx in selectedExercises){
             workEx.isSelected = true
+            unedittedWorkoutExercises.add(WorkoutExercise(workEx.id, workEx.workoutId, workEx.exerciseId, workEx.setSize!!, workEx.repSize!!, workEx.orderNo))
         }
     }
 
@@ -232,15 +266,49 @@ class EditWorkoutFragment : Fragment() {
 
     private fun updateWorkoutWithExercises(){
         val dbHandler = DBHandler(this.requireContext(), null, null, 1)
+
         currentWorkout.name = workoutName.text.toString()
         currentWorkout.description = descTxt.text.toString()
         var updatedWorkout = currentWorkout.castWorkoutVMToWorkout()
-
         dbHandler.updateWorkout(updatedWorkout)
 
         for(workEx in removedWorkExercises){ dbHandler.deleteWorkoutExercise(workEx.id) }
         for(workEx in addedWorkExercises){ dbHandler.addExerciseToWorkout(workEx) }
+        selectedExercises.sortBy { it.orderNo }
+        normaliseWorkExercises()
+        for(workEx in selectedExercises){ checkAndUpdate(dbHandler, workEx)}
 
+        updateTags(dbHandler)
+    }
+
+    private fun normaliseWorkExercises(){
+        for(i in 0..selectedExercises.size-1){
+            var allOfOrder = selectedExercises.filter{it.orderNo == selectedExercises[i].orderNo}
+            if(allOfOrder.size > 1){
+                for(j in 1..allOfOrder.size-1){
+                    allOfOrder[j].orderNo += 1
+                }
+            }
+        }
+    }
+
+    private fun checkAndUpdate(dbHandler: DBHandler, workoutExercise: WorkoutExercise){
+        println("Checking workex ${workoutExercise.id} of ${workoutExercise.exercise!!.name}")
+        var unchangedWorkEx = unedittedWorkoutExercises.firstOrNull { it.id == workoutExercise.id }
+
+        if(unchangedWorkEx!= null){
+            if(workoutExercise.orderNo != unchangedWorkEx.orderNo){
+                println("Old is ${unchangedWorkEx.orderNo}, new orderno is ${workoutExercise.orderNo}")
+                dbHandler.updateWorkoutExercise(workoutExercise)
+            } else {
+                println("order no ${workoutExercise.orderNo} is the same as ${unchangedWorkEx.orderNo}")
+            }
+        } else {
+            println("Couldn't find unchanged workex")
+        }
+    }
+
+    private fun updateTags(dbHandler: DBHandler){
         var splitTags = tagInput.text.split(" ")
         for(tag in splitTags){
             var foundTag = currentWorkout.tags.firstOrNull{it.name!!.lowercase() == tag.toString().lowercase()}

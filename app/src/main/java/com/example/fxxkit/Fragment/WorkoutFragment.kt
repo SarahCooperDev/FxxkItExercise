@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -32,6 +33,7 @@ class WorkoutFragment : Fragment() {
     private lateinit var tagTxt: TextView
     private lateinit var favImage: ImageView
     private lateinit var exerciseRV: RecyclerView
+    private lateinit var editBtn: ImageButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +50,7 @@ class WorkoutFragment : Fragment() {
         tagTxt = view.findViewById(R.id.tag_txt)
         favImage = view.findViewById(R.id.favourite_iv)
         exerciseRV = view.findViewById(R.id.exercise_rv)
+        editBtn = view.findViewById(R.id.edit_btn)
 
 
         loadWorkout()
@@ -57,11 +60,16 @@ class WorkoutFragment : Fragment() {
         descriptionTV.setText(currentWorkout.description)
 
         if(currentWorkout.tags.size > 0){ tagTxt.setText(currentWorkout.getTagDisplayString()) }
+        else { tagTxt.setText("No tags") }
         if(currentWorkout.isFavourited){ favImage.setImageResource(android.R.drawable.btn_star_big_on) }
         else { favImage.setImageResource(android.R.drawable.btn_star_big_off) }
 
         exerciseRV.layoutManager = LinearLayoutManager(activity)
         exerciseRV.adapter = DetailWorkoutExerciseListAdapter(workExercises)
+
+        editBtn.setOnClickListener { view ->
+            (activity as MainActivity).navToEditWorkout(currentWorkout.id)
+        }
 
         return view
     }
@@ -73,9 +81,8 @@ class WorkoutFragment : Fragment() {
             currentWorkout = workout.workoutName?.let { WorkoutViewModel(workout.id, it) }!!
             currentWorkout.description = workout.description
             currentWorkout.isFavourited = workout.isFavourited
-            println("Getting tags for workout ${workout.workoutName}")
             var workoutTags = dbHandler.getTagsForWorkout(workout)
-            println("There are ${workoutTags.size} tags")
+
             if(workoutTags != null){
                 workout.tags = workoutTags
                 currentWorkout.tags = workoutTags

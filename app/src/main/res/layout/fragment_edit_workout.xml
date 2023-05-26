@@ -76,13 +76,19 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:text="Add Exercise"
+                        android:text="Add"
                         android:id="@+id/add_exercise_btn"></Button>
                     <Button
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:text="Remove Exercise"
+                        android:text="Order"
+                        android:id="@+id/order_exercises_btn"></Button>
+                    <Button
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Remove"
                         android:id="@+id/remove_exercise_btn"></Button>
                 </TableRow>
                 <TableRow>
@@ -104,7 +110,8 @@
                 <TableRow>
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/selected_ex_rv"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
                         android:layout_height="wrap_content"></androidx.recyclerview.widget.RecyclerView>
                 </TableRow>
             </TableLayout>

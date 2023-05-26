@@ -28,7 +28,7 @@ class DetailWorkoutExerciseListAdapter(private val workExList: ArrayList<Workout
         holder.description.text = currentExercise.exercise!!.description.toString()
         holder.sets.text = currentExercise.setSize
         holder.reps.text = currentExercise.repSize
-        holder.repTime.text = currentExercise.exercise!!.repTime.toString()
+        holder.repTime.text = currentExercise.exercise!!.repTime.toString() + "s"
         holder.muscles.text = currentExercise.exercise!!.getMusclesAsString()
         holder.strength.text = currentExercise.exercise!!.isStrengthening.toString()
         holder.condition.text = currentExercise.exercise!!.isConditioning.toString()
@@ -36,10 +36,20 @@ class DetailWorkoutExerciseListAdapter(private val workExList: ArrayList<Workout
         var totalTime = currentExercise.getTotalTimeInSecs()
         if(totalTime != null){
             var minutes = totalTime/60
+            var minutesString = minutes.toString()
+            if(minutes < 1){
+                minutesString = "0"
+            }
             var seconds = totalTime%60
-            holder.totalTime.text = minutes.toString() + ":" + seconds.toString()
+            var secondsString = seconds.toString()
+            if(seconds < 10 && seconds > 0){
+                secondsString = "0" + seconds.toString()
+            } else if(seconds < 10){
+                secondsString = "00"
+            }
+            holder.totalTime.text = minutesString + ":" + secondsString + "m"
         } else {
-            holder.totalTimeRow.visibility = View.GONE
+            holder.totalTime.text = "N/A"
         }
 
         showDetails = true
@@ -55,14 +65,12 @@ class DetailWorkoutExerciseListAdapter(private val workExList: ArrayList<Workout
         if(showDetails){
             showDetails = false
             holder.description.visibility = View.GONE
-            holder.repTimeRow.visibility = View.GONE
             holder.muscleRow.visibility = View.GONE
             holder.strengthRow.visibility = View.GONE
             holder.conditionRow.visibility = View.GONE
         } else {
             showDetails = true
             holder.description.visibility = View.VISIBLE
-            holder.repTimeRow.visibility = View.VISIBLE
             holder.muscleRow.visibility = View.VISIBLE
             holder.strengthRow.visibility = View.VISIBLE
             holder.conditionRow.visibility = View.VISIBLE
@@ -75,8 +83,6 @@ class DetailWorkoutExerciseListAdapter(private val workExList: ArrayList<Workout
 
     class DetailWorkoutExerciseListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val row: CardView = itemView.findViewById(R.id.workout_exercise_row_item)
-        val repTimeRow: TableRow = itemView.findViewById(R.id.rep_time_row)
-        val totalTimeRow: TableRow = itemView.findViewById(R.id.total_time_row)
         val muscleRow: TableRow = itemView.findViewById(R.id.muscles_row)
         val strengthRow: TableRow = itemView.findViewById(R.id.strength_row)
         val conditionRow: TableRow = itemView.findViewById(R.id.condition_row)
