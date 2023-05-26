@@ -409,6 +409,96 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
     }
 
     @SuppressLint("Range")
+    fun findAllWorkoutExercisesByExerciseId(exerciseId: Int): ArrayList<WorkoutExercise>{
+        var workExList = ArrayList<WorkoutExercise>()
+        val query = "SELECT * FROM $TABLE_WORKOUT_EXERCISE WHERE $COLUMN_EXERCISE = \"${exerciseId}\""
+
+        val db = this.readableDatabase
+        val cursor = db.rawQuery(query, null)
+
+        var id: Int = -1
+        var workoutId: Int = -1
+        var setSize: String? = null
+        var repSize: String? = null
+        var orderNo: Int = -1
+
+        if(cursor.moveToFirst()){
+            cursor.moveToFirst()
+            do{
+                id = cursor.getInt(cursor.getColumnIndex(COLUMN_ID))
+                workoutId = cursor.getInt(cursor.getColumnIndex(COLUMN_WORKOUT))
+                setSize = cursor.getString(cursor.getColumnIndex(COLUMN_SET_SIZE))
+                repSize = cursor.getString(cursor.getColumnIndex(COLUMN_REP_SIZE))
+                orderNo = cursor.getInt(cursor.getColumnIndex(COLUMN_ORDER_NO))
+
+                var workEx = WorkoutExercise()
+                workEx.id = id
+                workEx.workoutId = workoutId
+                workEx.exerciseId = exerciseId
+                workEx.setSize = setSize
+                workEx.repSize = repSize
+                workEx.orderNo = orderNo
+
+                var exercise = findExerciseById(exerciseId)
+
+                if(workEx.workoutId != null && workEx.exerciseId != null && exercise != null){
+                    workEx.exercise = exercise
+                    workExList.add(workEx)
+                }
+            } while(cursor.moveToNext())
+
+            cursor.close()
+        }
+
+        return workExList
+    }
+
+    @SuppressLint("Range")
+    fun findAllWorkoutExercisesByWorkoutId(workoutId: Int): ArrayList<WorkoutExercise>{
+        var workExList = ArrayList<WorkoutExercise>()
+        val query = "SELECT * FROM $TABLE_WORKOUT_EXERCISE WHERE $COLUMN_WORKOUT = \"${workoutId}\""
+
+        val db = this.readableDatabase
+        val cursor = db.rawQuery(query, null)
+
+        var id: Int = -1
+        var exerciseId: Int = -1
+        var setSize: String? = null
+        var repSize: String? = null
+        var orderNo: Int = -1
+
+        if(cursor.moveToFirst()){
+            cursor.moveToFirst()
+            do{
+                id = cursor.getInt(cursor.getColumnIndex(COLUMN_ID))
+                exerciseId = cursor.getInt(cursor.getColumnIndex(COLUMN_EXERCISE))
+                setSize = cursor.getString(cursor.getColumnIndex(COLUMN_SET_SIZE))
+                repSize = cursor.getString(cursor.getColumnIndex(COLUMN_REP_SIZE))
+                orderNo = cursor.getInt(cursor.getColumnIndex(COLUMN_ORDER_NO))
+
+                var workEx = WorkoutExercise()
+                workEx.id = id
+                workEx.workoutId = workoutId
+                workEx.exerciseId = exerciseId
+                workEx.setSize = setSize
+                workEx.repSize = repSize
+                workEx.orderNo = orderNo
+
+                var exercise = findExerciseById(exerciseId)
+
+                if(workEx.workoutId != null && workEx.exerciseId != null && exercise != null){
+                    workEx.exercise = exercise
+                    workExList.add(workEx)
+                }
+            } while(cursor.moveToNext())
+
+            cursor.close()
+        }
+
+        return workExList
+    }
+
+    @SuppressLint("Range")
     fun findAllWorkoutExercises(workout: Workout): ArrayList<WorkoutExercise>{
         var workExList = ArrayList<WorkoutExercise>()
 
@@ -733,14 +823,27 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         val query = "SELECT * FROM $TABLE_EXERCISES WHERE $COLUMN_EXERCISENAME = \"${name}\""
         val db = this.writableDatabase
         val cursor = db.rawQuery(query, null)
+        var id = -1
 
         if(cursor.moveToFirst()){
-            val id = Integer.parseInt(cursor.getString(0))
+            id = Integer.parseInt(cursor.getString(0))
             result = db.delete(TABLE_EXERCISES, COLUMN_ID + " = ?", arrayOf(id.toString()))
             cursor.close()
         }
         db.close()
+        if(id >= 0){
+            deleteAllWorkoutExercisesOfExerciseId(id)
+        }
         return result == 0
+    }
+
+    @SuppressLint("Range")
+    fun deleteAllWorkoutExercisesOfExerciseId(exerciseId: Int): Boolean{
+        println("Deleting all workout exercises of exercise ${exerciseId}")
+        val db = this.writableDatabase
+        var result = db.delete(TABLE_WORKOUT_EXERCISE, COLUMN_EXERCISE + " = ?", arrayOf(exerciseId.toString()))
+        db.close()
+        return true
     }
 
     fun deleteWorkout(id: Int): Boolean{
@@ -759,8 +862,18 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         }
 
         db.close()
+        deleteAllWorkoutExercisesOfWorkout(id)
         println("Result is ${result.toString()}")
         return result
+    }
+
+    @SuppressLint("Range")
+    fun deleteAllWorkoutExercisesOfWorkout(workoutId: Int): Boolean{
+        println("Deleting all workout exercises of workout ${workoutId}")
+        val db = this.writableDatabase
+        var result = db.delete(TABLE_WORKOUT_EXERCISE, COLUMN_WORKOUT + " = ?", arrayOf(workoutId.toString()))
+        db.close()
+        return true
     }
 
     fun deleteWorkoutExercise(id: Int): Boolean{

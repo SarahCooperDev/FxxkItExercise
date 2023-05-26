@@ -50,16 +50,13 @@ class AddWorkoutExerciseListAdapter(private val activity: MainActivity, private 
                 holder.setList.text = currentExercise.exercise!!.getSetAsString()
                 holder.repList.text = currentExercise.exercise!!.getRepsAsString()
             } else{
-                holder.isSelected.setChecked(true)
                 buildWorkoutExerciseDialog(currentExercise, holder)
-                currentExercise.isSelected = true
             }
         }
 
         holder.isSelected.setOnClickListener{
             if(holder.isSelected.isChecked){
                 buildWorkoutExerciseDialog(currentExercise, holder)
-                currentExercise.isSelected = true
             } else {
                 currentExercise.isSelected = false
                 holder.setList.text = currentExercise.exercise!!.getSetAsString()
@@ -138,6 +135,13 @@ class AddWorkoutExerciseListAdapter(private val activity: MainActivity, private 
         // Sets up button to complete the dialog
         builder.setPositiveButton("Done") { dialogInterface, i ->
             println("Done in workout exercise")
+            if(currentExercise.repSize != null && currentExercise.setSize != null){
+                holder.isSelected.setChecked(true)
+                currentExercise.isSelected = true
+            } else {
+                Toast.makeText(activity.baseContext, "You must choose set and rep sizes", Toast.LENGTH_LONG)
+            }
+            dialogInterface.dismiss()
         }
 
         // Sets up the button to cancel the input

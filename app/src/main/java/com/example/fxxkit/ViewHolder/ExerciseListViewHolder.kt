@@ -46,14 +46,8 @@ class ExerciseListAdapter(private val eList: ArrayList<Exercise>, private val ac
                 .setPositiveButton("Yes") { dialog, id ->
                     val dbHandler = DBHandler(view.context, null, null, 1)
                     dbHandler.deleteExercise(currentExercise.name)
-
-                    for(ex in eList){
-                        if(ex.id == currentExercise.id){
-                            eList.remove(ex)
-                        }
-                    }
-
-                    notifyDataSetChanged()
+                    eList.removeAt(position)
+                    notifyItemRemoved(position)
                 }
                 .setNegativeButton("No") { dialog, id ->
                     dialog.dismiss()

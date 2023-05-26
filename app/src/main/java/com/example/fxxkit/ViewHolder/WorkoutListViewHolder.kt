@@ -15,7 +15,7 @@ import com.example.fxxkit.MainActivity
 import com.example.fxxkit.R
 import com.example.fxxkit.ViewModel.WorkoutViewModel
 
-class WorkoutListAdapter(private val activity: MainActivity, private val eList: List<WorkoutViewModel>) :   RecyclerView.Adapter<WorkoutListAdapter.WorkoutListViewHolder>(){
+class WorkoutListAdapter(private val activity: MainActivity, private val eList: ArrayList<WorkoutViewModel>) :   RecyclerView.Adapter<WorkoutListAdapter.WorkoutListViewHolder>(){
     private var expandedSize = ArrayList<Int>()
     private var workList = eList
     private lateinit var inflatedViewGroup: View
@@ -77,9 +77,8 @@ class WorkoutListAdapter(private val activity: MainActivity, private val eList: 
                     val dbHandler = DBHandler(activity, null, null, 1)
                     var result = dbHandler.deleteWorkout(currentWorkout.id)
 
-                    if(result){
-                        activity.navToWorkoutList()
-                    }
+                    eList.removeAt(position)
+                    notifyItemRemoved(position)
                 }
                 .setNegativeButton("No"){ dialog, id ->
                     dialog.dismiss()
