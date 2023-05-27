@@ -219,6 +219,8 @@ class EditWorkoutFragment : Fragment() {
                 workout.tags = workoutTags
                 currentWorkout.tags = workoutTags
             }
+        } else {
+            println("Error: workout not found")
         }
     }
     private fun loadExercisesIntoWorkouts(exerciseList: ArrayList<Exercise>){

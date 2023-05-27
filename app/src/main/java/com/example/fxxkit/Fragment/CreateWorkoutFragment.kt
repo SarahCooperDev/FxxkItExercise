@@ -1,5 +1,6 @@
 package com.example.fxxkit.Fragment
 
+import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -15,6 +16,7 @@ import com.example.fxxkit.DataClass.Exercise
 import com.example.fxxkit.DataClass.Tag
 import com.example.fxxkit.DataClass.Workout
 import com.example.fxxkit.DataClass.WorkoutExercise
+import com.example.fxxkit.ViewHolder.OrderExercisesListAdapter
 
 /**
  * A simple [Fragment] subclass.
@@ -24,13 +26,17 @@ import com.example.fxxkit.DataClass.WorkoutExercise
 class CreateWorkoutFragment : Fragment() {
     private var isFavourited: Boolean = false
     private lateinit var workoutName: EditText
+    private lateinit var addExerciseBtn: Button
+    private lateinit var removeExerciseBtn: Button
     private lateinit var createBtn: ImageButton
     private lateinit var cancelBtn: ImageButton
     private lateinit var favBtn: ImageButton
     private lateinit var descTxt: EditText
     private lateinit var tagInput: EditText
-    private var exerciseListAdapter: RecyclerView.Adapter<ExerciseListAdapter.ExerciseListViewHolder>? = null
+    private lateinit var selectedExRecycler: RecyclerView
     private var workoutExerciseList: ArrayList<WorkoutExercise> = ArrayList<WorkoutExercise>()
+    private var allWorkoutExercises: ArrayList<WorkoutExercise> = ArrayList<WorkoutExercise>()
+    private var selectedExercises: ArrayList<WorkoutExercise> = ArrayList<WorkoutExercise>()
     private var allTags = ArrayList<Tag>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,14 +46,14 @@ class CreateWorkoutFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_create_workout, container, false)
         (activity as MainActivity).getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText("Create Workout")
-        var recycler = view.findViewById<RecyclerView>(R.id.exercise_list_rv)
-        recycler.layoutManager = LinearLayoutManager(activity)
+        selectedExRecycler = view.findViewById<RecyclerView>(R.id.exercise_list_rv)
+        selectedExRecycler.layoutManager = LinearLayoutManager(activity)
 
         var exerciseList = loadExercises()
         getAllTags()
         loadExercisesIntoWorkout(exerciseList)
 
-        recycler.adapter = AddWorkoutExerciseListAdapter((activity as MainActivity), workoutExerciseList)
+        selectedExRecycler.adapter = OrderExercisesListAdapter((activity as MainActivity), selectedExercises)
 
         workoutName = view.findViewById<EditText>(R.id.workout_name_txt)
         createBtn = view.findViewById<ImageButton>(R.id.create_btn)
@@ -55,6 +61,17 @@ class CreateWorkoutFragment : Fragment() {
         favBtn = view.findViewById<ImageButton>(R.id.fav_btn)
         descTxt = view.findViewById<EditText>(R.id.description_txt)
         tagInput = view.findViewById<EditText>(R.id.tag_input)
+        addExerciseBtn = view.findViewById(R.id.add_exercise_btn)
+        removeExerciseBtn = view.findViewById(R.id.remove_exercise_btn)
+
+        addExerciseBtn.setOnClickListener { view ->
+            buildAddExerciseDialog()
+        }
+
+        removeExerciseBtn.setOnClickListener { view ->
+            buildRemoveExerciseDialog()
+        }
+
 
         createBtn.setOnClickListener{ view ->
             if(workoutName.text.toString().length < 1){
@@ -84,6 +101,76 @@ class CreateWorkoutFragment : Fragment() {
         return view
     }
 
+    private fun buildAddExerciseDialog(){
+        val builder = AlertDialog.Builder(activity)
+        builder.setTitle("Add Exercise")
+        builder.setCancelable(false)
+
+        val inflater: LayoutInflater = requireActivity().getLayoutInflater()
+        var view = inflater.inflate(R.layout.custom_add_exercise_dialog, null)
+
+        var addExRV = view.findViewById<RecyclerView>(R.id.add_exercise_rv)
+        addExRV.layoutManager = LinearLayoutManager(activity)
+        allWorkoutExercises.sortBy { it.isSelected }
+        addExRV.adapter = AddWorkoutExerciseListAdapter((activity as MainActivity), allWorkoutExercises)
+
+        builder.setView(view)
+
+        builder.setPositiveButton("Done") { dialogInterface, i ->
+            for(workEx in allWorkoutExercises){
+                if(workEx.isSelected){
+                    selectedExercises.add(workEx)
+                }
+            }
+
+            selectedExRecycler.adapter!!.notifyDataSetChanged()
+            dialogInterface.dismiss()
+        }
+
+        builder.setNegativeButton("Cancel") { dialogInterface, i ->
+            dialogInterface.dismiss()
+        }
+
+        builder.show()
+    }
+
+    private fun buildRemoveExerciseDialog(){
+        val builder = AlertDialog.Builder(activity)
+        builder.setTitle("Remove Exercise")
+        builder.setCancelable(false)
+
+        val inflater: LayoutInflater = requireActivity().getLayoutInflater()
+        var view = inflater.inflate(R.layout.custom_remove_exercise_dialog, null)
+
+        var removeExRV = view.findViewById<RecyclerView>(R.id.remove_exercise_rv)
+        removeExRV.layoutManager = LinearLayoutManager(activity)
+        removeExRV.adapter = AddWorkoutExerciseListAdapter((activity as MainActivity), selectedExercises)
+
+        builder.setView(view)
+
+        builder.setPositiveButton("Done") { dialogInterface, i ->
+            var deleteWorkoutExercise = ArrayList<WorkoutExercise>()
+            for(workEx in selectedExercises){
+                if(!workEx.isSelected){
+                    deleteWorkoutExercise.add(workEx)
+                }
+            }
+
+            for(workEx in deleteWorkoutExercise){
+                selectedExercises.remove(workEx)
+            }
+
+            selectedExRecycler.adapter!!.notifyDataSetChanged()
+            dialogInterface.dismiss()
+        }
+
+        builder.setNegativeButton("Cancel") { dialogInterface, i ->
+            dialogInterface.dismiss()
+        }
+
+        builder.show()
+    }
+
     private fun addWorkoutWithExercises(){
         val workout = Workout(workoutName.text.toString())
         workout.description = descTxt.text.toString()
@@ -97,15 +184,13 @@ class CreateWorkoutFragment : Fragment() {
         if(workoutId != null && workoutId >= 0){
             workout.id = workoutId
 
-            var orderNo = 0
-            for(workEx in workoutExerciseList){
-                if(workEx.isSelected) {
-                    workEx.workoutId = workoutId
-                    workEx.orderNo = orderNo
-                    orderNo++
-
-                    var result = dbHandler.addExerciseToWorkout(workEx)
+            for(i in 0..selectedExercises.size-1){
+                selectedExercises[i].workoutId = workoutId
+                if(selectedExercises[i].orderNo < 0){
+                    selectedExercises[i].orderNo = i
                 }
+
+                var result = dbHandler.addExerciseToWorkout(selectedExercises[i])
             }
 
             var splitTags = tagInput.text.split(" ")
@@ -129,7 +214,7 @@ class CreateWorkoutFragment : Fragment() {
         for(exercise in exerciseList){
             var workEx = WorkoutExercise(exercise)
             workEx.exercise = exercise
-            workoutExerciseList.add(workEx)
+            allWorkoutExercises.add(workEx)
         }
     }
 

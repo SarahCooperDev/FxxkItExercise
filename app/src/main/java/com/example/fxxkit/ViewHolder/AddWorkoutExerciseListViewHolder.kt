@@ -118,14 +118,12 @@ class AddWorkoutExerciseListAdapter(private val activity: MainActivity, private 
 
         setRadioGrp.setOnCheckedChangeListener(RadioGroup.OnCheckedChangeListener{ group, checkedId ->
             val radio: RadioButton = view.findViewById(checkedId)
-            Toast.makeText(activity," On checked change :" + " ${radio.text}", Toast.LENGTH_SHORT).show()
             currentExercise.setSize = radio.text.toString()
             holder.setList.text = radio.text.toString()
         })
 
         repRadioGrp.setOnCheckedChangeListener(RadioGroup.OnCheckedChangeListener{ group, checkedId ->
             val radio: RadioButton = view.findViewById(checkedId)
-            Toast.makeText(activity," On checked change :" + " ${radio.text}", Toast.LENGTH_SHORT).show()
             currentExercise.repSize = radio.text.toString()
             holder.repList.text = radio.text.toString()
         })

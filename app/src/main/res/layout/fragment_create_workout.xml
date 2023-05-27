@@ -82,21 +82,26 @@
                         android:background="?android:attr/listDivider"
                         android:layout_margin="3dp"/>
                 </TableRow>
-                <TableRow
-                    android:layout_width="match_parent">
-                    <ScrollView
+                <TableRow>
+                    <Button
                         android:layout_width="0dp"
-                        android:layout_weight="1">
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/exercise_list_rv"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:clipChildren="false"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            tools:listitem="@layout/exercise_row_item" />
-                    </ScrollView>
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Add"
+                        android:id="@+id/add_exercise_btn"></Button>
+                    <Button
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Remove"
+                        android:id="@+id/remove_exercise_btn"></Button>
+                </TableRow>
+                <TableRow>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/exercise_list_rv"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content" />
                 </TableRow>
             </TableLayout>
         </ScrollView>

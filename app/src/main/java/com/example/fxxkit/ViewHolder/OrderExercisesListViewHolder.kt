@@ -22,6 +22,7 @@ class OrderExercisesListAdapter(private val activity: MainActivity, private val 
     }
 
     override fun onBindViewHolder(holder: OrderExercisesListViewHolder, position: Int) {
+        println("Size is ${workExList.size}")
         val currentExercise = workExList[position]
         println("Current exercise: ${currentExercise.exercise!!.name}, is selected - ${currentExercise.isSelected.toString()}")
 
