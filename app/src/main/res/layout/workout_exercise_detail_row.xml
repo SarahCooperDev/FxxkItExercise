@@ -96,13 +96,13 @@
             android:stretchColumns="*"
             android:layout_height="wrap_content">
             <TableRow
-                android:id="@+id/muscles_row">
+                android:id="@+id/areas_row">
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Targetted Areas: "/>
                 <TextView
-                    android:id="@+id/muscle_list_txt"
+                    android:id="@+id/area_list_txt"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="N/A"/>

@@ -1,13 +1,10 @@
 package com.example.fxxkit.Fragment
 
-import android.app.AlertDialog
-import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.accessibility.AccessibilityManager.AudioDescriptionRequestedChangeListener
 import android.widget.*
 import androidx.core.content.ContextCompat
 import com.example.fxxkit.DBHandler
@@ -16,7 +13,6 @@ import com.example.fxxkit.DataClass.MultiselectLists
 import com.example.fxxkit.DataClass.Tag
 import com.example.fxxkit.MainActivity
 import com.example.fxxkit.R
-import java.util.*
 import kotlin.collections.ArrayList
 
 /**
@@ -28,7 +24,7 @@ class AddExerciseFragment : Fragment() {
     private var newExercise: Exercise = Exercise("Null")
     private var selectedSets = ArrayList<String>()
     private var selectedReps = ArrayList<String>()
-    private var selectedMuscles = ArrayList<String>()
+    private var selectedAreas = ArrayList<String>()
     private var allTags = ArrayList<Tag>()
 
     private lateinit var exNameInput: EditText
@@ -38,7 +34,7 @@ class AddExerciseFragment : Fragment() {
     private lateinit var isConditioningBtn: ToggleButton
     private lateinit var setSizeMultiselect: TextView
     private lateinit var repSizeMultiselect: TextView
-    private lateinit var targettedMusclesMultiselect: TextView
+    private lateinit var targettedAreasMultiselect: TextView
     private lateinit var tagInput: EditText
     private lateinit var cancelBtn: ImageButton
     private lateinit var createBtn: ImageButton
@@ -53,7 +49,7 @@ class AddExerciseFragment : Fragment() {
 
         selectedSets.add(MultiselectLists.setSizesArray[0])
         selectedReps.add(MultiselectLists.repSizesArray[0])
-        selectedMuscles.add(MultiselectLists.targettedMusclesArray[0])
+        selectedAreas.add(MultiselectLists.targettedAreaArray[0])
         getAllTags()
 
         exNameInput = view.findViewById<EditText>(R.id.exercise_name)
@@ -63,7 +59,7 @@ class AddExerciseFragment : Fragment() {
         isConditioningBtn = view.findViewById<ToggleButton>(R.id.conditioning_toggle_btn)
         setSizeMultiselect = view.findViewById(R.id.set_size_multiselect)
         repSizeMultiselect = view.findViewById(R.id.rep_size_multiselect)
-        targettedMusclesMultiselect = view.findViewById<TextView>(R.id.muscle_select)
+        targettedAreasMultiselect = view.findViewById<TextView>(R.id.area_select)
         tagInput = view.findViewById<EditText>(R.id.tag_input)
         cancelBtn = view.findViewById<ImageButton>(R.id.cancel_btn)
         createBtn = view.findViewById<ImageButton>(R.id.create_btn)
@@ -92,9 +88,9 @@ class AddExerciseFragment : Fragment() {
             MultiselectLists.showDialog(activity as MainActivity, layoutInflater, MultiselectLists.repSizesArray, selectedReps, repSizeMultiselect)
         }
 
-        targettedMusclesMultiselect.setText(selectedMuscles[0])
-        targettedMusclesMultiselect.setOnClickListener { view ->
-            MultiselectLists.showDialog(activity as MainActivity, layoutInflater, MultiselectLists.targettedMusclesArray, selectedMuscles, targettedMusclesMultiselect)
+        targettedAreasMultiselect.setText(selectedAreas[0])
+        targettedAreasMultiselect.setOnClickListener { view ->
+            MultiselectLists.showDialog(activity as MainActivity, layoutInflater, MultiselectLists.targettedAreaArray, selectedAreas, targettedAreasMultiselect)
         }
 
         return view
@@ -110,11 +106,11 @@ class AddExerciseFragment : Fragment() {
         if(isConditioningBtn.isChecked()){ newExercise.isConditioning = true }
         if(selectedSets.size == 0){selectedSets.add(MultiselectLists.setSizesArray[0])}
         if(selectedReps.size == 0){selectedReps.add(MultiselectLists.repSizesArray[0])}
-        if(selectedMuscles.size == 0){selectedMuscles.add(MultiselectLists.targettedMusclesArray[0])}
+        if(selectedAreas.size == 0){selectedAreas.add(MultiselectLists.targettedAreaArray[0])}
 
         newExercise.possibleSetSize = selectedSets
         newExercise.possibleRepSize = selectedReps
-        newExercise.targettedMuscles = selectedMuscles
+        newExercise.targettedAreas = selectedAreas
 
         try {
             var repTime = repTimeInput.text.toString().toInt()

@@ -20,16 +20,13 @@ class DetailWorkoutExerciseListAdapter(private val workExList: ArrayList<Workout
     override fun onBindViewHolder(holder: DetailWorkoutExerciseListAdapter.DetailWorkoutExerciseListViewHolder, position: Int) {
         println("Exercise length in holder: " + workExList.size.toString())
         val currentExercise = workExList[position]
-
-        println("Current exercise muscles size ${currentExercise.exercise!!.targettedMuscles.size.toString() }")
-
         holder.id.text = currentExercise.exercise!!.id.toString()
         holder.name.text = currentExercise.exercise!!.name.toString()
         holder.description.text = currentExercise.exercise!!.description.toString()
         holder.sets.text = currentExercise.setSize
         holder.reps.text = currentExercise.repSize
         holder.repTime.text = currentExercise.exercise!!.repTime.toString() + "s"
-        holder.muscles.text = currentExercise.exercise!!.getMusclesAsString()
+        holder.areas.text = currentExercise.exercise!!.getAreasAsString()
         holder.strength.text = currentExercise.exercise!!.isStrengthening.toString()
         holder.condition.text = currentExercise.exercise!!.isConditioning.toString()
 
@@ -65,13 +62,13 @@ class DetailWorkoutExerciseListAdapter(private val workExList: ArrayList<Workout
         if(showDetails){
             showDetails = false
             holder.description.visibility = View.GONE
-            holder.muscleRow.visibility = View.GONE
+            holder.areaRow.visibility = View.GONE
             holder.strengthRow.visibility = View.GONE
             holder.conditionRow.visibility = View.GONE
         } else {
             showDetails = true
             holder.description.visibility = View.VISIBLE
-            holder.muscleRow.visibility = View.VISIBLE
+            holder.areaRow.visibility = View.VISIBLE
             holder.strengthRow.visibility = View.VISIBLE
             holder.conditionRow.visibility = View.VISIBLE
         }
@@ -83,7 +80,7 @@ class DetailWorkoutExerciseListAdapter(private val workExList: ArrayList<Workout
 
     class DetailWorkoutExerciseListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val row: CardView = itemView.findViewById(R.id.workout_exercise_row_item)
-        val muscleRow: TableRow = itemView.findViewById(R.id.muscles_row)
+        val areaRow: TableRow = itemView.findViewById(R.id.areas_row)
         val strengthRow: TableRow = itemView.findViewById(R.id.strength_row)
         val conditionRow: TableRow = itemView.findViewById(R.id.condition_row)
         val id: TextView = itemView.findViewById(R.id.exercise_id_txt)
@@ -93,7 +90,7 @@ class DetailWorkoutExerciseListAdapter(private val workExList: ArrayList<Workout
         val reps: TextView = itemView.findViewById(R.id.rep_list_txt)
         val repTime: TextView = itemView.findViewById(R.id.rep_time_txt)
         val totalTime: TextView = itemView.findViewById(R.id.total_time_txt)
-        val muscles: TextView = itemView.findViewById(R.id.muscle_list_txt)
+        val areas: TextView = itemView.findViewById(R.id.area_list_txt)
         val strength: TextView = itemView.findViewById(R.id.is_strength_txt)
         val condition: TextView = itemView.findViewById(R.id.is_condition_txt)
     }

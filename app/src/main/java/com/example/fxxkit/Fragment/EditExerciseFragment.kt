@@ -1,6 +1,5 @@
 package com.example.fxxkit.Fragment
 
-import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -14,8 +13,6 @@ import com.example.fxxkit.DataClass.MultiselectLists
 import com.example.fxxkit.DataClass.Tag
 import com.example.fxxkit.MainActivity
 import com.example.fxxkit.R
-import com.example.fxxkit.ViewModel.WorkoutViewModel
-import java.util.*
 import kotlin.collections.ArrayList
 
 class EditExerciseFragment : Fragment() {
@@ -24,7 +21,7 @@ class EditExerciseFragment : Fragment() {
 
     private var selectedSets = ArrayList<String>()
     private var selectedReps = ArrayList<String>()
-    private var selectedMuscles = ArrayList<String>()
+    private var selectedAreas = ArrayList<String>()
     private var allTags = ArrayList<Tag>()
 
     private lateinit var idTxt: TextView
@@ -32,7 +29,7 @@ class EditExerciseFragment : Fragment() {
     private lateinit var descriptionInput: EditText
     private lateinit var isStrengthBtn: ToggleButton
     private lateinit var isConditioningBtn: ToggleButton
-    private lateinit var targettedMusclesMultiselect: TextView
+    private lateinit var targettedAreasMultiselect: TextView
     private lateinit var setSizeMultiselect: TextView
     private lateinit var repSizeMultiselect: TextView
     private lateinit var repTimeInput: EditText
@@ -59,7 +56,7 @@ class EditExerciseFragment : Fragment() {
         setSizeMultiselect = view.findViewById(R.id.set_size_multiselect)
         repSizeMultiselect = view.findViewById(R.id.rep_size_multiselect)
         repTimeInput = view.findViewById(R.id.rep_time_txt)
-        targettedMusclesMultiselect = view.findViewById(R.id.muscle_select)
+        targettedAreasMultiselect = view.findViewById(R.id.area_select)
         tagInput = view.findViewById(R.id.tag_input)
         cancelBtn = view.findViewById(R.id.cancel_btn)
         updateBtn = view.findViewById(R.id.update_btn)
@@ -83,9 +80,9 @@ class EditExerciseFragment : Fragment() {
             selectedReps = currentExercise.possibleRepSize.clone() as ArrayList<String>
         }
 
-        if(currentExercise.targettedMuscles.size > 0){
-            targettedMusclesMultiselect.text = MultiselectLists.getStringFromArray(currentExercise.targettedMuscles)
-            selectedMuscles = currentExercise.targettedMuscles.clone() as ArrayList<String>
+        if(currentExercise.targettedAreas.size > 0){
+            targettedAreasMultiselect.text = MultiselectLists.getStringFromArray(currentExercise.targettedAreas)
+            selectedAreas = currentExercise.targettedAreas.clone() as ArrayList<String>
         }
 
         setSizeMultiselect.setOnClickListener { view ->
@@ -96,8 +93,8 @@ class EditExerciseFragment : Fragment() {
             MultiselectLists.showDialog(activity as MainActivity, layoutInflater, MultiselectLists.repSizesArray, selectedReps, repSizeMultiselect)
         }
 
-        targettedMusclesMultiselect.setOnClickListener { view ->
-            MultiselectLists.showDialog(activity as MainActivity, layoutInflater, MultiselectLists.targettedMusclesArray, selectedMuscles, targettedMusclesMultiselect)
+        targettedAreasMultiselect.setOnClickListener { view ->
+            MultiselectLists.showDialog(activity as MainActivity, layoutInflater, MultiselectLists.targettedAreaArray, selectedAreas, targettedAreasMultiselect)
         }
 
         cancelBtn.setOnClickListener{ view ->
@@ -140,7 +137,7 @@ class EditExerciseFragment : Fragment() {
         if(isConditioningBtn.isChecked()){ currentExercise.isConditioning = true }
         currentExercise.possibleSetSize = selectedSets
         currentExercise.possibleRepSize = selectedReps
-        currentExercise.targettedMuscles = selectedMuscles
+        currentExercise.targettedAreas = selectedAreas
 
         try{
             var repTime = repTimeInput.text.toString().toInt()

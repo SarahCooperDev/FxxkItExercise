@@ -32,7 +32,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Muscles to target: "></TextView>
+                    android:text="Areas to target: "></TextView>
                 <TextView
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp"
@@ -40,14 +40,14 @@
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:text="[All]"
-                    android:id="@+id/muscle_target_txt"></TextView>
+                    android:id="@+id/target_area_txt"></TextView>
             </TableRow>
             <TableRow>
                 <TextView
                     android:layout_gravity="center_vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Muscles to exclude: "></TextView>
+                    android:text="Areas to exclude: "></TextView>
                 <TextView
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp"
@@ -55,7 +55,7 @@
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:text="[None]"
-                    android:id="@+id/muscle_exclude_txt"></TextView>
+                    android:id="@+id/area_exclude_txt"></TextView>
             </TableRow>
             <TableRow>
                 <TextView

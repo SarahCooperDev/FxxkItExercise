@@ -138,7 +138,7 @@
                             android:layout_weight="1"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:id="@+id/muscle_select"
+                            android:id="@+id/area_select"
                             android:layout_margin="8dp"
                             android:drawableRight="@android:drawable/arrow_down_float"
                             android:drawablePadding="16dp"

@@ -106,6 +106,6 @@ class OrderExercisesListAdapter(private val activity: MainActivity, private val 
         val totalTime: TextView = itemView.findViewById(R.id.total_time_txt)
         val orderUpBtn: ImageButton = itemView.findViewById(R.id.order_up_btn)
         val orderDownBtn: ImageButton = itemView.findViewById(R.id.order_down_btn)
-        //val muscleList: TextView = itemView.findViewById(R.id.muscle_list_txt)
+        //val areaList: TextView = itemView.findViewById(R.id.area_list_txt)
     }
 }

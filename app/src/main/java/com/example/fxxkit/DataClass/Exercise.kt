@@ -9,7 +9,7 @@ class Exercise {
     var repTime: Int = 10
     var possibleSetSize: ArrayList<String> = ArrayList<String>()
     var possibleRepSize: ArrayList<String> = ArrayList<String>()
-    var targettedMuscles: ArrayList<String> = ArrayList<String>()
+    var targettedAreas: ArrayList<String> = ArrayList<String>()
     var tags: ArrayList<Tag> = ArrayList<Tag>()
 
     constructor(id:Int, name: String){
@@ -79,27 +79,27 @@ class Exercise {
         }
     }
 
-    public fun getMusclesAsString(): String?{
-        if(targettedMuscles.size > 0){
-            var muscleString = ""
+    public fun getAreasAsString(): String?{
+        if(targettedAreas.size > 0){
+            var areaString = ""
 
-            for(i in 0..targettedMuscles.size - 2){
-                muscleString += targettedMuscles[i] + ", "
+            for(i in 0..targettedAreas.size - 2){
+                areaString += targettedAreas[i] + ", "
             }
 
-            muscleString += targettedMuscles[targettedMuscles.size - 1]
+            areaString += targettedAreas[targettedAreas.size - 1]
 
-            return muscleString
+            return areaString
         }
 
         return null
     }
 
-    public fun setStringToMuscle(muscleString: String){
-        var muscleList: List<String> = muscleString.split(",") as List<String>
+    public fun setStringToArea(areaString: String){
+        var areaList: List<String> = areaString.split(",") as List<String>
 
-        for(muscle in muscleList){
-            targettedMuscles.add(muscle.trim())
+        for(area in areaList){
+            targettedAreas.add(area.trim())
         }
     }
 

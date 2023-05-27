@@ -2,7 +2,6 @@ package com.example.fxxkit.DataClass
 
 import android.app.AlertDialog
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.CheckBox
 import android.widget.ImageButton
 import android.widget.LinearLayout
@@ -14,11 +13,8 @@ import kotlin.collections.ArrayList
 object MultiselectLists {
     public var setSizesArray: Array<String> = arrayOf("All", "3", "5", "6", "10", "12", "15")
     public var repSizesArray: Array<String> = arrayOf("All", "3", "5", "6", "10", "12", "15", "20", "24", "30", "50")
-    public var targettedMusclesArray: Array<String> = arrayOf("All", "Calfs", "Quads", "Glutts", "Abs", "Triceps", "Biceps")
-
-    private var setDialogString = "Possible number of sets for the exercise"
-    private var repDialogString = "Possible number of reps per set"
-    private var muscleDialogString = "Targetted muscles for exercise"
+    public var targettedAreaArray: Array<String> = arrayOf("All", "Calfs", "Quads", "Glutts", "Abs", "Triceps", "Biceps",
+        "Ankles", "Knees", "Hips", "Wrists", "Elbows", "Shoulders", "Neck", "Back")
 
 
     /**
@@ -37,7 +33,7 @@ object MultiselectLists {
     fun showDialog(activity: MainActivity, layoutInflater: LayoutInflater, itemList: Array<String>, selectedItems: ArrayList<String>, textView: TextView){
         val checkboxes = ArrayList<CheckBox>()
         val builder = AlertDialog.Builder(activity).create()
-        val dialog = layoutInflater.inflate(R.layout.dialog_sets_reps_muscles, null)
+        val dialog = layoutInflater.inflate(R.layout.dialog_sets_reps_areas, null)
 
         val listLayout = dialog.findViewById<LinearLayout>(R.id.list_layout)
         val cancelBtn = dialog.findViewById<ImageButton>(R.id.cancel_btn)

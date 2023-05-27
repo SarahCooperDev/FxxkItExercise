@@ -27,7 +27,7 @@ class ExerciseListAdapter(private val eList: ArrayList<Exercise>, private val ac
         holder.setList.text = currentExercise.getSetAsString()
         holder.repList.text = currentExercise.getRepsAsString()
         holder.repTime.text = currentExercise.repTime.toString()
-        holder.muscleList.text = currentExercise.getMusclesAsString()
+        holder.areaList.text = currentExercise.getAreasAsString()
 
         if(currentExercise.tags.size > 0){
             holder.tagTxt.text = currentExercise.getTagDisplayString()
@@ -71,7 +71,7 @@ class ExerciseListAdapter(private val eList: ArrayList<Exercise>, private val ac
         val setList: TextView = itemView.findViewById(R.id.set_list_txt)
         val repList: TextView = itemView.findViewById(R.id.rep_list_txt)
         val repTime: TextView = itemView.findViewById(R.id.rep_time_txt)
-        val muscleList: TextView = itemView.findViewById(R.id.muscle_list_txt)
+        val areaList: TextView = itemView.findViewById(R.id.area_list_txt)
         val tagTxt: TextView = itemView.findViewById(R.id.tag_txt)
         val editBtn: ImageButton = itemView.findViewById(R.id.edit_btn)
         val deleteBtn: ImageButton = itemView.findViewById(R.id.delete_btn)

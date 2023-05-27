@@ -29,7 +29,7 @@ class AddWorkoutExerciseListAdapter(private val activity: MainActivity, private 
 
         holder.isStrength.text = currentExercise.exercise!!.isStrengthening.toString()
         holder.isCondition.text = currentExercise.exercise!!.isConditioning.toString()
-        holder.muscleList.text = currentExercise.exercise!!.getMusclesAsString()
+        holder.areaList.text = currentExercise.exercise!!.getAreasAsString()
 
         if(currentExercise.isSelected){
             holder.setList.text = currentExercise.setSize
@@ -166,7 +166,7 @@ class AddWorkoutExerciseListAdapter(private val activity: MainActivity, private 
         val setList: TextView = itemView.findViewById(R.id.set_list_txt)
         val repList: TextView = itemView.findViewById(R.id.rep_list_txt)
         val repTime: TextView = itemView.findViewById(R.id.rep_time_txt)
-        val muscleList: TextView = itemView.findViewById(R.id.muscle_list_txt)
+        val areaList: TextView = itemView.findViewById(R.id.area_list_txt)
     }
 }
 

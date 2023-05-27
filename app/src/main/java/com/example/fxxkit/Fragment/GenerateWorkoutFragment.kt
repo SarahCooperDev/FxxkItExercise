@@ -19,8 +19,8 @@ import com.example.fxxkit.ViewHolder.SelectWorkoutExerciseListAdapter
 
 class GenerateWorkoutFragment : Fragment() {
     private lateinit var durationInput: EditText
-    private lateinit var muscleTargetTxt: TextView
-    private lateinit var muscleExcludeTxt: TextView
+    private lateinit var areaTargetTxt: TextView
+    private lateinit var areaExcludeTxt: TextView
     private lateinit var strengthChkbx: CheckBox
     private lateinit var conditionChkbx: CheckBox
     private lateinit var excludeExTxt: TextView
@@ -29,8 +29,8 @@ class GenerateWorkoutFragment : Fragment() {
 
     private var allExercises: ArrayList<Exercise> = ArrayList<Exercise>()
     private var allWorkoutExercises: ArrayList<WorkoutExercise> = ArrayList<WorkoutExercise>()
-    private var targettedMuscles: ArrayList<String> = ArrayList<String>()
-    private var excludedMuscles: ArrayList<String> = ArrayList<String>()
+    private var targettedAreas: ArrayList<String> = ArrayList<String>()
+    private var excludedAreas: ArrayList<String> = ArrayList<String>()
     var selectedWorkExes = ArrayList<WorkoutExercise>()
     var workoutSelectedExercises: ArrayList<WorkoutExercise> = ArrayList<WorkoutExercise>()
 
@@ -51,16 +51,16 @@ class GenerateWorkoutFragment : Fragment() {
         loadExercisesIntoWorkout()
 
         durationInput = view.findViewById(R.id.duration_input)
-        muscleTargetTxt = view.findViewById(R.id.muscle_target_txt)
-        muscleExcludeTxt = view.findViewById(R.id.muscle_exclude_txt)
+        areaTargetTxt = view.findViewById(R.id.target_area_txt)
+        areaExcludeTxt = view.findViewById(R.id.area_exclude_txt)
         strengthChkbx = view.findViewById(R.id.strength_chkbx)
         conditionChkbx = view.findViewById(R.id.condition_chkbx)
         excludeExTxt = view.findViewById(R.id.exclude_ex_txt)
         cancelBtn = view.findViewById(R.id.cancel_btn)
         generateBtn = view.findViewById(R.id.generate_btn)
 
-        muscleTargetTxt.setOnClickListener { view -> buildTargetMusclesDialog() }
-        muscleExcludeTxt.setOnClickListener { view -> buildExcludeMusclesDialog() }
+        areaTargetTxt.setOnClickListener { view -> buildTargetAreasDialog() }
+        areaExcludeTxt.setOnClickListener { view -> buildExcludeAreasDialog() }
         excludeExTxt.setOnClickListener { view -> buildExcludeExerciseDialog() }
 
         generateBtn.setOnClickListener { view ->
@@ -84,35 +84,30 @@ class GenerateWorkoutFragment : Fragment() {
         var filteredWorkExes: ArrayList<WorkoutExercise> = allWorkoutExercises.clone() as ArrayList<WorkoutExercise>
         println("Number of exercises after excluded ones is ${filteredWorkExes.size}")
 
-        if(excludedMuscles.size == 0 && targettedMuscles.size == 0){
-            println("No muscles targetted and none excluded")
-        } else if(targettedMuscles.size == 0){
-            println("No muscles targetted, but several excluded")
+        if(excludedAreas.size == 0 && targettedAreas.size == 0){
+        } else if(targettedAreas.size == 0){
             for(workEx in filteredWorkExes){
-                if(doesStringListContainListItem(workEx.exercise!!.targettedMuscles, excludedMuscles)){
+                if(doesStringListContainListItem(workEx.exercise!!.targettedAreas, excludedAreas)){
                     allWorkoutExercises.remove(workEx)
                 }
             }
-        } else if(excludedMuscles.size == 0) {
-            println("No muscles excluded, but several targetted")
+        } else if(excludedAreas.size == 0) {
             for(workEx in filteredWorkExes){
-                if(!doesStringListContainListItem(workEx.exercise!!.targettedMuscles, targettedMuscles)){
+                if(!doesStringListContainListItem(workEx.exercise!!.targettedAreas, targettedAreas)){
                     allWorkoutExercises.remove(workEx)
                 }
             }
-        } else if(excludedMuscles.size > 0 && targettedMuscles.size > 0){
-            println("Some muscles targetted, several excluded")
+        } else if(excludedAreas.size > 0 && targettedAreas.size > 0){
             for(workEx in filteredWorkExes){
-                if(!doesStringListContainListItem(workEx.exercise!!.targettedMuscles, targettedMuscles)){
+                if(!doesStringListContainListItem(workEx.exercise!!.targettedAreas, targettedAreas)){
                     allWorkoutExercises.remove(workEx)
-                } else if(doesStringListContainListItem(workEx.exercise!!.targettedMuscles, excludedMuscles)){
+                } else if(doesStringListContainListItem(workEx.exercise!!.targettedAreas, excludedAreas)){
                     allWorkoutExercises.remove(workEx)
                 }
             }
         }
 
         filteredWorkExes = allWorkoutExercises.clone() as ArrayList<WorkoutExercise>
-        println("Number of exercises available after muscle filtering is ${filteredWorkExes.size}")
 
         if(strengthChkbx.isChecked && conditionChkbx.isChecked){
             println("Both are focused")
@@ -267,50 +262,68 @@ class GenerateWorkoutFragment : Fragment() {
         builder.show()
     }
 
-    fun buildTargetMusclesDialog(){
+    fun buildTargetAreasDialog(){
         val builder = AlertDialog.Builder(context).create()
-        val view = layoutInflater.inflate(R.layout.custom_dialog_muscles, null)
-        var muscleBoxes: MutableMap<String, CheckBox> = HashMap<String, CheckBox>()
-        var allChk = view.findViewById<CheckBox>(R.id.all_chk)
-        muscleBoxes["Calfs"] = view.findViewById<CheckBox>(R.id.calfs_chk)
-        muscleBoxes["Quads"] = view.findViewById<CheckBox>(R.id.quads_chk)
-        muscleBoxes["Glutts"] = view.findViewById<CheckBox>(R.id.glutts_chk)
-        muscleBoxes["Abs"] = view.findViewById<CheckBox>(R.id.abs_chk)
-        muscleBoxes["Triceps"] = view.findViewById<CheckBox>(R.id.triceps_chk)
-        muscleBoxes["Bicepts"] = view.findViewById<CheckBox>(R.id.biceps_chk)
-
+        val view = layoutInflater.inflate(R.layout.custom_dialog_areas, null)
+        var checkLayout = view.findViewById<LinearLayout>(R.id.checkbox_layout)
+        var checkLayout2 = view.findViewById<LinearLayout>(R.id.checkbox_layout_2)
         var clearBtn = view.findViewById<Button>(R.id.clear_btn)
         var cancelBtn = view.findViewById<Button>(R.id.cancel_btn)
         var doneBtn = view.findViewById<Button>(R.id.done_btn)
+        var areaBoxes: MutableMap<String, CheckBox> = HashMap<String, CheckBox>()
 
-        if(targettedMuscles.size == 0){
-            allChk.isChecked = true
-        } else {
-            for(muscle in targettedMuscles){
-                muscleBoxes[muscle]?.isChecked = true
+        // Sets up the all option
+        var allChk = CheckBox(activity)
+        allChk.setHint("All")
+        checkLayout.addView(allChk)
+
+        // Sets up the checkboxes for all the different areas
+        var isLeft = false
+        for(i in 1..MultiselectLists.targettedAreaArray.size-1){
+            var area = MultiselectLists.targettedAreaArray[i]
+            var chkbx = CheckBox(activity)
+            chkbx.setHint(area)
+            areaBoxes[area] = chkbx
+            if(isLeft){
+                isLeft = false
+                checkLayout.addView(chkbx)
+            } else {
+                isLeft = true
+                checkLayout2.addView(chkbx)
             }
         }
 
-        allChk.setOnClickListener { view ->
-            if(allChk.isChecked){
-                for(muscle in muscleBoxes){
-                    muscle.value.isChecked = false
+        // Set initial checks
+        if(targettedAreas.size == 0){
+            allChk?.isChecked = true
+        } else {
+            for(area in targettedAreas){
+                areaBoxes[area]?.isChecked = true
+            }
+        }
+
+        // Clears all other checkboxes if all is checked
+        allChk?.setOnClickListener { view ->
+            if(allChk.isChecked == true){
+                for(area in areaBoxes){
+                    area.value.isChecked = false
                 }
             }
         }
 
-        for(muscle in muscleBoxes){
-            muscle.value.setOnClickListener { view ->
-                if(muscle.value.isChecked){
+        // Clears the all checkbox if anything else is checked
+        for(area in areaBoxes){
+            area.value.setOnClickListener { view ->
+                if(area.value.isChecked){
                     allChk.isChecked = false
                 }
             }
         }
 
         clearBtn.setOnClickListener { view ->
-            allChk.isChecked = true
-            for(muscle in muscleBoxes){
-                muscle.value.isChecked = false
+            allChk?.isChecked = true
+            for(area in areaBoxes){
+                area.value.isChecked = false
             }
         }
 
@@ -319,21 +332,21 @@ class GenerateWorkoutFragment : Fragment() {
         }
 
         doneBtn.setOnClickListener { view ->
-            if(allChk.isChecked){
-                targettedMuscles.clear()
-                muscleTargetTxt.setText("[All]")
+            if(allChk.isChecked == true){
+                targettedAreas.clear()
+                areaTargetTxt.setText("[All]")
             } else {
                 var targetTxt = "["
-                for(muscle in muscleBoxes){
-                    if(muscle.value.isChecked){
-                        targettedMuscles.add(muscle.key)
-                        targetTxt += (muscle.key + ", ")
+                for(area in areaBoxes){
+                    if(area.value.isChecked){
+                        targettedAreas.add(area.key)
+                        targetTxt += (area.key + ", ")
                     }
                 }
 
                 targetTxt = targetTxt.dropLast(2)
                 targetTxt += "]"
-                muscleTargetTxt.setText(targetTxt)
+                areaTargetTxt.setText(targetTxt)
             }
 
             builder.dismiss()
@@ -345,51 +358,70 @@ class GenerateWorkoutFragment : Fragment() {
     }
 
 
-    fun buildExcludeMusclesDialog(){
+    fun buildExcludeAreasDialog(){
         val builder = AlertDialog.Builder(context).create()
-        val view = layoutInflater.inflate(R.layout.custom_dialog_muscles, null)
-        var muscleBoxes: MutableMap<String, CheckBox> = HashMap<String, CheckBox>()
-        var allChk = view.findViewById<CheckBox>(R.id.all_chk)
-        allChk.setText("None")
-        muscleBoxes["Calfs"] = view.findViewById<CheckBox>(R.id.calfs_chk)
-        muscleBoxes["Quads"] = view.findViewById<CheckBox>(R.id.quads_chk)
-        muscleBoxes["Glutts"] = view.findViewById<CheckBox>(R.id.glutts_chk)
-        muscleBoxes["Abs"] = view.findViewById<CheckBox>(R.id.abs_chk)
-        muscleBoxes["Triceps"] = view.findViewById<CheckBox>(R.id.triceps_chk)
-        muscleBoxes["Bicepts"] = view.findViewById<CheckBox>(R.id.biceps_chk)
-
+        val view = layoutInflater.inflate(R.layout.custom_dialog_areas, null)
+        var checkLayout = view.findViewById<LinearLayout>(R.id.checkbox_layout)
+        var checkLayout2 = view.findViewById<LinearLayout>(R.id.checkbox_layout_2)
         var clearBtn = view.findViewById<Button>(R.id.clear_btn)
         var cancelBtn = view.findViewById<Button>(R.id.cancel_btn)
         var doneBtn = view.findViewById<Button>(R.id.done_btn)
+        var areaBoxes: MutableMap<String, CheckBox> = HashMap<String, CheckBox>()
 
-        if(excludedMuscles.size == 0){
-            allChk.isChecked = true
+        // Sets up the all option
+        var allChk = CheckBox(activity)
+        allChk.setHint("None")
+        checkLayout.addView(allChk)
+
+        // Sets up the area checkboxes
+        var isLeft = false
+        for(i in 1..MultiselectLists.targettedAreaArray.size-1){
+            var area = MultiselectLists.targettedAreaArray[i]
+            var chkbx = CheckBox(activity)
+            chkbx.setHint(area)
+            areaBoxes[area] = chkbx
+            if(isLeft){
+                isLeft = false
+                checkLayout.addView(chkbx)
+            } else {
+                isLeft = true
+                checkLayout2.addView(chkbx)
+            }
+
+
+        }
+
+        // Sets up initial checks
+        if(excludedAreas.size == 0){
+            allChk?.isChecked = true
         } else {
-            for(muscle in excludedMuscles){
-                muscleBoxes[muscle]?.isChecked = true
+            for(area in excludedAreas){
+                areaBoxes[area]?.isChecked = true
             }
         }
 
-        allChk.setOnClickListener { view ->
+        // Sets up the all check to set all else to false if checked
+        allChk?.setOnClickListener { view ->
             if(allChk.isChecked){
-                for(muscle in muscleBoxes){
-                    muscle.value.isChecked = false
+                for(area in areaBoxes){
+                    area.value.isChecked = false
                 }
             }
         }
 
-        for(muscle in muscleBoxes){
-            muscle.value.setOnClickListener { view ->
-                if(muscle.value.isChecked){
-                    allChk.isChecked = false
+        // Sets all check to false if anything else is checked
+        for(area in areaBoxes){
+            area.value.setOnClickListener { view ->
+                if(area.value.isChecked){
+                    allChk?.isChecked = false
                 }
             }
         }
 
         clearBtn.setOnClickListener { view ->
-            allChk.isChecked = true
-            for(muscle in muscleBoxes){
-                muscle.value.isChecked = false
+            allChk?.isChecked = true
+            for(area in areaBoxes){
+                area.value.isChecked = false
             }
         }
 
@@ -398,21 +430,21 @@ class GenerateWorkoutFragment : Fragment() {
         }
 
         doneBtn.setOnClickListener { view ->
-            if(allChk.isChecked){
-                excludedMuscles.clear()
-                muscleExcludeTxt.setText("[None]")
+            if(allChk?.isChecked == true){
+                excludedAreas.clear()
+                areaExcludeTxt.setText("[None]")
             } else {
                 var targetTxt = "["
-                for(muscle in muscleBoxes){
-                    if(muscle.value.isChecked){
-                        excludedMuscles.add(muscle.key)
-                        targetTxt += (muscle.key + ", ")
+                for(area in areaBoxes){
+                    if(area.value.isChecked){
+                        excludedAreas.add(area.key)
+                        targetTxt += (area.key + ", ")
                     }
                 }
 
                 targetTxt = targetTxt.dropLast(2)
                 targetTxt += "]"
-                muscleExcludeTxt.setText(targetTxt)
+                areaExcludeTxt.setText(targetTxt)
             }
 
             builder.dismiss()

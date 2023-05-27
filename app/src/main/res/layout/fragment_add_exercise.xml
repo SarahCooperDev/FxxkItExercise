@@ -79,13 +79,33 @@
                     android:inputType="number"/>
             </TableRow>
             <TableRow>
+                <TextView
+                    android:gravity="center_horizontal"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Is Strengthening" />
+                <TextView
+                    android:gravity="center_horizontal"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Is Conditioning" />
+            </TableRow>
+            <TableRow>
                 <ToggleButton
+                    android:textOff="False"
+                    android:textOn="True"
+                    android:checked="true"
                     android:id="@+id/strengthening_toggle_btn"
                     android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Strength" />
                 <ToggleButton
+                    android:textOff="False"
+                    android:textOn="True"
+                    android:checked="true"
                     android:id="@+id/conditioning_toggle_btn"
                     android:layout_weight="1"
                     android:layout_width="0dp"
@@ -104,7 +124,7 @@
                     android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:id="@+id/muscle_select"
+                    android:id="@+id/area_select"
                     android:drawableRight="@android:drawable/arrow_down_float"
                     android:drawablePadding="16dp"
                     android:text="Targets" />
