@@ -1,6 +1,7 @@
 package com.example.fxxkit.Fragment
 
 import android.app.AlertDialog
+import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -12,12 +13,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fxxkit.*
 import com.example.fxxkit.DataClass.Exercise
 import com.example.fxxkit.DataClass.Tag
-import com.example.fxxkit.DataClass.Workout
 import com.example.fxxkit.DataClass.WorkoutExercise
 import com.example.fxxkit.ViewHolder.DetailWorkoutExerciseListAdapter
 import com.example.fxxkit.ViewHolder.OrderExercisesListAdapter
-import com.example.fxxkit.ViewHolder.WorkoutExerciseListAdapter
-import com.example.fxxkit.ViewHolder.WorkoutListAdapter
 import com.example.fxxkit.ViewModel.WorkoutViewModel
 
 /**
@@ -34,14 +32,14 @@ class EditWorkoutFragment : Fragment() {
     private var removedWorkExercises: ArrayList<WorkoutExercise> = ArrayList<WorkoutExercise>()
     private var addedWorkExercises: ArrayList<WorkoutExercise> = ArrayList<WorkoutExercise>()
 
-    private lateinit var workoutName: EditText
+    private lateinit var nameInput: EditText
     private lateinit var cancelBtn: ImageButton
     private lateinit var updateBtn : ImageButton
     private lateinit var addExerciseBtn: Button
     private lateinit var orderExercisesBtn: Button
     private lateinit var removeExerciseBtn: Button
     private lateinit var favBtn: ImageButton
-    private lateinit var descTxt: EditText
+    private lateinit var descriptionInput: EditText
     private lateinit var tagInput: EditText
     private lateinit var selectedExRV: RecyclerView
 
@@ -61,22 +59,22 @@ class EditWorkoutFragment : Fragment() {
         filterExercisesBySelected()
         loadExercisesIntoWorkouts(unselectedExerciseList)
 
-        workoutName = view.findViewById<EditText>(R.id.workout_name_txt)
-        descTxt = view.findViewById<EditText>(R.id.description_txt)
-        tagInput = view.findViewById<EditText>(R.id.tag_input)
-        favBtn = view.findViewById<ImageButton>(R.id.fav_btn)
-        updateBtn = view.findViewById<ImageButton>(R.id.update_btn)
-        cancelBtn = view.findViewById<ImageButton>(R.id.cancel_btn)
-        addExerciseBtn = view.findViewById<Button>(R.id.add_exercise_btn)
-        orderExercisesBtn = view.findViewById<Button>(R.id.order_exercises_btn)
-        removeExerciseBtn = view.findViewById<Button>(R.id.remove_exercise_btn)
-        selectedExRV = view.findViewById<RecyclerView>(R.id.selected_ex_rv)
+        nameInput = view.findViewById(R.id.workout_name_txt)
+        descriptionInput = view.findViewById(R.id.description_txt)
+        tagInput = view.findViewById(R.id.tag_input)
+        favBtn = view.findViewById(R.id.fav_btn)
+        updateBtn = view.findViewById(R.id.update_btn)
+        cancelBtn = view.findViewById(R.id.cancel_btn)
+        addExerciseBtn = view.findViewById(R.id.add_exercise_btn)
+        orderExercisesBtn = view.findViewById(R.id.order_exercises_btn)
+        removeExerciseBtn = view.findViewById(R.id.remove_exercise_btn)
+        selectedExRV = view.findViewById(R.id.selected_ex_rv)
 
         selectedExRV.layoutManager = LinearLayoutManager(activity)
         selectedExRV.adapter = DetailWorkoutExerciseListAdapter(selectedExercises)
 
-        workoutName.setText(currentWorkout.name)
-        descTxt.setText(currentWorkout.description)
+        nameInput.setText(currentWorkout.name)
+        descriptionInput.setText(currentWorkout.description)
         tagInput.setText(currentWorkout.getTagInputString())
         setFavourite(true)
 
@@ -86,8 +84,14 @@ class EditWorkoutFragment : Fragment() {
         favBtn.setOnClickListener { view -> setFavourite(!currentWorkout.isFavourited) }
 
         updateBtn.setOnClickListener{ view ->
-            updateWorkoutWithExercises()
-            (activity as MainActivity).navToPrevious()
+            if(nameInput.text.toString().length < 1){
+                Toast.makeText(activity, getString(R.string.error_blank_name_txt), Toast.LENGTH_LONG).show()
+                nameInput.setBackgroundColor(Color.parseColor(getString(R.string.colour_error)))
+            } else {
+                updateWorkoutWithExercises()
+                Toast.makeText(activity, "Created workout ${nameInput.text.toString()}", Toast.LENGTH_SHORT).show()
+                (activity as MainActivity).navToWorkoutList()
+            }
         }
         cancelBtn.setOnClickListener { view ->
             (activity as MainActivity).navToPrevious()
@@ -121,7 +125,7 @@ class EditWorkoutFragment : Fragment() {
         builder.setCancelable(false)
 
         val inflater: LayoutInflater = requireActivity().getLayoutInflater()
-        var view = inflater.inflate(R.layout.custom_add_exercise_dialog, null)
+        var view = inflater.inflate(R.layout.dialog_add_exercise, null)
 
         var addExRV = view.findViewById<RecyclerView>(R.id.add_exercise_rv)
         addExRV.layoutManager = LinearLayoutManager(activity)
@@ -163,7 +167,7 @@ class EditWorkoutFragment : Fragment() {
         builder.setCancelable(false)
 
         val inflater: LayoutInflater = requireActivity().getLayoutInflater()
-        var view = inflater.inflate(R.layout.custom_order_exercises_dialog, null)
+        var view = inflater.inflate(R.layout.dialog_order_exercises, null)
 
         var orderExRV = view.findViewById<RecyclerView>(R.id.order_exercises_rv)
         orderExRV.layoutManager = LinearLayoutManager(activity)
@@ -196,7 +200,7 @@ class EditWorkoutFragment : Fragment() {
         builder.setCancelable(false)
 
         val inflater: LayoutInflater = requireActivity().getLayoutInflater()
-        var view = inflater.inflate(R.layout.custom_remove_exercise_dialog, null)
+        var view = inflater.inflate(R.layout.dialog_remove_exercise, null)
 
         var removeExRV = view.findViewById<RecyclerView>(R.id.remove_exercise_rv)
         removeExRV.layoutManager = LinearLayoutManager(activity)
@@ -311,8 +315,8 @@ class EditWorkoutFragment : Fragment() {
         val dbHandler = DBHandler(this.requireContext(), null, null, 1)
 
         // Workout details
-        currentWorkout.name = workoutName.text.toString()
-        currentWorkout.description = descTxt.text.toString()
+        currentWorkout.name = nameInput.text.toString()
+        currentWorkout.description = descriptionInput.text.toString()
         var updatedWorkout = currentWorkout.castWorkoutVMToWorkout()
         dbHandler.updateWorkout(updatedWorkout)
 

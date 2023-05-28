@@ -54,6 +54,7 @@ class WorkoutListFragment : Fragment() {
         searchEdit = view.findViewById(R.id.search_edit)
 
         loadWorkouts()
+        sortByReverseChrono()
         setUpSortBtn()
         setUpFilterBtn()
 

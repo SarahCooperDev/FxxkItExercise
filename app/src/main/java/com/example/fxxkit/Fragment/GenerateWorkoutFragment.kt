@@ -289,7 +289,7 @@ class GenerateWorkoutFragment : Fragment() {
      */
     fun buildTargetAreasDialog(){
         val builder = AlertDialog.Builder(context).create()
-        val view = layoutInflater.inflate(R.layout.custom_dialog_areas, null)
+        val view = layoutInflater.inflate(R.layout.dialog_select_areas, null)
         var checkLayout = view.findViewById<LinearLayout>(R.id.checkbox_layout)
         var checkLayout2 = view.findViewById<LinearLayout>(R.id.checkbox_layout_2)
         var clearBtn = view.findViewById<Button>(R.id.clear_btn)
@@ -388,7 +388,7 @@ class GenerateWorkoutFragment : Fragment() {
      */
     fun buildExcludeAreasDialog(){
         val builder = AlertDialog.Builder(context).create()
-        val view = layoutInflater.inflate(R.layout.custom_dialog_areas, null)
+        val view = layoutInflater.inflate(R.layout.dialog_select_areas, null)
         var checkLayout = view.findViewById<LinearLayout>(R.id.checkbox_layout)
         var checkLayout2 = view.findViewById<LinearLayout>(R.id.checkbox_layout_2)
         var clearBtn = view.findViewById<Button>(R.id.clear_btn)

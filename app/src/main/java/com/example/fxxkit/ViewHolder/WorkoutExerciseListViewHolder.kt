@@ -3,11 +3,8 @@ package com.example.fxxkit.ViewHolder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.fxxkit.AddWorkoutExerciseListAdapter
 import com.example.fxxkit.DataClass.WorkoutExercise
 import com.example.fxxkit.R
 
@@ -19,7 +16,7 @@ import com.example.fxxkit.R
  */
 class WorkoutExerciseListAdapter(private val workExList: ArrayList<WorkoutExercise>) :   RecyclerView.Adapter<WorkoutExerciseListAdapter.WorkoutExerciseListViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WorkoutExerciseListViewHolder {
-        val viewLayout = LayoutInflater.from(parent.context).inflate(R.layout.workout_list_exercise_row, parent, false)
+        val viewLayout = LayoutInflater.from(parent.context).inflate(R.layout.row_item_workout_list_exercise, parent, false)
         return WorkoutExerciseListViewHolder(viewLayout)
     }
 

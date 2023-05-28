@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fxxkit.*
@@ -104,7 +103,7 @@ class CreateWorkoutFragment : Fragment() {
         builder.setCancelable(false)
 
         val inflater: LayoutInflater = requireActivity().getLayoutInflater()
-        var view = inflater.inflate(R.layout.custom_add_exercise_dialog, null)
+        var view = inflater.inflate(R.layout.dialog_add_exercise, null)
 
         var addExRV = view.findViewById<RecyclerView>(R.id.add_exercise_rv)
         addExRV.layoutManager = LinearLayoutManager(activity)
@@ -144,7 +143,7 @@ class CreateWorkoutFragment : Fragment() {
         builder.setCancelable(false)
 
         val inflater: LayoutInflater = requireActivity().getLayoutInflater()
-        var view = inflater.inflate(R.layout.custom_remove_exercise_dialog, null)
+        var view = inflater.inflate(R.layout.dialog_remove_exercise, null)
 
         var removeExRV = view.findViewById<RecyclerView>(R.id.remove_exercise_rv)
         removeExRV.layoutManager = LinearLayoutManager(activity)

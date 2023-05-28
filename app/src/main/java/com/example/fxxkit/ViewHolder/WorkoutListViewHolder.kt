@@ -1,6 +1,5 @@
 package com.example.fxxkit.ViewHolder
 
-import android.app.ActionBar.LayoutParams
 import android.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +9,6 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fxxkit.DBHandler
-import com.example.fxxkit.DataClass.WorkoutExercise
 import com.example.fxxkit.MainActivity
 import com.example.fxxkit.R
 import com.example.fxxkit.ViewModel.WorkoutViewModel
@@ -25,7 +23,7 @@ class WorkoutListAdapter(private val activity: MainActivity, private val eList: 
     private lateinit var inflatedViewGroup: View
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WorkoutListViewHolder {
-        inflatedViewGroup = LayoutInflater.from(parent.context).inflate(R.layout.workout_row_item, parent, false)
+        inflatedViewGroup = LayoutInflater.from(parent.context).inflate(R.layout.row_item_workout, parent, false)
         return WorkoutListViewHolder(inflatedViewGroup)
     }
 

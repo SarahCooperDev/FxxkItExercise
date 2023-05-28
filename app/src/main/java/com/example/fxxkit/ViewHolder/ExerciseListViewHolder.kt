@@ -18,7 +18,7 @@ import com.example.fxxkit.DataClass.Exercise
 class ExerciseListAdapter(private val eList: ArrayList<Exercise>, private val activity: MainActivity) :   RecyclerView.Adapter<ExerciseListAdapter.ExerciseListViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseListViewHolder {
-        val viewLayout = LayoutInflater.from(parent.context).inflate(R.layout.exercise_row_item, parent, false)
+        val viewLayout = LayoutInflater.from(parent.context).inflate(R.layout.row_item_exercise, parent, false)
         return ExerciseListViewHolder(viewLayout)
     }
 

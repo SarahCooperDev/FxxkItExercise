@@ -1,14 +1,10 @@
 package com.example.fxxkit.ViewHolder
 
-import android.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.fxxkit.AddWorkoutExerciseListAdapter
-import com.example.fxxkit.DataClass.MultiselectLists
 import com.example.fxxkit.DataClass.WorkoutExercise
 import com.example.fxxkit.MainActivity
 import com.example.fxxkit.R
@@ -22,7 +18,7 @@ import com.example.fxxkit.R
 class OrderExercisesListAdapter(private val activity: MainActivity, private val workExList: ArrayList<WorkoutExercise>) :   RecyclerView.Adapter<OrderExercisesListAdapter.OrderExercisesListViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrderExercisesListViewHolder {
-        val viewLayout = LayoutInflater.from(parent.context).inflate(R.layout.exercise_order_row_item, parent, false)
+        val viewLayout = LayoutInflater.from(parent.context).inflate(R.layout.row_item_exercise_order, parent, false)
         return OrderExercisesListViewHolder(viewLayout)
     }
 

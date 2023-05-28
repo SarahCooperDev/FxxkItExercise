@@ -18,7 +18,7 @@ import com.example.fxxkit.R
  */
 class SelectWorkoutExerciseListAdapter(private val activity: MainActivity, private val workExList: ArrayList<WorkoutExercise>) :   RecyclerView.Adapter<SelectWorkoutExerciseListAdapter.SelectWorkoutExerciseListViewHolder>(){
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SelectWorkoutExerciseListViewHolder {
-        val viewLayout = LayoutInflater.from(parent.context).inflate( R.layout.workout_exercise_row_item, parent, false)
+        val viewLayout = LayoutInflater.from(parent.context).inflate( R.layout.row_item_workout_exercise, parent, false)
         return SelectWorkoutExerciseListViewHolder(viewLayout)
     }
 

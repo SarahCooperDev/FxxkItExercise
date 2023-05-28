@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.text.InputType
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.MenuItem.OnMenuItemClickListener
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
@@ -20,7 +19,6 @@ import com.example.fxxkit.DataClass.Tag
 import com.example.fxxkit.ExerciseListAdapter
 import com.example.fxxkit.MainActivity
 import com.example.fxxkit.R
-import com.example.fxxkit.ViewModel.WorkoutViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 /**
@@ -65,7 +63,8 @@ class ExerciseListFragment : Fragment() {
 
         setUpSortBtn()
         setUpFilterBtn()
-        loadExercises(view)
+        loadExercises()
+        sortByReverseChrono()
 
         exerciseRecycler.layoutManager = LinearLayoutManager(activity)
         exerciseRecycler.adapter = ExerciseListAdapter(exerciseList, activity as MainActivity)
@@ -348,7 +347,7 @@ class ExerciseListFragment : Fragment() {
     /**
      * Loads all the exercises from the database
      */
-    private fun loadExercises(view: View){
+    private fun loadExercises() {
         val dbHandler = DBHandler(this.requireContext(), null, null, 1)
         val retrievedList = dbHandler.getAllExercises()
 
