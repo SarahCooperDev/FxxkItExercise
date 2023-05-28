@@ -1,9 +1,12 @@
 package com.example.fxxkit.Fragment
 
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
+import android.text.InputType
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MenuItem.OnMenuItemClickListener
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
@@ -12,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fxxkit.DBHandler
 import com.example.fxxkit.DataClass.Exercise
+import com.example.fxxkit.DataClass.MultiselectLists
 import com.example.fxxkit.DataClass.Tag
 import com.example.fxxkit.ExerciseListAdapter
 import com.example.fxxkit.MainActivity
@@ -27,6 +31,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 class ExerciseListFragment : Fragment() {
     private var filterSetting = 0
     private var sortSetting = 2
+    private var areaSearchList: ArrayList<String> = ArrayList<String>()
 
     private var allTags: ArrayList<Tag> = ArrayList<Tag>()
     private var allExercises: ArrayList<Exercise> = ArrayList<Exercise>()
@@ -74,6 +79,8 @@ class ExerciseListFragment : Fragment() {
         println("Search button clicked")
         when(filterSetting){
             0 -> filterByName()
+            1 -> filterByArea()
+            2 -> filterByTags()
         }
         searchEdit.clearFocus()
         val inputManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -83,6 +90,7 @@ class ExerciseListFragment : Fragment() {
     private fun clearSearch(){
         searchEdit.text.clear()
         searchEdit.clearFocus()
+        areaSearchList.clear()
         val inputManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputManager.hideSoftInputFromWindow(view?.windowToken, 0)
 
@@ -102,8 +110,111 @@ class ExerciseListFragment : Fragment() {
         }
     }
 
-    private fun filterByFavourite(){
-        println("Favourites not implemented")
+    private fun filterByArea(){
+        if(areaSearchList.size < 1){
+            Toast.makeText(activity!!.baseContext, "There are no areas selected to search by!", Toast.LENGTH_LONG)
+        } else {
+            exerciseList.clear()
+            var filteredList = ArrayList<Exercise>()
+            for(exercise in allExercises){
+                if(exercise.targettedAreas.contains(MultiselectLists.targettedAreaArray[0])){
+                    filteredList.add(exercise)
+                } else {
+                    for(area in exercise.targettedAreas){
+                        if(areaSearchList.contains(area)){
+                            filteredList.add(exercise)
+                        }
+                    }
+                }
+            }
+
+            exerciseList.clear()
+            exerciseList.addAll(filteredList)
+            exerciseRecycler.adapter?.notifyDataSetChanged()
+        }
+    }
+
+    private fun undoAreaFiltering(){
+        searchEdit.setHint("Search...")
+        searchEdit.inputType = InputType.TYPE_CLASS_TEXT
+        searchEdit.setOnClickListener { view ->
+            println("None")
+        }
+    }
+
+    private fun buildAreaSelect(){
+        val checkboxes = ArrayList<CheckBox>()
+        val builder = AlertDialog.Builder(activity).create()
+        val dialog = layoutInflater.inflate(R.layout.dialog_search_areas, null)
+
+        val leftLayout = dialog.findViewById<LinearLayout>(R.id.left_layout)
+        val rightLayout = dialog.findViewById<LinearLayout>(R.id.right_layout)
+        val clearBtn = dialog.findViewById<ImageButton>(R.id.clear_btn)
+        val cancelBtn = dialog.findViewById<ImageButton>(R.id.cancel_btn)
+        val doneBtn = dialog.findViewById<ImageButton>(R.id.done_btn)
+
+        var isLeft = true
+        for(i in 1..MultiselectLists.targettedAreaArray.size-1){
+            var item = MultiselectLists.targettedAreaArray[i]
+            var chkbx = CheckBox(activity)
+            chkbx.setText(item)
+            chkbx.setPadding(5, 5, 5, 5)
+            chkbx.setOnClickListener { view ->
+               areaSearchList.add(item)
+            }
+
+            if(areaSearchList.contains(item)){
+                chkbx.isChecked = true
+            }
+
+            if(isLeft){
+                isLeft = false
+                leftLayout.addView(chkbx)
+            } else {
+                isLeft = true
+                rightLayout.addView(chkbx)
+            }
+            checkboxes.add(chkbx)
+        }
+
+        doneBtn.setOnClickListener { view ->
+            var textString = ""
+            for(item in areaSearchList){
+                textString += item + ", "
+            }
+
+            textString = textString.dropLast(2)
+            searchEdit.setText(textString)
+
+            builder.dismiss()
+        }
+
+        cancelBtn.setOnClickListener { view ->
+            builder.dismiss()
+        }
+
+        clearBtn.setOnClickListener { view ->
+            searchEdit.setText("")
+            areaSearchList.clear()
+            for(chk in checkboxes){
+                chk.isChecked = false
+            }
+        }
+
+        builder.setView(dialog)
+        builder.setCanceledOnTouchOutside(true)
+        builder.show()
+    }
+
+    private fun setUpAreaFiltering(){
+        println("Area filter")
+        searchEdit.setHint("Choose areas...")
+        searchEdit.inputType = InputType.TYPE_NULL
+        searchEdit.setOnClickListener { view ->
+            println("clicking on search edit...")
+            buildAreaSelect()
+        }
+        buildAreaSelect()
     }
 
     private fun filterByTags(){
@@ -120,19 +231,24 @@ class ExerciseListFragment : Fragment() {
     private fun setUpFilterBtn(){
         filterSearchBtn.setOnClickListener {
             val filterPopup = PopupMenu(activity, filterSearchBtn)
-            filterPopup.menuInflater.inflate(R.menu.workout_list_filter_menu, filterPopup.menu)
+            filterPopup.menuInflater.inflate(R.menu.exercise_list_filter_menu, filterPopup.menu)
             when(filterSetting){
                 0 -> filterPopup.menu.findItem(R.id.filter_name_item).setChecked(true)
-                1 -> filterPopup.menu.findItem(R.id.filter_fav_item).setChecked(true)
+                1 -> filterPopup.menu.findItem(R.id.filter_area_item).setChecked(true)
                 2 -> filterPopup.menu.findItem(R.id.filter_tags_item).setChecked(true)
             }
             filterPopup.setOnMenuItemClickListener { menuItem ->
                 when(menuItem.itemId){
                     R.id.filter_name_item -> {
                         filterSetting = 0
+                        undoAreaFiltering()
                         filterByName()
+                    } R.id.filter_area_item -> {
+                        filterSetting = 1
+                        setUpAreaFiltering()
                     } R.id.filter_tags_item -> {
                         filterSetting = 2
+                        undoAreaFiltering()
                         filterByTags()
                     }
                 }

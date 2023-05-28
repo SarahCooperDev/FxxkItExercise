@@ -125,25 +125,15 @@
             </TableRow>
             <TableRow>
                 <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="Is Strength: "/>
-                <TextView
                     android:id="@+id/is_strength_txt"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="False"/>
-            </TableRow>
-            <TableRow>
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="Is Conditioning: "/>
+                    android:text="Is Strengthening"/>
                 <TextView
                     android:id="@+id/is_condition_txt"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="False"/>
+                    android:text="Is Conditioning"/>
             </TableRow>
         </TableLayout>
         <TextView

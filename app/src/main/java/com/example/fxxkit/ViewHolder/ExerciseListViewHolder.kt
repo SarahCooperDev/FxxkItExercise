@@ -22,8 +22,10 @@ class ExerciseListAdapter(private val eList: ArrayList<Exercise>, private val ac
         holder.id.text = currentExercise.id.toString()
         holder.name.text = currentExercise.name
         holder.description.text = currentExercise.description
-        holder.isStrength.text = currentExercise.isStrengthening.toString()
-        holder.isCondition.text = currentExercise.isConditioning.toString()
+        if(currentExercise.isStrengthening){ holder.isStrength.text = activity.baseContext.getString(R.string.is_strength_txt) }
+        else{ holder.isStrength.text = activity.baseContext.getString(R.string.isnt_strength_txt) }
+        if(currentExercise.isConditioning){ holder.isCondition.text = activity.baseContext.getString(R.string.is_condition_txt) }
+        else{ holder.isCondition.text = activity.baseContext.getString(R.string.isnt_condition_txt) }
         holder.setList.text = currentExercise.getSetAsString()
         holder.repList.text = currentExercise.getRepsAsString()
         holder.repTime.text = currentExercise.repTime.toString()

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:checkable="true"
+        android:id="@+id/filter_name_item"
+        android:title="Name"></item>
+    <item
+        android:checkable="true"
+        android:id="@+id/filter_area_item"
+        android:title="Targetted Area"></item>
+    <item
+        android:checkable="true"
+        android:id="@+id/filter_tags_item"
+        android:title="Tags"></item>
+</menu>

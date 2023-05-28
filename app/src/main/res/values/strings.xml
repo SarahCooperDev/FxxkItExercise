@@ -2,4 +2,8 @@
     <string name="app_name">FxxkIt</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="is_strength_txt">Is Strengthening</string>
+    <string name="isnt_strength_txt">Is Not Strengthening</string>
+    <string name="is_condition_txt">Is Conditioning</string>
+    <string name="isnt_condition_txt">Is Not Conditioning</string>
 </resources>
