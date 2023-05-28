@@ -9,11 +9,16 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fxxkit.DataClass.Exercise
 
+/**
+ * Adapter for recycler
+ * Displays a list of exercises
+ * Uses:
+ *  - exercise_row_item
+ */
 class ExerciseListAdapter(private val eList: ArrayList<Exercise>, private val activity: MainActivity) :   RecyclerView.Adapter<ExerciseListAdapter.ExerciseListViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExerciseListViewHolder {
-        val viewLayout = LayoutInflater.from(parent.context).inflate(
-            R.layout.exercise_row_item, parent, false)
+        val viewLayout = LayoutInflater.from(parent.context).inflate(R.layout.exercise_row_item, parent, false)
         return ExerciseListViewHolder(viewLayout)
     }
 
@@ -31,27 +36,22 @@ class ExerciseListAdapter(private val eList: ArrayList<Exercise>, private val ac
         holder.repTime.text = currentExercise.repTime.toString()
         holder.areaList.text = currentExercise.getAreasAsString()
 
-        if(currentExercise.tags.size > 0){
-            holder.tagTxt.text = currentExercise.getTagDisplayString()
-        } else {
-            holder.tagTxt.text = "None"
-        }
+        if(currentExercise.tags.size > 0){ holder.tagTxt.text = currentExercise.getTagDisplayString()
+        } else { holder.tagTxt.text = activity.baseContext.getString(R.string.none_txt) }
 
-        holder.editBtn.setOnClickListener{view ->
-            activity.navToEditExercise(currentExercise.id)
-        }
+        holder.editBtn.setOnClickListener{view -> activity.navToEditExercise(currentExercise.id) }
 
         holder.deleteBtn.setOnClickListener{ view ->
             val builder = AlertDialog.Builder(view.context)
-            builder.setMessage("Are you sure you want to delete?")
+            builder.setMessage(activity.baseContext.getString(R.string.delete_confirmation))
                 .setCancelable(false)
-                .setPositiveButton("Yes") { dialog, id ->
+                .setPositiveButton(activity.baseContext.getString(R.string.yes_txt)) { dialog, id ->
                     val dbHandler = DBHandler(view.context, null, null, 1)
                     dbHandler.deleteExercise(currentExercise.name)
                     eList.removeAt(position)
                     notifyItemRemoved(position)
                 }
-                .setNegativeButton("No") { dialog, id ->
+                .setNegativeButton(activity.baseContext.getString(R.string.no_txt)) { dialog, id ->
                     dialog.dismiss()
                 }
 

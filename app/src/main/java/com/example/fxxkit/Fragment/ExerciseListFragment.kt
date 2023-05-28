@@ -24,9 +24,7 @@ import com.example.fxxkit.ViewModel.WorkoutViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 /**
- * A simple [Fragment] subclass.
- * Use the [ExerciseListFragment.newInstance] factory method to
- * create an instance of this fragment.
+ * Shows a list of all exercises
  */
 class ExerciseListFragment : Fragment() {
     private var filterSetting = 0
@@ -51,22 +49,22 @@ class ExerciseListFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var view = inflater.inflate(R.layout.fragment_exercise_list, container, false)
-        (activity as MainActivity).getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText("Exercises")
+        (activity as MainActivity).getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText(getString(R.string.exercise_list_title))
 
-        addExerciseBtn = view.findViewById<FloatingActionButton>(R.id.add_exercise_btn)
-        exerciseRecycler = view.findViewById<RecyclerView>(R.id.exercise_list_rv)
-        sortBtn = view.findViewById<ImageButton>(R.id.sort_btn)
-        searchBtn = view.findViewById<ImageButton>(R.id.search_btn)
-        filterSearchBtn = view.findViewById<ImageButton>(R.id.filter_search_btn)
-        searchClearBtn = view.findViewById<ImageButton>(R.id.search_clear_btn)
-        searchEdit = view.findViewById<EditText>(R.id.search_edit)
+        addExerciseBtn = view.findViewById(R.id.add_exercise_btn)
+        exerciseRecycler = view.findViewById(R.id.exercise_list_rv)
+        sortBtn = view.findViewById(R.id.sort_btn)
+        searchBtn = view.findViewById(R.id.search_btn)
+        filterSearchBtn = view.findViewById(R.id.filter_search_btn)
+        searchClearBtn = view.findViewById(R.id.search_clear_btn)
+        searchEdit = view.findViewById(R.id.search_edit)
 
         addExerciseBtn.setOnClickListener { view -> (activity as MainActivity).navToAddExercise() }
         searchBtn.setOnClickListener { search() }
         searchClearBtn.setOnClickListener { clearSearch() }
+
         setUpSortBtn()
         setUpFilterBtn()
-
         loadExercises(view)
 
         exerciseRecycler.layoutManager = LinearLayoutManager(activity)
@@ -75,30 +73,40 @@ class ExerciseListFragment : Fragment() {
         return view
     }
 
+    /**
+     * Decides which way to search/filter through the workouts
+     */
     private fun search(){
-        println("Search button clicked")
         when(filterSetting){
             0 -> filterByName()
             1 -> filterByArea()
             2 -> filterByTags()
         }
+
+        // Makes the keyboard go away
         searchEdit.clearFocus()
         val inputManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputManager.hideSoftInputFromWindow(view?.windowToken, 0)
     }
 
+    /**
+     * Removes any filtering, showing all exercises
+     */
     private fun clearSearch(){
         searchEdit.text.clear()
         searchEdit.clearFocus()
-        areaSearchList.clear()
         val inputManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputManager.hideSoftInputFromWindow(view?.windowToken, 0)
 
+        areaSearchList.clear()
         exerciseList.clear()
         exerciseList.addAll(allExercises)
         exerciseRecycler.adapter?.notifyDataSetChanged()
     }
 
+    /**
+     * Filters the exercises, comparing name to a given search term
+     */
     private fun filterByName(){
         if(searchEdit.text.toString().length > 0){
             var filteredList: ArrayList<Exercise> = allExercises.filter{ it.name!!.lowercase().contains(searchEdit.text.toString().lowercase())} as ArrayList<Exercise>
@@ -106,16 +114,21 @@ class ExerciseListFragment : Fragment() {
             exerciseList.addAll(filteredList)
             exerciseRecycler.adapter?.notifyDataSetChanged()
         } else {
-            Toast.makeText(activity, "There must be a search term to search by name", Toast.LENGTH_LONG).show()
+            Toast.makeText(activity, getString(R.string.error_search_term_missing), Toast.LENGTH_LONG).show()
         }
     }
 
+    /**
+     * Filters the exercises by a given list of targetted areas
+     */
     private fun filterByArea(){
         if(areaSearchList.size < 1){
-            Toast.makeText(activity!!.baseContext, "There are no areas selected to search by!", Toast.LENGTH_LONG)
+            Toast.makeText(activity!!.baseContext, getString(R.string.error_search_target_areas_missing), Toast.LENGTH_LONG)
         } else {
             exerciseList.clear()
             var filteredList = ArrayList<Exercise>()
+
+            // Goes through all the exercises, seeing if the exercise areas are in the search areas
             for(exercise in allExercises){
                 if(exercise.targettedAreas.contains(MultiselectLists.targettedAreaArray[0])){
                     filteredList.add(exercise)
@@ -134,14 +147,22 @@ class ExerciseListFragment : Fragment() {
         }
     }
 
+    /**
+     * Clears the area searching changes needed for dialog support
+     */
     private fun undoAreaFiltering(){
-        searchEdit.setHint("Search...")
+        searchEdit.setHint(getString(R.string.search_hint))
         searchEdit.inputType = InputType.TYPE_CLASS_TEXT
         searchEdit.setOnClickListener { view ->
-            println("None")
+
         }
     }
 
+    /**
+     * Builds and shows a dialog that users can use to select targetted areas to search by
+     * Uses:
+     *  - dialog_search_areas
+     */
     private fun buildAreaSelect(){
         val checkboxes = ArrayList<CheckBox>()
         val builder = AlertDialog.Builder(activity).create()
@@ -206,17 +227,21 @@ class ExerciseListFragment : Fragment() {
         builder.show()
     }
 
+    /**
+     * Changes the search edit to a button that triggers a popup
+     */
     private fun setUpAreaFiltering(){
-        println("Area filter")
-        searchEdit.setHint("Choose areas...")
+        searchEdit.setHint(getString(R.string.choose_areas_hint))
         searchEdit.inputType = InputType.TYPE_NULL
-        searchEdit.setOnClickListener { view ->
-            println("clicking on search edit...")
-            buildAreaSelect()
-        }
+        searchEdit.setOnClickListener { view -> buildAreaSelect() }
+
+        // Triggers the dialog to show immediately
         buildAreaSelect()
     }
 
+    /**
+     * Filters the exercise list by given tags
+     */
     private fun filterByTags(){
         if(searchEdit.text.toString().length > 0){
             var filteredList: ArrayList<Exercise> = allExercises.filter{ (it.tags.firstOrNull{it.name == searchEdit.text.toString().lowercase()}) != null} as ArrayList<Exercise>
@@ -224,10 +249,13 @@ class ExerciseListFragment : Fragment() {
             exerciseList.addAll(filteredList)
             exerciseRecycler.adapter?.notifyDataSetChanged()
         } else {
-            Toast.makeText(activity, "There must be a search term to search by tags", Toast.LENGTH_LONG).show()
+            Toast.makeText(activity, getString(R.string.error_search_term_missing), Toast.LENGTH_LONG).show()
         }
     }
 
+    /**
+     * Sets up the filtering button menu; shows a drop down menu of available filtering methods
+     */
     private fun setUpFilterBtn(){
         filterSearchBtn.setOnClickListener {
             val filterPopup = PopupMenu(activity, filterSearchBtn)
@@ -258,6 +286,9 @@ class ExerciseListFragment : Fragment() {
         }
     }
 
+    /**
+     * Sets up the sort button, shows a drop-down menu of sorting options, that sort the exercises on click
+     */
     private fun setUpSortBtn(){
         sortBtn.setOnClickListener {
             val sortPopup = PopupMenu(activity, sortBtn)
@@ -265,9 +296,7 @@ class ExerciseListFragment : Fragment() {
             when(sortSetting){
                 0 -> sortPopup.menu.findItem(R.id.sort_alpha_item)
                 1 -> sortPopup.menu.findItem(R.id.sort_reverse_alpha_item)
-                2 -> {
-                    val menuView = sortPopup.menu.findItem(R.id.sort_chrono_item)
-                }
+                2 -> { val menuView = sortPopup.menu.findItem(R.id.sort_chrono_item)  }
                 3 -> sortPopup.menu.findItem(R.id.sort_reverse_chrono_item)
             }
 
@@ -284,35 +313,48 @@ class ExerciseListFragment : Fragment() {
         }
     }
 
+    /**
+     * Sorts the exercises by chronological order (the exericse ids)
+     */
     private fun sortByChrono() {
         exerciseList.sortBy{ it.id }
         exerciseRecycler.adapter?.notifyDataSetChanged()
     }
 
+    /**
+     * Sorts the exercises by reverse chronological order (the exercise ids)
+     */
     private fun sortByReverseChrono(){
         exerciseList.sortByDescending { it.id }
         exerciseRecycler.adapter?.notifyDataSetChanged()
     }
 
+    /**
+     * Sorts the exercises by alphabetical order (the exercise name)
+     */
     private fun sortByAlpha(){
         exerciseList.sortBy { it.name }
         exerciseRecycler.adapter?.notifyDataSetChanged()
     }
 
+    /**
+     * Sorts the exercises by reverse alphabetical order (the exercise name)
+     */
     private fun sortByReverseAlpha(){
         exerciseList.sortByDescending { it.name }
         exerciseRecycler.adapter?.notifyDataSetChanged()
     }
 
+    /**
+     * Loads all the exercises from the database
+     */
     private fun loadExercises(view: View){
         val dbHandler = DBHandler(this.requireContext(), null, null, 1)
         val retrievedList = dbHandler.getAllExercises()
 
         if(retrievedList != null && retrievedList.size > 0){
             for(exercise in retrievedList){
-                println("Getting tags for exercise ${exercise.name}")
                 var exerciseTags = dbHandler.getTagsForExercise(exercise)
-                println("There are ${exerciseTags.size} tags")
                 if(exerciseTags != null){
                     exercise.tags = exerciseTags
                 }

@@ -10,27 +10,30 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fxxkit.DataClass.MultiselectLists
 import com.example.fxxkit.DataClass.WorkoutExercise
 
+/**
+ * Adapter for recycler
+ * Displays a list of WorkoutExercises, that are selectable, and trigger set/rep dialog on click
+ * Uses:
+ *  - workout_exercise_row_item
+ */
 class AddWorkoutExerciseListAdapter(private val activity: MainActivity, private val workExList: ArrayList<WorkoutExercise>) :   RecyclerView.Adapter<AddWorkoutExerciseListAdapter.AddWorkoutExerciseListViewHolder>(){
-    var dialogTitleString = "Specify sets and reps for this workout"
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AddWorkoutExerciseListViewHolder {
-        val viewLayout = LayoutInflater.from(parent.context).inflate(
-            R.layout.workout_exercise_row_item, parent, false)
+        val viewLayout = LayoutInflater.from(parent.context).inflate(R.layout.workout_exercise_row_item, parent, false)
         return AddWorkoutExerciseListViewHolder(viewLayout)
     }
 
     override fun onBindViewHolder(holder: AddWorkoutExerciseListViewHolder, position: Int) {
         val currentExercise = workExList[position]
-        println("Current exercise: ${currentExercise.exercise!!.name}, is selected - ${currentExercise.isSelected.toString()}")
 
         holder.id.text = currentExercise.exercise!!.id.toString()
         holder.name.text = currentExercise.exercise!!.name
         holder.description.text = currentExercise.exercise!!.description
-
         holder.isStrength.text = currentExercise.exercise!!.isStrengthening.toString()
         holder.isCondition.text = currentExercise.exercise!!.isConditioning.toString()
         holder.areaList.text = currentExercise.exercise!!.getAreasAsString()
+        holder.repTime.text = currentExercise.exercise!!.repTime.toString()
 
+        // If user has selected it, it will show the chosen set/rep size
         if(currentExercise.isSelected){
             holder.setList.text = currentExercise.setSize
             holder.repList.text = currentExercise.repSize
@@ -40,8 +43,6 @@ class AddWorkoutExerciseListAdapter(private val activity: MainActivity, private 
             holder.repList.text = currentExercise.exercise!!.getRepsAsString()
             holder.isSelected.setChecked(false)
         }
-
-        holder.repTime.text = currentExercise.exercise!!.repTime.toString()
 
         holder.row.setOnClickListener{
             if(holder.isSelected.isChecked){
@@ -65,23 +66,20 @@ class AddWorkoutExerciseListAdapter(private val activity: MainActivity, private 
         }
     }
 
-    private fun swapList(workExercise: WorkoutExercise, position: Int){
-        workExList.removeAt(position)
-        notifyItemRemoved(position)
-        notifyItemRangeChanged(position, workExList.size)
-    }
-
+    /**
+     * Builds and shows the dialog to select the sets/reps for a workout exercise
+     */
     private fun buildWorkoutExerciseDialog(currentExercise: WorkoutExercise, holder: AddWorkoutExerciseListViewHolder){
         val builder = AlertDialog.Builder(activity)
-        builder.setTitle(dialogTitleString)
+        builder.setTitle(activity.baseContext.getString(R.string.dialog_chose_sets_reps))
         builder.setCancelable(false)
 
         val inflater: LayoutInflater = activity.getLayoutInflater()
-        // Shows the options, and chooses what to do when one is selected
         var view = inflater.inflate(R.layout.dialog_set_and_rep, null)
         var setRadioGrp = view.findViewById<RadioGroup>(R.id.set_radiogrp)
         var repRadioGrp = view.findViewById<RadioGroup>(R.id.rep_radiogrp)
 
+        // Shows the sets available for the exercise, as a selectable list
         if(currentExercise.exercise != null && currentExercise.exercise!!.possibleSetSize != null && currentExercise.exercise!!.possibleSetSize.size > 0){
             if(currentExercise.exercise!!.possibleSetSize[0] == MultiselectLists.setSizesArray[0]){
                 for(i in 1 .. MultiselectLists.setSizesArray.size - 1){
@@ -99,6 +97,7 @@ class AddWorkoutExerciseListAdapter(private val activity: MainActivity, private 
             }
         }
 
+        // Shows the reps available for an exercise, as a selectable list
         if(currentExercise.exercise != null && currentExercise.exercise!!.possibleRepSize != null && currentExercise.exercise!!.possibleRepSize.size > 0){
             if(currentExercise.exercise!!.possibleRepSize[0] == MultiselectLists.repSizesArray[0]){
                 for(i in 1 .. MultiselectLists.repSizesArray.size - 1){
@@ -131,19 +130,18 @@ class AddWorkoutExerciseListAdapter(private val activity: MainActivity, private 
         builder.setView(view)
 
         // Sets up button to complete the dialog
-        builder.setPositiveButton("Done") { dialogInterface, i ->
-            println("Done in workout exercise")
+        builder.setPositiveButton(activity.baseContext.getString(R.string.done_txt)) { dialogInterface, i ->
             if(currentExercise.repSize != null && currentExercise.setSize != null){
                 holder.isSelected.setChecked(true)
                 currentExercise.isSelected = true
             } else {
-                Toast.makeText(activity.baseContext, "You must choose set and rep sizes", Toast.LENGTH_LONG)
+                Toast.makeText(activity.baseContext, activity.baseContext.getString(R.string.error_set_rep_missing), Toast.LENGTH_LONG)
             }
             dialogInterface.dismiss()
         }
 
         // Sets up the button to cancel the input
-        builder.setNegativeButton("Cancel") { dialogInterface, i ->
+        builder.setNegativeButton(activity.baseContext.getString(R.string.cancel_txt)) { dialogInterface, i ->
             dialogInterface.dismiss()
         }
 

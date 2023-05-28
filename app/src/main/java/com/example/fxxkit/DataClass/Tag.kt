@@ -1,5 +1,8 @@
 package com.example.fxxkit.DataClass
 
+/**
+ * Represents a string tag that is applied to workouts/exercises
+ */
 class Tag {
     var id: Int = -1
     var name: String? = null

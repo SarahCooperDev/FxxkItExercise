@@ -23,6 +23,9 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         val TABLE_EXERCISE_TAGS = "exercise_tag"
 
         val COLUMN_ID = "_id"
+        val COLUMN_WORKOUT = "workout_id"
+        val COLUMN_EXERCISE = "exercise_id"
+        val COLUMN_TAG = "tag_id"
         val COLUMN_EXERCISE_NAME = "exercise_name"
         val COLUMN_IS_STRENGTH = "is_strength"
         val COLUMN_IS_CONDITION = "is_condition"
@@ -30,19 +33,12 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         val COLUMN_POSSIBLE_REP_SIZE = "possible_rep_size"
         val COLUMN_TARGETTED_AREAS = "targetted_muscles"
         val COLUMN_REP_TIME = "rep_time"
-
         val COLUMN_WORKOUTNAME = "workout_name"
-
         val COLUMN_DESCRIPTION = "description"
         val COLUMN_IS_FAVOURITED = "is_favourited"
-
-        val COLUMN_WORKOUT = "workout_id"
-        val COLUMN_EXERCISE = "exercise_id"
-        val COLUMN_TAG = "tag_id"
         val COLUMN_SET_SIZE = "set_size"
         val COLUMN_REP_SIZE = "rep_size"
         val COLUMN_ORDER_NO = "order_no"
-
         val COLUMN_NAME = "name"
     }
 
@@ -74,7 +70,6 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         db.execSQL(CREATE_EXERCISE_TABLE)
         db.execSQL(CREATE_WORKOUT_TABLE)
         db.execSQL(CREATE_TAG_TABLE)
-
         db.execSQL(CREATE_WORKOUT_EXERCISE_TABLE)
         db.execSQL(CREATE_WORKOUT_TAG_TABLE)
         db.execSQL(CREATE_EXERCISE_TAG_TABLE)
@@ -96,6 +91,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
     fun migrateDatabase(){
         println("DB: Migrating database: saving exercises and workouts")
         println("Note: workout exercises will be lost")
+
         val dbold = this.writableDatabase
         var allExercises = getAllExercises()
         var allWorkouts = getAllWorkouts()
@@ -191,20 +187,6 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         return result.toInt()
     }
 
-    fun addTagToExercise(exercise: Exercise, tag: Tag): Int?{
-        println("DB: Adding tag ${tag.name} to exercise ${exercise.name}")
-        val values = ContentValues()
-        val db = this.writableDatabase
-
-        values.put(COLUMN_EXERCISE, exercise.id)
-        values.put(COLUMN_TAG, tag.id)
-
-        var result = db.insert(TABLE_EXERCISE_TAGS, null, values)
-        db.close()
-
-        return result.toInt()
-    }
-
     fun addTagToWorkoutByIds(workoutId: Int, tagId: Int): Int?{
         println("DB: Adding tag ${tagId} to workout ${workoutId}")
         val values = ContentValues()
@@ -247,43 +229,6 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         db.close()
 
         return result.toInt()
-    }
-
-    @SuppressLint("Range")
-    fun findExerciseByName(name: String): Exercise?{
-        val query = "SELECT * FROM $TABLE_EXERCISES WHERE $COLUMN_EXERCISE_NAME = \"${name}\""
-
-        val db = this.readableDatabase
-        val cursor = db.rawQuery(query, null)
-        var exercise: Exercise? = null
-
-        if(cursor.moveToFirst()){
-            cursor.moveToFirst()
-
-            val id = Integer.parseInt(cursor.getString(0))
-            val name = cursor.getString(1)
-            val exDesc = cursor.getString(cursor.getColumnIndex(COLUMN_DESCRIPTION))
-            val isStrength = cursor.getInt(cursor.getColumnIndex(COLUMN_IS_STRENGTH)) > 0
-            val isCondition = cursor.getInt(cursor.getColumnIndex(COLUMN_IS_CONDITION)) > 0
-            val repTime = cursor.getInt(cursor.getColumnIndex(COLUMN_REP_TIME))
-            val setString = cursor.getString(cursor.getColumnIndex(COLUMN_POSSIBLE_SET_SIZE))
-            val repString = cursor.getString(cursor.getColumnIndex(COLUMN_POSSIBLE_REP_SIZE))
-            val areaString = cursor.getString(cursor.getColumnIndex(COLUMN_TARGETTED_AREAS))
-
-            exercise = Exercise(id, name)
-            exercise.description = exDesc
-            if(repTime > 0){ exercise.repTime = repTime}
-            if(isCondition != null){ exercise.isConditioning = isCondition }
-            if(isStrength != null){ exercise.isStrengthening = isStrength }
-            if(setString != null){ exercise.setStringToSet(setString) }
-            if(repString != null){ exercise.setStringToRep(repString) }
-            if(areaString != null){ exercise.setStringToArea(areaString) }
-
-            cursor.close()
-        }
-
-        db.close()
-        return exercise
     }
 
     @SuppressLint("Range")
@@ -353,30 +298,6 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
     }
 
     @SuppressLint("Range")
-    fun findTagByName(name: String): Tag?{
-        println("DB: finding tag of name ${name}")
-        val query = "SELECT * FROM $TABLE_TAGS WHERE $COLUMN_NAME = \"${name}\""
-        val db = this.readableDatabase
-        val cursor = db.rawQuery(query, null)
-
-        if(cursor.moveToFirst()){
-            cursor.moveToFirst()
-
-            val id = cursor.getInt(cursor.getColumnIndex(COLUMN_ID))
-            val name = cursor.getString(cursor.getColumnIndex(COLUMN_NAME))
-
-            val tag = Tag(id, name)
-
-            cursor.close()
-            db.close()
-            return tag
-        } else {
-            db.close()
-            return null
-        }
-    }
-
-    @SuppressLint("Range")
     fun findWorkoutById(id: Int): Workout?{
         println("DB: finding workout of id ${id}")
         val query = "SELECT * FROM $TABLE_WORKOUTS WHERE $COLUMN_ID = \"${id}\""
@@ -395,107 +316,15 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
             workout.description = description
             workout.isFavourited = isFavourited
 
-            if(workId < 0 || workId == null || workName == null){
-                return null
-            }
-
             cursor.close()
             db.close()
-            return workout
+
+            if(workId < 0 || workId == null || workName == null){ return null }
+            else { return workout }
         } else {
             db.close()
             return null
         }
-    }
-
-    @SuppressLint("Range")
-    fun findAllWorkoutExercisesByExerciseId(exerciseId: Int): ArrayList<WorkoutExercise>{
-        var workExList = ArrayList<WorkoutExercise>()
-        val query = "SELECT * FROM $TABLE_WORKOUT_EXERCISE WHERE $COLUMN_EXERCISE = \"${exerciseId}\""
-
-        val db = this.readableDatabase
-        val cursor = db.rawQuery(query, null)
-
-        var id: Int = -1
-        var workoutId: Int = -1
-        var setSize: String? = null
-        var repSize: String? = null
-        var orderNo: Int = -1
-
-        if(cursor.moveToFirst()){
-            cursor.moveToFirst()
-            do{
-                id = cursor.getInt(cursor.getColumnIndex(COLUMN_ID))
-                workoutId = cursor.getInt(cursor.getColumnIndex(COLUMN_WORKOUT))
-                setSize = cursor.getString(cursor.getColumnIndex(COLUMN_SET_SIZE))
-                repSize = cursor.getString(cursor.getColumnIndex(COLUMN_REP_SIZE))
-                orderNo = cursor.getInt(cursor.getColumnIndex(COLUMN_ORDER_NO))
-
-                var workEx = WorkoutExercise()
-                workEx.id = id
-                workEx.workoutId = workoutId
-                workEx.exerciseId = exerciseId
-                workEx.setSize = setSize
-                workEx.repSize = repSize
-                workEx.orderNo = orderNo
-
-                var exercise = findExerciseById(exerciseId)
-
-                if(workEx.workoutId != null && workEx.exerciseId != null && exercise != null){
-                    workEx.exercise = exercise
-                    workExList.add(workEx)
-                }
-            } while(cursor.moveToNext())
-
-            cursor.close()
-        }
-
-        return workExList
-    }
-
-    @SuppressLint("Range")
-    fun findAllWorkoutExercisesByWorkoutId(workoutId: Int): ArrayList<WorkoutExercise>{
-        var workExList = ArrayList<WorkoutExercise>()
-        val query = "SELECT * FROM $TABLE_WORKOUT_EXERCISE WHERE $COLUMN_WORKOUT = \"${workoutId}\""
-
-        val db = this.readableDatabase
-        val cursor = db.rawQuery(query, null)
-
-        var id: Int = -1
-        var exerciseId: Int = -1
-        var setSize: String? = null
-        var repSize: String? = null
-        var orderNo: Int = -1
-
-        if(cursor.moveToFirst()){
-            cursor.moveToFirst()
-            do{
-                id = cursor.getInt(cursor.getColumnIndex(COLUMN_ID))
-                exerciseId = cursor.getInt(cursor.getColumnIndex(COLUMN_EXERCISE))
-                setSize = cursor.getString(cursor.getColumnIndex(COLUMN_SET_SIZE))
-                repSize = cursor.getString(cursor.getColumnIndex(COLUMN_REP_SIZE))
-                orderNo = cursor.getInt(cursor.getColumnIndex(COLUMN_ORDER_NO))
-
-                var workEx = WorkoutExercise()
-                workEx.id = id
-                workEx.workoutId = workoutId
-                workEx.exerciseId = exerciseId
-                workEx.setSize = setSize
-                workEx.repSize = repSize
-                workEx.orderNo = orderNo
-
-                var exercise = findExerciseById(exerciseId)
-
-                if(workEx.workoutId != null && workEx.exerciseId != null && exercise != null){
-                    workEx.exercise = exercise
-                    workExList.add(workEx)
-                }
-            } while(cursor.moveToNext())
-
-            cursor.close()
-        }
-
-        return workExList
     }
 
     @SuppressLint("Range")
@@ -621,44 +450,6 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
     }
 
     @SuppressLint("Range")
-    fun getAllWorkoutExercises(): ArrayList<WorkoutExercise>?{
-        val workExList: ArrayList<WorkoutExercise> = ArrayList<WorkoutExercise>()
-
-        val query = "SELECT * FROM $TABLE_WORKOUT_EXERCISE"
-
-        val db = this.readableDatabase
-        val cursor = db.rawQuery(query, null)
-
-        var id: Int
-        var workoutId: Int
-        var exerciseId: Int
-        var setSize: String? = null
-        var repSize: String? = null
-        var orderNo: Int = -1
-
-        if(cursor.moveToFirst()){
-            cursor.moveToFirst()
-            do{
-                id = cursor.getInt(cursor.getColumnIndex(COLUMN_ID))
-                workoutId = cursor.getInt(cursor.getColumnIndex(COLUMN_WORKOUT))
-                exerciseId = cursor.getInt(cursor.getColumnIndex(COLUMN_EXERCISE))
-                setSize = cursor.getString(cursor.getColumnIndex(COLUMN_SET_SIZE))
-                repSize = cursor.getString(cursor.getColumnIndex(COLUMN_REP_SIZE))
-                orderNo = cursor.getInt(cursor.getColumnIndex(COLUMN_ORDER_NO))
-
-                val workEx = WorkoutExercise(id, workoutId, exerciseId)
-                workEx.setSize = setSize
-                workEx.repSize = repSize
-                workEx.orderNo = orderNo
-                workExList.add(workEx)
-            } while(cursor.moveToNext())
-        }
-
-        cursor.close()
-        return workExList
-    }
-
-    @SuppressLint("Range")
     fun getAllWorkouts(): ArrayList<Workout>?{
         println("DB: getting all workouts")
         val workoutList: ArrayList<Workout> = ArrayList<Workout>()
@@ -734,22 +525,16 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         val db = this.readableDatabase
         val cursor = db.rawQuery(query, null)
 
-        var id: Int
-        var workoutId: Int
         var tagId: Int
 
         if(cursor.moveToFirst()){
             do{
-                id = cursor.getInt(cursor.getColumnIndex(COLUMN_ID))
-                workoutId = cursor.getInt(cursor.getColumnIndex(COLUMN_WORKOUT))
                 tagId = cursor.getInt(cursor.getColumnIndex(COLUMN_TAG))
-
                 var tag = findTagById(tagId)
 
                 if (tag != null) {
                     tagList.add(tag)
                 }
-                println("Found tag of id ${tag?.id} and name ${tag?.name}")
             } while(cursor.moveToNext())
         }
 

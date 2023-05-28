@@ -1,9 +1,39 @@
 <resources>
     <string name="app_name">FxxkIt</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="is_strength_txt">Is Strengthening</string>
     <string name="isnt_strength_txt">Is Not Strengthening</string>
     <string name="is_condition_txt">Is Conditioning</string>
     <string name="isnt_condition_txt">Is Not Conditioning</string>
+    <string name="create_workout_title">Create Workout</string>
+    <string name="error_blank_name_txt">Name may not be blank</string>
+    <string name="dialog_title_add_exercise">Add Exercise</string>
+    <string name="done_txt">Done</string>
+    <string name="cancel_txt">Cancel</string>
+    <string name="dialog_title_remove_exercise">Remove Exercise</string>
+    <string name="create_exercise_title">Create Exercise</string>
+    <string name="edit_exercise_title">Edit Exercise</string>
+    <string name="error_reptime_not_number">Rep time must be number</string>
+    <string name="colour_error">#CC0000</string>
+    <string name="edit_workout_title">Edit Workout</string>
+    <string name="dialog_title_order_exercises">Order Exercises</string>
+    <string name="error_workout_not_found">Error: workout not found</string>
+    <string name="exercise_list_title">Exercises</string>
+    <string name="error_search_term_missing">There must be a search term</string>
+    <string name="error_search_target_areas_missing">There are no areas selected to search by!</string>
+    <string name="search_hint">Search...</string>
+    <string name="choose_areas_hint">Choose areas...</string>
+    <string name="generate_workout_title">Generate Workout</string>
+    <string name="suggested_title">Suggested</string>
+    <string name="dialog_save_workout">Saving workout...</string>
+    <string name="workout_details_title">Workout Details</string>
+    <string name="no_tags_txt">No tags</string>
+    <string name="workout_list_title">Workouts</string>
+    <string name="dialog_chose_sets_reps">Specify sets and reps for this workout</string>
+    <string name="error_set_rep_missing">You must choose set and rep sizes</string>
+    <string name="none_txt">None</string>
+    <string name="delete_confirmation">Are you sure you want to delete?</string>
+    <string name="yes_txt">Yes</string>
+    <string name="no_txt">No</string>
+    <string name="error_index_lowest">Can\'t move any higher</string>
+    <string name="error_index_highest">Can\'t go any lower</string>
 </resources>

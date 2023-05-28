@@ -17,6 +17,9 @@ import com.example.fxxkit.MainActivity
 import com.example.fxxkit.R
 import com.example.fxxkit.ViewHolder.SelectWorkoutExerciseListAdapter
 
+/**
+ * Takes user input to algorithmically select exercises for a generated workout
+ */
 class GenerateWorkoutFragment : Fragment() {
     private lateinit var durationInput: EditText
     private lateinit var areaTargetTxt: TextView
@@ -40,7 +43,7 @@ class GenerateWorkoutFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var view = inflater.inflate(R.layout.fragment_generate_workout, container, false)
-        (activity as MainActivity).getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText("Generate Workout")
+        (activity as MainActivity).getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText(getString(R.string.generate_workout_title))
 
         allExercises.clear()
         allWorkoutExercises.clear()
@@ -75,29 +78,35 @@ class GenerateWorkoutFragment : Fragment() {
         return view
     }
 
+    /**
+     * Algorithmically selects random exercises that meet the given criteria
+     */
     private fun generateWorkout(){
+        // Removes the exercises the user explicitly excludes
         for(exercise in selectedWorkExes){
-            println("Excluded exercise ${exercise.id}")
             allWorkoutExercises.removeAll{it.exerciseId == exercise.exerciseId}
         }
 
         var filteredWorkExes: ArrayList<WorkoutExercise> = allWorkoutExercises.clone() as ArrayList<WorkoutExercise>
-        println("Number of exercises after excluded ones is ${filteredWorkExes.size}")
 
         if(excludedAreas.size == 0 && targettedAreas.size == 0){
+            // User has not put any filters on regarding targetted/excluded areas
         } else if(targettedAreas.size == 0){
+            // User has excluded some areas; removes exercises that contain those areas
             for(workEx in filteredWorkExes){
                 if(doesStringListContainListItem(workEx.exercise!!.targettedAreas, excludedAreas)){
                     allWorkoutExercises.remove(workEx)
                 }
             }
         } else if(excludedAreas.size == 0) {
+            // User has focused on some areas; removes exercises that don't have any of those areas
             for(workEx in filteredWorkExes){
                 if(!doesStringListContainListItem(workEx.exercise!!.targettedAreas, targettedAreas)){
                     allWorkoutExercises.remove(workEx)
                 }
             }
         } else if(excludedAreas.size > 0 && targettedAreas.size > 0){
+            // User has focused on some areas, and excluded others; removes all not focused, and all that have the excluded
             for(workEx in filteredWorkExes){
                 if(!doesStringListContainListItem(workEx.exercise!!.targettedAreas, targettedAreas)){
                     allWorkoutExercises.remove(workEx)
@@ -110,28 +119,28 @@ class GenerateWorkoutFragment : Fragment() {
         filteredWorkExes = allWorkoutExercises.clone() as ArrayList<WorkoutExercise>
 
         if(strengthChkbx.isChecked && conditionChkbx.isChecked){
-            println("Both are focused")
+            // User requires all exercises be both strengthening and conditioning; filters out all exercises that aren't both
             for(workEx in filteredWorkExes){
                 if(!workEx.exercise!!.isStrengthening && !workEx.exercise!!.isConditioning){
                     allWorkoutExercises.remove(workEx)
                 }
             }
         } else if(strengthChkbx.isChecked){
-            println("Only strengthening exercises")
+            // User requires all exercises be strengthening; filters out all exercises that aren't
             for(workEx in filteredWorkExes){
                 if(!workEx.exercise!!.isStrengthening){
                     allWorkoutExercises.remove(workEx)
                 }
             }
         } else if(conditionChkbx.isChecked){
-            println("Only conditioning exercises")
+            // User requires all exercises be conditioning; filters out all exercises that aren't
             for(workEx in filteredWorkExes){
                 if(!workEx.exercise!!.isConditioning){
                     allWorkoutExercises.remove(workEx)
                 }
             }
         } else {
-            println("Neither conditioning nor strengthening")
+            // User requires that all exercises be neither strengthening nor conditioning; filters out all exercises that are either
             for(workEx in filteredWorkExes){
                 if(workEx.exercise!!.isStrengthening || workEx.exercise!!.isConditioning){
                     allWorkoutExercises.remove(workEx)
@@ -140,18 +149,20 @@ class GenerateWorkoutFragment : Fragment() {
         }
 
         filteredWorkExes = allWorkoutExercises.clone() as ArrayList<WorkoutExercise>
-        println("Number of exercises available after strength/condition filtering ${filteredWorkExes.size}")
 
+        // Calculates how long the workout should last for
         var targetTime = durationInput.text.toString().toInt() * 60
         var runningTime = 0
-        println("Workout time is ${targetTime}")
         var random = 0
 
+        // Loops through remaining exercises, selecting ones at random to add to the workout
         while(runningTime < targetTime && filteredWorkExes.size > 0){
             random = (0..filteredWorkExes.size - 1).random()
 
             var workEx = filteredWorkExes[random]
             filteredWorkExes.removeAt(random)
+
+            // Randomly selects the set and rep sizes for the workout (weighted)
             var setSize = 0
             var repSize = 0
             if(workEx.exercise!!.possibleSetSize.size < 1 || workEx.exercise!!.possibleSetSize.contains(MultiselectLists.setSizesArray[0])){
@@ -174,17 +185,15 @@ class GenerateWorkoutFragment : Fragment() {
             workEx.repSize = repSize.toString()
             workEx.totalTime = setSize * repSize * workEx.exercise!!.repTime
 
+            // Adds the workoutexercise, and calculates the total time already in the workout
             workoutSelectedExercises.add(workEx)
             runningTime += workEx.totalTime
-
-            println("Added workout exercise ${workEx.exercise!!.name}")
-            //println("Set size is ${workEx.setSize} and rep size is ${workEx.repSize} and time is ${workEx.exercise!!.repTime}")
-            println("Running time is ${runningTime}")
         }
-
-        println("Total workout exercises is ${workoutSelectedExercises.size}")
     }
 
+    /**
+     * Takes a list (sets or reps), and returns one weighted to make smaller values more likely to be randomly selected (via duplicates)
+     */
     private fun getWeigtedList(sizeList: ArrayList<String>): ArrayList<String>{
         var weightedList = ArrayList<String>()
 
@@ -206,6 +215,9 @@ class GenerateWorkoutFragment : Fragment() {
         return weightedList
     }
 
+    /**
+     * Determines if a list contains any of the values in another list
+     */
     private fun doesStringListContainListItem(list1: ArrayList<String>, list2: ArrayList<String>): Boolean{
         for(item in list1){
             if(list2.contains(item)){
@@ -215,7 +227,9 @@ class GenerateWorkoutFragment : Fragment() {
         return false
     }
 
-
+    /**
+     * Loads exercise objects into WorkoutExercises, so sets/reps can be set
+     */
     private fun loadExercisesIntoWorkout(){
         for(exercise in allExercises){
             var workEx = WorkoutExercise(exercise)
@@ -224,6 +238,12 @@ class GenerateWorkoutFragment : Fragment() {
         }
     }
 
+    /**
+     * Builds and shows a dialog that is a list of selectable exercises, that the user can choose to exclude
+     * Uses:
+     *  - dialog_select_exercises
+     *  - SelectWorkoutExerciseListAdapter
+     */
     fun buildExcludeExerciseDialog(){
         val builder = AlertDialog.Builder(context).create()
         val view = layoutInflater.inflate(R.layout.dialog_select_exercises, null)
@@ -262,6 +282,11 @@ class GenerateWorkoutFragment : Fragment() {
         builder.show()
     }
 
+    /**
+     * Builds and shows a dialog that allows uses to select areas to target
+     * Uses:
+     *  - custom_dialog_areas
+     */
     fun buildTargetAreasDialog(){
         val builder = AlertDialog.Builder(context).create()
         val view = layoutInflater.inflate(R.layout.custom_dialog_areas, null)
@@ -357,7 +382,10 @@ class GenerateWorkoutFragment : Fragment() {
         builder.show()
     }
 
-
+    /**
+     * Builds and shows a dialog that allows users to select areas they want to exclude
+     * Uses: custom_dialog_areas
+     */
     fun buildExcludeAreasDialog(){
         val builder = AlertDialog.Builder(context).create()
         val view = layoutInflater.inflate(R.layout.custom_dialog_areas, null)
@@ -455,6 +483,9 @@ class GenerateWorkoutFragment : Fragment() {
         builder.show()
     }
 
+    /**
+     * Loads all the exercises from the database
+     */
     private fun loadExercises(view: View){
         val dbHandler = DBHandler(this.requireContext(), null, null, 1)
         val retrievedList = dbHandler.getAllExercises()

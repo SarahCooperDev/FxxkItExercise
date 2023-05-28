@@ -15,9 +15,13 @@ import com.example.fxxkit.MainActivity
 import com.example.fxxkit.R
 import com.example.fxxkit.ViewModel.WorkoutViewModel
 
+/**
+ * Adapter for recycler
+ * Displays a list of workouts
+ * Uses:
+ *  - workout_row_item
+ */
 class WorkoutListAdapter(private val activity: MainActivity, private val eList: ArrayList<WorkoutViewModel>) :   RecyclerView.Adapter<WorkoutListAdapter.WorkoutListViewHolder>(){
-    private var expandedSize = ArrayList<Int>()
-    private var workList = eList
     private lateinit var inflatedViewGroup: View
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WorkoutListViewHolder {
@@ -27,24 +31,22 @@ class WorkoutListAdapter(private val activity: MainActivity, private val eList: 
 
     override fun onBindViewHolder(holder: WorkoutListViewHolder, position: Int) {
         val currentWorkout = eList[position]
+
         holder.workout_id.text = currentWorkout.id.toString()
         holder.workout_name.text = currentWorkout.name
         holder.description_txt.text = currentWorkout.description
-        if(currentWorkout.tags.size > 0){
-            holder.tag_txt.text = currentWorkout.getTagDisplayString()
-        }
 
-        if(currentWorkout.isFavourited){
-            holder.favourite_iv.setImageResource(R.drawable.ic_star_filled)
-        } else {
-            holder.favourite_iv.setImageResource(R.drawable.ic_star)
-        }
+        if(currentWorkout.tags.size > 0){ holder.tag_txt.text = currentWorkout.getTagDisplayString() }
+
+        // Sets the correct image for favourite star, depending on whether or not workout is favourited
+        if(currentWorkout.isFavourited){ holder.favourite_iv.setImageResource(R.drawable.ic_star_filled) }
+        else { holder.favourite_iv.setImageResource(R.drawable.ic_star) }
 
         holder.workout_details_row.visibility = View.GONE
         holder.workout_exercises_row.visibility = View.GONE
 
+        // Creates the table of workout exercises
         var table = holder.exercise_rv
-
         table.layoutManager = LinearLayoutManager(activity)
         table.adapter = WorkoutExerciseListAdapter(currentWorkout.workExList)
         table.visibility = View.GONE
@@ -61,26 +63,20 @@ class WorkoutListAdapter(private val activity: MainActivity, private val eList: 
             }
         }
 
-        holder.detail_btn.setOnClickListener { view ->
-            activity.navToWorkoutDetails(currentWorkout.id)
-        }
-
-        holder.edit_btn.setOnClickListener { view ->
-            activity.navToEditWorkout(currentWorkout.id)
-        }
-
+        holder.detail_btn.setOnClickListener { view -> activity.navToWorkoutDetails(currentWorkout.id) }
+        holder.edit_btn.setOnClickListener { view -> activity.navToEditWorkout(currentWorkout.id) }
         holder.delete_btn.setOnClickListener{ view ->
             val builder = AlertDialog.Builder(view.context)
-            builder.setMessage("Are you sure you want to delete?")
+            builder.setMessage(activity.baseContext.getString(R.string.delete_confirmation))
                 .setCancelable(false)
-                .setPositiveButton("Yes"){ dialog, id ->
+                .setPositiveButton(activity.baseContext.getString(R.string.yes_txt)){ dialog, id ->
                     val dbHandler = DBHandler(activity, null, null, 1)
                     var result = dbHandler.deleteWorkout(currentWorkout.id)
 
                     eList.removeAt(position)
                     notifyItemRemoved(position)
                 }
-                .setNegativeButton("No"){ dialog, id ->
+                .setNegativeButton(activity.baseContext.getString(R.string.no_txt)){ dialog, id ->
                     dialog.dismiss()
                 }
 

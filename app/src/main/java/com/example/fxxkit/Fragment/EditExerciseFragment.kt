@@ -15,10 +15,11 @@ import com.example.fxxkit.MainActivity
 import com.example.fxxkit.R
 import kotlin.collections.ArrayList
 
+/**
+ * Takes an exercise id, allows user to edit the exercise
+ */
 class EditExerciseFragment : Fragment() {
     private lateinit var currentExercise: Exercise
-    private var errorColor: String = "#cc0000"
-
     private var selectedSets = ArrayList<String>()
     private var selectedReps = ArrayList<String>()
     private var selectedAreas = ArrayList<String>()
@@ -34,7 +35,6 @@ class EditExerciseFragment : Fragment() {
     private lateinit var repSizeMultiselect: TextView
     private lateinit var repTimeInput: EditText
     private lateinit var tagInput: EditText
-
     private lateinit var cancelBtn: ImageButton
     private lateinit var updateBtn: ImageButton
 
@@ -46,7 +46,7 @@ class EditExerciseFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_edit_exercise, container, false)
-        (activity as MainActivity).getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText("Edit Exercise")
+        (activity as MainActivity).getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText(getString(R.string.edit_exercise_title))
 
         idTxt = view.findViewById(R.id.exercise_id_txt)
         nameEditTxt = view.findViewById(R.id.exercise_name_edtxt)
@@ -85,29 +85,19 @@ class EditExerciseFragment : Fragment() {
             selectedAreas = currentExercise.targettedAreas.clone() as ArrayList<String>
         }
 
-        setSizeMultiselect.setOnClickListener { view ->
-            MultiselectLists.showDialog(activity as MainActivity, layoutInflater, MultiselectLists.setSizesArray, selectedSets, setSizeMultiselect)
-        }
+        setSizeMultiselect.setOnClickListener { view -> MultiselectLists.showDialog(activity as MainActivity, layoutInflater, MultiselectLists.setSizesArray, selectedSets, setSizeMultiselect) }
+        repSizeMultiselect.setOnClickListener { view -> MultiselectLists.showDialog(activity as MainActivity, layoutInflater, MultiselectLists.repSizesArray, selectedReps, repSizeMultiselect) }
+        targettedAreasMultiselect.setOnClickListener { view -> MultiselectLists.showDialog(activity as MainActivity, layoutInflater, MultiselectLists.targettedAreaArray, selectedAreas, targettedAreasMultiselect) }
 
-        repSizeMultiselect.setOnClickListener { view ->
-            MultiselectLists.showDialog(activity as MainActivity, layoutInflater, MultiselectLists.repSizesArray, selectedReps, repSizeMultiselect)
-        }
-
-        targettedAreasMultiselect.setOnClickListener { view ->
-            MultiselectLists.showDialog(activity as MainActivity, layoutInflater, MultiselectLists.targettedAreaArray, selectedAreas, targettedAreasMultiselect)
-        }
-
-        cancelBtn.setOnClickListener{ view ->
-            (activity as MainActivity).navToPrevious()
-        }
+        cancelBtn.setOnClickListener{ view -> (activity as MainActivity).navToPrevious() }
 
         updateBtn.setOnClickListener{ view ->
             if(nameEditTxt.text.toString().length < 1){
-                Toast.makeText(activity, "Exercise name may not be blank", Toast.LENGTH_LONG).show()
-                nameEditTxt.setBackgroundColor(Color.parseColor(errorColor))
+                Toast.makeText(activity, getString(R.string.error_blank_name_txt), Toast.LENGTH_LONG).show()
+                nameEditTxt.setBackgroundColor(Color.parseColor(getString(R.string.colour_error)))
             } else {
                 updateExercise()
-                Toast.makeText(activity, "Updated exercise in database", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, "Updated exercise ${currentExercise.name}", Toast.LENGTH_SHORT).show()
                 (activity as MainActivity).navToPrevious()
             }
         }
@@ -115,6 +105,9 @@ class EditExerciseFragment : Fragment() {
         return view
     }
 
+    /**
+     * Loads the exercise from the database upon navigation
+     */
     private fun loadExercise(exerciseId: Int){
         val dbHandler = DBHandler(this.requireContext(), null, null, 1)
         var exercise = dbHandler.findExerciseById(exerciseId)
@@ -130,6 +123,9 @@ class EditExerciseFragment : Fragment() {
         }
     }
 
+    /**
+     * Updates the database with new exercise information
+     */
     private fun updateExercise(){
         currentExercise.name = nameEditTxt.text.toString()
         currentExercise.description = descriptionInput.text.toString()
@@ -143,13 +139,23 @@ class EditExerciseFragment : Fragment() {
             var repTime = repTimeInput.text.toString().toInt()
             if(repTime != null){ currentExercise.repTime = repTime}
         } catch(e: Exception){
-            Toast.makeText(requireContext(), "Rep time must be number", Toast.LENGTH_LONG)
+            Toast.makeText(requireContext(), getString(R.string.error_reptime_not_number), Toast.LENGTH_LONG)
         }
 
         val dbHandler = DBHandler(this.requireContext(), null, null, 1)
         dbHandler.updateExercise(currentExercise)
 
+        updateTags()
+    }
+
+    /**
+     * Adds new tags, and deletes the ExerciseTag for removed tags
+     */
+    private fun updateTags(){
+        val dbHandler = DBHandler(this.requireContext(), null, null, 1)
         var splitTags = tagInput.text.split(" ")
+
+        // Adds new tags
         for(tag in splitTags){
             var foundTag = currentExercise.tags.firstOrNull{it.name!!.lowercase() == tag.toString().lowercase()}
 
@@ -159,16 +165,15 @@ class EditExerciseFragment : Fragment() {
                 if(foundTag == null){
                     foundTag = Tag(tag.toString().lowercase())
                     foundTag.id = dbHandler.addTag(foundTag)!!
-                    println("New tag ${tag} is ${foundTag.id}")
                 }
 
                 if(foundTag.id != null){
                     var result = dbHandler.addTagToExerciseByIds(currentExercise.id, foundTag.id)
-                    println("Result is ${result}")
                 }
             }
         }
 
+        // Deletes ExerciseTag record for removed tags
         for(tag in currentExercise.tags){
             var foundTag = splitTags.firstOrNull{it.lowercase() == tag.name!!.lowercase()}
 

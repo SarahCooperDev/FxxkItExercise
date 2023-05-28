@@ -26,15 +26,19 @@ import com.example.fxxkit.ViewModel.WorkoutViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 
+/**
+ * Container activity
+ * Sets the custom action bar
+ * Creates the nav controller
+ */
 class MainActivity : AppCompatActivity() {
-    public var debugger: Debugger = Debugger(true)
+    var debugger: Debugger = Debugger(true)
 
     private lateinit var previousBtn: ImageButton
     private lateinit var exercisesBtn: ImageButton
+    lateinit var navController: NavController
 
     private var generatedWorkoutExercises: ArrayList<WorkoutExercise> = ArrayList<WorkoutExercise>()
-
-    public lateinit var navController: NavController
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,8 +57,8 @@ class MainActivity : AppCompatActivity() {
         var navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
 
-        previousBtn = findViewById<ImageButton>(R.id.previous_btn)
-        exercisesBtn = findViewById<ImageButton>(R.id.exercises_btn)
+        previousBtn = findViewById(R.id.previous_btn)
+        exercisesBtn = findViewById(R.id.exercises_btn)
 
         previousBtn.setOnClickListener{ view -> navToPrevious() }
         exercisesBtn.setOnClickListener { view -> navToExerciseList() }
@@ -80,6 +84,7 @@ class MainActivity : AppCompatActivity() {
         return this.generatedWorkoutExercises
     }
 
+    // Bunch of navigation methods
     fun navToPrevious(){
         navController.popBackStack()
     }
@@ -94,33 +99,33 @@ class MainActivity : AppCompatActivity() {
         navController.navigate(R.id.action_global_generateWorkoutFragment)
     }
 
-    public fun navToExerciseList(){
+    fun navToExerciseList(){
         navController.navigate(R.id.action_global_exerciseListFragment)
     }
 
-    public fun navToAddExercise(){
+    fun navToAddExercise(){
         navController.navigate(R.id.action_global_addExerciseFragment)
     }
 
-    public fun navToEditExercise(exerciseId: Int){
+    fun navToEditExercise(exerciseId: Int){
         var bundle = bundleOf("exerciseId" to exerciseId)
         navController.navigate(R.id.action_exerciseListFragment_to_editExerciseFragment, bundle)
     }
 
-    public fun navToWorkoutList(){
+    fun navToWorkoutList(){
         navController.navigate(R.id.action_global_workoutListFragment)
     }
 
-    public fun navToCreateWorkout(){
+    fun navToCreateWorkout(){
         navController.navigate(R.id.action_global_createWorkoutFragment)
     }
 
-    public fun navToWorkoutDetails(workoutId: Int){
+    fun navToWorkoutDetails(workoutId: Int){
         val bundle = bundleOf("workoutId" to workoutId)
         navController.navigate(R.id.action_global_workoutFragment, bundle)
     }
 
-    public fun navToEditWorkout(workoutId: Int){
+    fun navToEditWorkout(workoutId: Int){
         val bundle = bundleOf("workoutId" to workoutId)
         navController.navigate(R.id.action_global_editWorkoutFragment, bundle)
     }

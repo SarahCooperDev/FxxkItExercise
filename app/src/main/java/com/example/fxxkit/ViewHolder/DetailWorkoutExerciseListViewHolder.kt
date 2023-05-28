@@ -10,16 +10,22 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.fxxkit.DataClass.WorkoutExercise
 import com.example.fxxkit.R
 
+/**
+ * Adapter for recycler
+ * Displays a list of WorkoutExercises for a given workout
+ * Uses:
+ *  - workout_exercise_detail_row_item
+ */
 class DetailWorkoutExerciseListAdapter(private val workExList: ArrayList<WorkoutExercise>) : RecyclerView.Adapter<DetailWorkoutExerciseListAdapter.DetailWorkoutExerciseListViewHolder>(){
     private var showDetails: Boolean = false
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailWorkoutExerciseListAdapter.DetailWorkoutExerciseListViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailWorkoutExerciseListViewHolder {
         val viewLayout = LayoutInflater.from(parent.context).inflate(R.layout.workout_exercise_detail_row, parent, false)
-        return DetailWorkoutExerciseListAdapter.DetailWorkoutExerciseListViewHolder(viewLayout)
+        return DetailWorkoutExerciseListViewHolder(viewLayout)
     }
 
-    override fun onBindViewHolder(holder: DetailWorkoutExerciseListAdapter.DetailWorkoutExerciseListViewHolder, position: Int) {
-        println("Exercise length in holder: " + workExList.size.toString())
+    override fun onBindViewHolder(holder: DetailWorkoutExerciseListViewHolder, position: Int) {
         val currentExercise = workExList[position]
+
         holder.id.text = currentExercise.exercise!!.id.toString()
         holder.name.text = currentExercise.exercise!!.name.toString()
         holder.description.text = currentExercise.exercise!!.description.toString()
@@ -30,6 +36,7 @@ class DetailWorkoutExerciseListAdapter(private val workExList: ArrayList<Workout
         holder.strength.text = currentExercise.exercise!!.isStrengthening.toString()
         holder.condition.text = currentExercise.exercise!!.isConditioning.toString()
 
+        // Displays time as minutes and seconds
         var totalTime = currentExercise.getTotalTimeInSecs()
         if(totalTime != null){
             var minutes = totalTime/60
@@ -53,12 +60,14 @@ class DetailWorkoutExerciseListAdapter(private val workExList: ArrayList<Workout
         toggleVisibility(holder)
 
         holder.row.setOnClickListener {
-            println("Show details: " + showDetails.toString())
             toggleVisibility(holder)
         }
     }
 
-    private fun toggleVisibility(holder: DetailWorkoutExerciseListAdapter.DetailWorkoutExerciseListViewHolder){
+    /**
+     * Shows more, when clicked
+     */
+    private fun toggleVisibility(holder: DetailWorkoutExerciseListViewHolder){
         if(showDetails){
             showDetails = false
             holder.description.visibility = View.GONE

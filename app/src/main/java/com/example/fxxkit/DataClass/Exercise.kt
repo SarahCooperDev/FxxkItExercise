@@ -1,5 +1,9 @@
 package com.example.fxxkit.DataClass
 
+/**
+ *
+ * Represents an exercise object
+ */
 class Exercise {
     var id: Int = -1
     var name: String = ""

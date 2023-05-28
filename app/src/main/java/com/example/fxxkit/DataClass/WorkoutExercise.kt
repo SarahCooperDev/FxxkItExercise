@@ -1,5 +1,8 @@
 package com.example.fxxkit.DataClass
 
+/**
+ * Represents an instance of an exercise being saved in a workout
+ */
 class WorkoutExercise{
     var id: Int = -1
     var workoutId: Int = -1

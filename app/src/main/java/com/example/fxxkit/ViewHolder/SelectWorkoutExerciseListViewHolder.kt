@@ -10,10 +10,15 @@ import com.example.fxxkit.DataClass.WorkoutExercise
 import com.example.fxxkit.MainActivity
 import com.example.fxxkit.R
 
+/**
+ * Adapter for recycler
+ * Displays a list of workout exercises that are selectable
+ * Uses:
+ *  - workout_exercise_row_item
+ */
 class SelectWorkoutExerciseListAdapter(private val activity: MainActivity, private val workExList: ArrayList<WorkoutExercise>) :   RecyclerView.Adapter<SelectWorkoutExerciseListAdapter.SelectWorkoutExerciseListViewHolder>(){
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SelectWorkoutExerciseListViewHolder {
-        val viewLayout = LayoutInflater.from(parent.context).inflate(
-            R.layout.workout_exercise_row_item, parent, false)
+        val viewLayout = LayoutInflater.from(parent.context).inflate( R.layout.workout_exercise_row_item, parent, false)
         return SelectWorkoutExerciseListViewHolder(viewLayout)
     }
 
@@ -28,14 +33,10 @@ class SelectWorkoutExerciseListAdapter(private val activity: MainActivity, priva
         holder.areaList.text = currentExercise.exercise!!.getAreasAsString()
         holder.setList.text = currentExercise.exercise!!.getSetAsString()
         holder.repList.text = currentExercise.exercise!!.getRepsAsString()
-
-        if(currentExercise.isSelected){
-            holder.isSelected.setChecked(true)
-        } else {
-            holder.isSelected.setChecked(false)
-        }
-
         holder.repTime.text = currentExercise.exercise!!.repTime.toString()
+
+        if(currentExercise.isSelected){ holder.isSelected.setChecked(true) }
+        else { holder.isSelected.setChecked(false) }
 
         holder.row.setOnClickListener{
             if(holder.isSelected.isChecked){

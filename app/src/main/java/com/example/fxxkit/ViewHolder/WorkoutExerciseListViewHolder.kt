@@ -11,34 +11,30 @@ import com.example.fxxkit.AddWorkoutExerciseListAdapter
 import com.example.fxxkit.DataClass.WorkoutExercise
 import com.example.fxxkit.R
 
+/**
+ * Adapter for recycler
+ * Displays a list of workout exercises, with bare minimum details
+ * Uses:
+ *  - workout_list_exercise_row
+ */
 class WorkoutExerciseListAdapter(private val workExList: ArrayList<WorkoutExercise>) :   RecyclerView.Adapter<WorkoutExerciseListAdapter.WorkoutExerciseListViewHolder>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WorkoutExerciseListAdapter.WorkoutExerciseListViewHolder {
-        val viewLayout = LayoutInflater.from(parent.context).inflate(
-            R.layout.workout_list_exercise_row, parent, false)
-        return WorkoutExerciseListAdapter.WorkoutExerciseListViewHolder(viewLayout)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WorkoutExerciseListViewHolder {
+        val viewLayout = LayoutInflater.from(parent.context).inflate(R.layout.workout_list_exercise_row, parent, false)
+        return WorkoutExerciseListViewHolder(viewLayout)
     }
 
-    override fun onBindViewHolder(holder: WorkoutExerciseListAdapter.WorkoutExerciseListViewHolder, position: Int) {
-        println("Exercise length in holder: " + workExList.size.toString())
+    override fun onBindViewHolder(holder: WorkoutExerciseListViewHolder, position: Int) {
         val currentExercise = workExList[position]
         holder.name.text = currentExercise.exercise!!.name.toString()
         holder.sets.text = currentExercise.setSize
         holder.reps.text = currentExercise.repSize
-
-        println("Set size is " + currentExercise.setSize.toString())
-
-        holder.row.setOnClickListener { view ->
-
-        }
     }
-
 
     override fun getItemCount(): Int {
         return workExList.size
     }
 
     class WorkoutExerciseListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val row: CardView = itemView.findViewById(R.id.exercise_row)
         val name: TextView = itemView.findViewById(R.id.exercise_name_txt)
         val sets: TextView = itemView.findViewById(R.id.exercise_set_txt)
         val reps: TextView = itemView.findViewById(R.id.exercise_rep_text)

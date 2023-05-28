@@ -19,9 +19,7 @@ import com.example.fxxkit.ViewHolder.WorkoutExerciseListAdapter
 import com.example.fxxkit.ViewModel.WorkoutViewModel
 
 /**
- * A simple [Fragment] subclass.
- * Use the [WorkoutFragment.newInstance] factory method to
- * create an instance of this fragment.
+ * Shows the details of a workout
  */
 class WorkoutFragment : Fragment() {
     private var workoutId: Int = -1
@@ -43,7 +41,7 @@ class WorkoutFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var view = inflater.inflate(R.layout.fragment_workout, container, false)
-        (activity as MainActivity).getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText("Workout Details")
+        (activity as MainActivity).getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText(getString(R.string.workout_details_title))
 
         titleTV = view.findViewById(R.id.workout_name_txt)
         descriptionTV = view.findViewById(R.id.description_txt)
@@ -52,7 +50,6 @@ class WorkoutFragment : Fragment() {
         exerciseRV = view.findViewById(R.id.exercise_rv)
         editBtn = view.findViewById(R.id.edit_btn)
 
-
         loadWorkout()
         loadWorkoutExercises()
 
@@ -60,20 +57,21 @@ class WorkoutFragment : Fragment() {
         descriptionTV.setText(currentWorkout.description)
 
         if(currentWorkout.tags.size > 0){ tagTxt.setText(currentWorkout.getTagDisplayString()) }
-        else { tagTxt.setText("No tags") }
+        else { tagTxt.setText(getString(R.string.no_tags_txt)) }
         if(currentWorkout.isFavourited){ favImage.setImageResource(android.R.drawable.btn_star_big_on) }
         else { favImage.setImageResource(android.R.drawable.btn_star_big_off) }
 
         exerciseRV.layoutManager = LinearLayoutManager(activity)
         exerciseRV.adapter = DetailWorkoutExerciseListAdapter(workExercises)
 
-        editBtn.setOnClickListener { view ->
-            (activity as MainActivity).navToEditWorkout(currentWorkout.id)
-        }
+        editBtn.setOnClickListener { view -> (activity as MainActivity).navToEditWorkout(currentWorkout.id) }
 
         return view
     }
 
+    /**
+     * Loads the workout from the database
+     */
     private fun loadWorkout(){
         val dbHandler = DBHandler(this.requireContext(), null, null, 1)
         var workout = dbHandler.findWorkoutById(workoutId)
@@ -90,6 +88,9 @@ class WorkoutFragment : Fragment() {
         }
     }
 
+    /**
+     * Loads the workouts exercises
+     */
     private fun loadWorkoutExercises(){
         val dbHandler = DBHandler(this.requireContext(), null, null, 1)
         workExercises = dbHandler.findAllWorkoutExercises(currentWorkout.castWorkoutVMToWorkout())
