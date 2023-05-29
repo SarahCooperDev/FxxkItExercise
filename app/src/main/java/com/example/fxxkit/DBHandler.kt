@@ -12,7 +12,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
 
     companion object{
         private val CURRENT_DATABASE_VERSION = 1
-        private val NEW_DATABASE_VERSION = 1
+        private val NEW_DATABASE_VERSION = 2
         private val DATABASE_NAME = "workoutDB.db"
 
         val TABLE_EXERCISES = "exercise"
@@ -31,7 +31,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         val COLUMN_IS_CONDITION = "is_condition"
         val COLUMN_POSSIBLE_SET_SIZE = "possible_set_size"
         val COLUMN_POSSIBLE_REP_SIZE = "possible_rep_size"
-        val COLUMN_TARGETTED_AREAS = "targetted_muscles"
+        val COLUMN_TARGETTED_AREAS = "targetted_areas"
         val COLUMN_REP_TIME = "rep_time"
         val COLUMN_WORKOUTNAME = "workout_name"
         val COLUMN_DESCRIPTION = "description"
@@ -74,6 +74,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         db.execSQL(CREATE_WORKOUT_TAG_TABLE)
         db.execSQL(CREATE_EXERCISE_TAG_TABLE)
 
+        createInitialData()
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -87,18 +88,64 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         onCreate(db)
     }
 
+    fun createInitialData(){
+        println("DB: Creating initial data")
+        // Creating workout
+        var newWorkout = Workout("Leg Day")
+        newWorkout.description = "All legs, all the time!"
+        newWorkout.isFavourited = false
+        var workoutId = addWorkout(newWorkout)
+        newWorkout.id = workoutId!!
+
+        // Exercises
+        var calfRaisesEx = Exercise("Calf Raises")
+        calfRaisesEx.description = "Start with feet flat on the ground. Slowly raise on to the balls of your feet, then lower back down"
+        calfRaisesEx.possibleSetSize = arrayListOf(MultiselectLists.setSizesArray[0])
+        calfRaisesEx.possibleRepSize = arrayListOf(MultiselectLists.repSizesArray[0])
+        calfRaisesEx.targettedAreas = arrayListOf(MultiselectLists.targettedAreaArray[1])
+        calfRaisesEx.repTime = 5
+        var calfId = addExercise(calfRaisesEx)
+        calfRaisesEx.id = calfId!!
+
+        var squatsEx = Exercise("Squats")
+        squatsEx.description = "Keeping feet flat on the ground and back straight, bend knees as low as possible, then raise back up"
+        squatsEx.possibleSetSize = arrayListOf(MultiselectLists.setSizesArray[2], MultiselectLists.setSizesArray[3])
+        squatsEx.possibleRepSize = arrayListOf(MultiselectLists.repSizesArray[1], MultiselectLists.repSizesArray[2], MultiselectLists.repSizesArray[3])
+        squatsEx.targettedAreas = arrayListOf(MultiselectLists.targettedAreaArray[2], MultiselectLists.targettedAreaArray[3], MultiselectLists.targettedAreaArray[8])
+        squatsEx.repTime = 10
+        squatsEx.isConditioning = false
+        var squatsId = addExercise(squatsEx)
+        squatsEx.id = squatsId!!
+
+        // Workout exercises
+        var calfWE = WorkoutExercise(calfRaisesEx)
+        calfWE.workoutId = newWorkout.id
+        calfWE.orderNo = 0
+        calfWE.setSize = MultiselectLists.setSizesArray[1]
+        calfWE.repSize = MultiselectLists.repSizesArray[1]
+        var calfWEId = addExerciseToWorkout(calfWE)
+
+        var squatsWE = WorkoutExercise(squatsEx)
+        squatsWE.workoutId = newWorkout.id
+        squatsWE.orderNo = 1
+        squatsWE.setSize = squatsEx.possibleSetSize[1]
+        squatsWE.repSize = squatsEx.possibleRepSize[1]
+        var squatsWEId = addExerciseToWorkout(squatsWE)
+    }
+
 
     fun migrateDatabase(){
         println("DB: Migrating database: saving exercises and workouts")
         println("Note: workout exercises will be lost")
 
         val dbold = this.writableDatabase
-        var allExercises = getAllExercises()
+        /**var allExercises = getAllExercises()
         var allWorkouts = getAllWorkouts()
-        var allTags = getAllTags()
+        var allTags = getAllTags()**/
 
         onUpgrade(dbold, CURRENT_DATABASE_VERSION, NEW_DATABASE_VERSION)
 
+        /**
         for(exercise in allExercises!!){
             addExercise(exercise)
         }
@@ -110,8 +157,8 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         for(tag in allTags){
             addTag(tag)
         }
+        **/
     }
-
 
 
     fun addExercise(exercise: Exercise): Int?{

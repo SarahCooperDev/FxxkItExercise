@@ -8,8 +8,8 @@ class Exercise {
     var id: Int = -1
     var name: String = ""
     var description: String = ""
-    var isStrengthening: Boolean = false
-    var isConditioning: Boolean = false
+    var isStrengthening: Boolean = true
+    var isConditioning: Boolean = true
     var repTime: Int = 10
     var possibleSetSize: ArrayList<String> = ArrayList<String>()
     var possibleRepSize: ArrayList<String> = ArrayList<String>()
