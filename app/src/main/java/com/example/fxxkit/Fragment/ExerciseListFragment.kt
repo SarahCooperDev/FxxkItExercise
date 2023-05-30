@@ -19,6 +19,7 @@ import com.example.fxxkit.DataClass.Tag
 import com.example.fxxkit.ExerciseListAdapter
 import com.example.fxxkit.MainActivity
 import com.example.fxxkit.R
+import com.example.fxxkit.ViewModel.WorkoutViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 /**
@@ -31,6 +32,7 @@ class ExerciseListFragment : Fragment() {
 
     private var allTags: ArrayList<Tag> = ArrayList<Tag>()
     private var allExercises: ArrayList<Exercise> = ArrayList<Exercise>()
+    private var allWorkouts: ArrayList<WorkoutViewModel> = ArrayList()
     private var exerciseList: ArrayList<Exercise> = ArrayList<Exercise>()
 
     private lateinit var addExerciseBtn : FloatingActionButton
@@ -64,10 +66,11 @@ class ExerciseListFragment : Fragment() {
         setUpSortBtn()
         setUpFilterBtn()
         loadExercises()
+        loadWorkouts()
         sortByReverseChrono()
 
         exerciseRecycler.layoutManager = LinearLayoutManager(activity)
-        exerciseRecycler.adapter = ExerciseListAdapter(exerciseList, activity as MainActivity)
+        exerciseRecycler.adapter = ExerciseListAdapter(exerciseList, allWorkouts, activity as MainActivity)
 
         return view
     }
@@ -361,6 +364,37 @@ class ExerciseListFragment : Fragment() {
 
             allExercises = retrievedList
             exerciseList = allExercises.clone() as ArrayList<Exercise>
+        }
+    }
+
+    fun loadWorkouts() {
+        allWorkouts.clear()
+        val dbHandler = DBHandler(this.requireContext(), null, null, 1)
+        val workouts = dbHandler.getAllWorkouts()
+
+        if(workouts != null && workouts.size > 0){
+            for(workout in workouts){
+                var workoutVM = WorkoutViewModel(workout.id, workout.workoutName!!)
+                workoutVM.description = workout.description
+                workoutVM.isFavourited = workout.isFavourited
+                workoutVM.workExList = dbHandler.findAllWorkoutExercises(workout)
+                workoutVM.workExList.sortBy { it.orderNo }
+
+                for(workEx in workoutVM.workExList){
+                    if(workEx.exerciseId > -1){
+                        var exercise = dbHandler.findExerciseById(workEx.exerciseId)
+                        workEx.exercise = exercise
+                        workEx.isSelected = true
+                    }
+                }
+
+                var workoutTags = dbHandler.getTagsForWorkout(workout)
+                if(workoutTags != null){
+                    workout.tags = workoutTags
+                    workoutVM.tags = workoutTags
+                }
+                allWorkouts.add(workoutVM)
+            }
         }
     }
 

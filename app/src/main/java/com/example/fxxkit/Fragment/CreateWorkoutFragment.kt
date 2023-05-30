@@ -80,7 +80,7 @@ class CreateWorkoutFragment : Fragment() {
                 workoutName.setBackgroundColor(Color.parseColor(getString(R.string.colour_error)))
             } else {
                 createWorkoutWithExercises()
-                Toast.makeText(activity, "Created workout ${workoutName}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, "Created workout ${workoutName.text.toString()}", Toast.LENGTH_SHORT).show()
                 (activity as MainActivity).navToWorkoutList()
             }
         }
