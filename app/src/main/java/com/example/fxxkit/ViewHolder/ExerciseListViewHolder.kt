@@ -72,6 +72,9 @@ class ExerciseListAdapter(private val eList: ArrayList<Exercise>, private val wo
         }
     }
 
+    /**
+     * Builds and shows the dialog to add the clicked exercise to a workout
+     */
     private fun buildAddToWorkoutDialog(currentExercise: Exercise){
         workoutExercise = WorkoutExercise(currentExercise)
         val builder = AlertDialog.Builder(activity)
@@ -96,7 +99,7 @@ class ExerciseListAdapter(private val eList: ArrayList<Exercise>, private val wo
         // Sets up button to complete the dialog
         builder.setPositiveButton(activity.baseContext.getString(R.string.done_txt)) { dialogInterface, i ->
             if(workoutExercise.setSize == null || workoutExercise.repSize == null){
-                Toast.makeText(activity.baseContext, "You must choose set and rep sizes", Toast.LENGTH_LONG).show()
+                Toast.makeText(activity.baseContext,  activity.baseContext.getString(R.string.error_set_rep_missing), Toast.LENGTH_LONG).show()
             } else {
                 addExerciseToWorkout()
                 dialogInterface.dismiss()
@@ -108,32 +111,38 @@ class ExerciseListAdapter(private val eList: ArrayList<Exercise>, private val wo
             dialogInterface.dismiss()
         }
 
+        // Shows dialog and disables done button, until all necessary choices have been made
         dialog = builder.show()
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
 
+        // Navigates to the list of workouts to select again
         backBtn.setOnClickListener { view ->
             workoutListLayout.visibility = View.VISIBLE
             detailLayout.visibility = View.GONE
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
         }
 
-        setRadioGroup.setOnCheckedChangeListener(RadioGroup.OnCheckedChangeListener{ group, checkedId ->
+        // Handles selections of sets and reps, and enables done button if both are filled
+        setRadioGroup.setOnCheckedChangeListener { group, checkedId ->
             val radio: RadioButton = view.findViewById(checkedId)
             workoutExercise.setSize = radio.text.toString()
-            if(workoutExercise.setSize != null && workoutExercise.repSize != null){
+            if (workoutExercise.setSize != null && workoutExercise.repSize != null) {
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
             }
-        })
+        }
 
-        repRadioGroup.setOnCheckedChangeListener(RadioGroup.OnCheckedChangeListener{ group, checkedId ->
+        repRadioGroup.setOnCheckedChangeListener { group, checkedId ->
             val radio: RadioButton = view.findViewById(checkedId)
             workoutExercise.repSize = radio.text.toString()
-            if(workoutExercise.setSize != null && workoutExercise.repSize != null){
+            if (workoutExercise.setSize != null && workoutExercise.repSize != null) {
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
             }
-        })
+        }
     }
 
+    /**
+     * Adds the exercise to the selected workout
+     */
     private fun addExerciseToWorkout(){
         val dbHandler = DBHandler(activity.baseContext, null, null, 1)
         workoutExercise.orderNo = workoutVM.workExList.size
@@ -144,11 +153,16 @@ class ExerciseListAdapter(private val eList: ArrayList<Exercise>, private val wo
         }
     }
 
+    /**
+     * Function that is passed to WorkoutSelectListViewHolder, and called when a workout is clicked
+     */
     fun callWorkoutSelected(workoutVM: WorkoutViewModel){
-        var checkExercise = workoutVM.workExList.firstOrNull{ it.id == workoutExercise.exerciseId}
+        // Checks to ensure exercise isn't already added to a workout
+        var checkExercise = workoutVM.workExList.firstOrNull{ it.id == workoutExercise.exerciseId }
         if(checkExercise != null){
-            Toast.makeText(activity.baseContext, "Workout already contains this exercise!", Toast.LENGTH_LONG).show()
+            Toast.makeText(activity.baseContext, activity.baseContext.getString(R.string.error_exercise_already_in_workout), Toast.LENGTH_LONG).show()
         } else {
+            // Changes the dialog view to the screen that shows set and rep selections
             this.workoutVM = workoutVM
             workoutListLayout.visibility = View.GONE
             detailLayout.visibility = View.VISIBLE
@@ -161,7 +175,11 @@ class ExerciseListAdapter(private val eList: ArrayList<Exercise>, private val wo
         }
     }
 
+    /**
+     * Builds the sets and reps to show to add an exercise to a workout
+     */
     private fun setUpRadioBtns(setRadioGroup: RadioGroup, repRadioGroup: RadioGroup){
+        // Shows the sets available for an exercise, as a selectable list
         if(workoutExercise.exercise != null && workoutExercise.exercise!!.possibleSetSize != null && workoutExercise.exercise!!.possibleSetSize.size > 0){
             if(workoutExercise.exercise!!.possibleSetSize[0] == MultiselectLists.setSizesArray[0]){
                 for(i in 1 .. MultiselectLists.setSizesArray.size - 1){

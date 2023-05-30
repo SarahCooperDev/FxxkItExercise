@@ -13,6 +13,12 @@ import com.example.fxxkit.MainActivity
 import com.example.fxxkit.R
 import com.example.fxxkit.ViewModel.WorkoutViewModel
 
+/**
+ * Adapter for recycler
+ * Displays a list of workout names
+ * Uses:
+ *  - row_item_workout_select
+ */
 class WorkoutSelectListAdapter(private val activity: MainActivity, private val eList: ArrayList<WorkoutViewModel>, private val selectWorkout: (WorkoutViewModel) -> (Unit)) :   RecyclerView.Adapter<WorkoutSelectListAdapter.WorkoutSelectListViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WorkoutSelectListViewHolder {

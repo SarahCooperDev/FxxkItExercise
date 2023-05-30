@@ -36,4 +36,5 @@
     <string name="no_txt">No</string>
     <string name="error_index_lowest">Can\'t move any higher</string>
     <string name="error_index_highest">Can\'t go any lower</string>
+    <string name="error_exercise_already_in_workout">Workout already contains this exercise!</string>
 </resources>
