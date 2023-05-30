@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.core.content.ContextCompat
 import com.example.fxxkit.DBHandler
 import com.example.fxxkit.DataClass.Exercise
 import com.example.fxxkit.DataClass.MultiselectLists
@@ -75,7 +74,7 @@ class CreateExerciseFragment : Fragment() {
         }
 
         cancelBtn.setOnClickListener { view ->
-            (activity as MainActivity).navToPrevious()
+            (activity as MainActivity).navToWorkoutList()
         }
 
         setSizeMultiselect.setText(selectedSets[0])

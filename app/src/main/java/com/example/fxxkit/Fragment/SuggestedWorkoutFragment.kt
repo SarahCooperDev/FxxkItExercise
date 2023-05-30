@@ -13,7 +13,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.fxxkit.AddWorkoutExerciseListAdapter
 import com.example.fxxkit.DBHandler
 import com.example.fxxkit.DataClass.Tag
 import com.example.fxxkit.DataClass.Workout
@@ -21,7 +20,6 @@ import com.example.fxxkit.DataClass.WorkoutExercise
 import com.example.fxxkit.MainActivity
 import com.example.fxxkit.R
 import com.example.fxxkit.ViewHolder.DetailWorkoutExerciseListAdapter
-import com.example.fxxkit.ViewHolder.SelectWorkoutExerciseListAdapter
 
 /**
  * Shows the list of exercises a generated workout has
@@ -54,7 +52,7 @@ class SuggestedWorkoutFragment : Fragment() {
         exerciseRV.layoutManager = LinearLayoutManager(activity)
         exerciseRV.adapter = DetailWorkoutExerciseListAdapter(workExercises)
 
-        cancelBtn.setOnClickListener { view -> (activity as MainActivity).navToPrevious() }
+        cancelBtn.setOnClickListener { view -> (activity as MainActivity).navToWorkoutList() }
         saveBtn.setOnClickListener { view -> buildSaveWorkoutDialog() }
 
         return view

@@ -85,7 +85,7 @@ class CreateWorkoutFragment : Fragment() {
             }
         }
 
-        cancelBtn.setOnClickListener { view -> (activity as MainActivity).navToPrevious() }
+        cancelBtn.setOnClickListener { view -> (activity as MainActivity).navToWorkoutList() }
 
         return view
     }

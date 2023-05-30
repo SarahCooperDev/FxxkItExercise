@@ -72,7 +72,7 @@ class GenerateWorkoutFragment : Fragment() {
         }
 
         cancelBtn.setOnClickListener { view ->
-            (activity as MainActivity).navToPrevious()
+            (activity as MainActivity).navToWorkoutList()
         }
 
         return view

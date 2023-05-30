@@ -89,7 +89,7 @@ class EditExerciseFragment : Fragment() {
         repSizeMultiselect.setOnClickListener { view -> MultiselectLists.showDialog(activity as MainActivity, layoutInflater, MultiselectLists.repSizesArray, selectedReps, repSizeMultiselect) }
         targettedAreasMultiselect.setOnClickListener { view -> MultiselectLists.showDialog(activity as MainActivity, layoutInflater, MultiselectLists.targettedAreaArray, selectedAreas, targettedAreasMultiselect) }
 
-        cancelBtn.setOnClickListener{ view -> (activity as MainActivity).navToPrevious() }
+        cancelBtn.setOnClickListener{ view -> (activity as MainActivity).navToWorkoutList() }
 
         updateBtn.setOnClickListener{ view ->
             if(nameEditTxt.text.toString().length < 1){
@@ -98,7 +98,7 @@ class EditExerciseFragment : Fragment() {
             } else {
                 updateExercise()
                 Toast.makeText(activity, "Updated exercise ${currentExercise.name}", Toast.LENGTH_SHORT).show()
-                (activity as MainActivity).navToPrevious()
+                (activity as MainActivity).navToExerciseList()
             }
         }
 

@@ -26,12 +26,12 @@
             android:text="Back Button"
             android:background="@null"
             android:scaleType="fitXY"
-            android:id="@+id/previous_btn"
+            android:id="@+id/workout_btn"
             android:gravity="center_vertical"
             android:padding="10dp"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            app:srcCompat="@drawable/ic_back" />
+            app:srcCompat="@drawable/ic_list" />
         <TextView
             android:id="@+id/appbar_title_id"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
@@ -47,6 +47,6 @@
             android:id="@+id/exercises_btn"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@drawable/ic_list"></ImageButton>
+            android:src="@drawable/ic_person_running"></ImageButton>
     </LinearLayout>
 </com.google.android.material.appbar.MaterialToolbar>
