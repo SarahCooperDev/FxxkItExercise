@@ -49,6 +49,7 @@ class CreateExerciseFragment : Fragment() {
         selectedReps.add(MultiselectLists.repSizesArray[0])
         selectedAreas.add(MultiselectLists.targettedAreaArray[0])
         getAllTags()
+        println("Date created is: ${newExercise.createdDate.toString()}")
 
         exerciseNameInput = view.findViewById<EditText>(R.id.exercise_name)
         descriptionInput = view.findViewById<EditText>(R.id.description_txt)
@@ -135,14 +136,17 @@ class CreateExerciseFragment : Fragment() {
         val dbHandler = DBHandler(this.requireContext(), null, null, 1)
         var splitTags = tagInput.text.split(" ")
         for(tag in splitTags){
-            var foundTag = allTags.firstOrNull{ it.name!!.lowercase() == tag.toString().lowercase() }
-            if(foundTag == null){
-                foundTag = Tag(tag.toString().lowercase())
-                foundTag.id = dbHandler.addTag(foundTag)!!
-            }
+            tag.trim()
+            if(tag.length > 0){
+                var foundTag = allTags.firstOrNull{ it.name!!.lowercase() == tag.lowercase() }
+                if(foundTag == null){
+                    foundTag = Tag(tag.lowercase())
+                    foundTag.id = dbHandler.addTag(foundTag)!!
+                }
 
-            if(exerciseId != null && foundTag.id != null){
-                var result = dbHandler.addTagToExerciseByIds(exerciseId, foundTag.id)
+                if(exerciseId != null && foundTag.id != null){
+                    var result = dbHandler.addTagToExerciseByIds(exerciseId, foundTag.id)
+                }
             }
         }
     }

@@ -88,13 +88,18 @@ class MainActivity : AppCompatActivity() {
         navController.navigate(R.id.action_global_exerciseListFragment)
     }
 
+    fun navToExerciseDetails(exerciseId: Int){
+        val bundle = bundleOf("exerciseId" to exerciseId)
+        navController.navigate(R.id.action_global_exerciseDetailsFragment, bundle)
+    }
+
     fun navToAddExercise(){
         navController.navigate(R.id.action_global_addExerciseFragment)
     }
 
     fun navToEditExercise(exerciseId: Int){
         var bundle = bundleOf("exerciseId" to exerciseId)
-        navController.navigate(R.id.action_exerciseListFragment_to_editExerciseFragment, bundle)
+        navController.navigate(R.id.action_global_editExerciseFragment, bundle)
     }
 
     fun navToWorkoutList(){

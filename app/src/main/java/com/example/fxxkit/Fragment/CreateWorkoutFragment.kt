@@ -209,14 +209,17 @@ class CreateWorkoutFragment : Fragment() {
         val dbHandler = DBHandler(this.requireContext(), null, null, 1)
         var splitTags = tagInput.text.split(" ")
         for(tag in splitTags){
-            var foundTag = allTags.firstOrNull{ it.name!!.lowercase() == tag.toString().lowercase() }
-            if(foundTag == null){
-                foundTag = Tag(tag.toString().lowercase())
-                foundTag.id = dbHandler.addTag(foundTag)!!
-            }
+            tag.trim()
+            if(tag.length > 0){
+                var foundTag = allTags.firstOrNull{ it.name!!.lowercase() == tag.toString().lowercase() }
+                if(foundTag == null){
+                    foundTag = Tag(tag.lowercase())
+                    foundTag.id = dbHandler.addTag(foundTag)!!
+                }
 
-            if(foundTag.id != null){
-                var result = dbHandler.addTagToWorkout(workout, foundTag)
+                if(foundTag.id != null){
+                    var result = dbHandler.addTagToWorkout(workout, foundTag)
+                }
             }
         }
     }

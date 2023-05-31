@@ -76,12 +76,12 @@ class EditWorkoutFragment : Fragment() {
         nameInput.setText(currentWorkout.name)
         descriptionInput.setText(currentWorkout.description)
         tagInput.setText(currentWorkout.getTagInputString())
-        setFavourite(true)
+        setFavourite(!currentWorkout.isFavourited)
 
         addExerciseBtn.setOnClickListener { view -> buildAddExerciseDialog() }
         orderExercisesBtn.setOnClickListener { view -> buildOrderExercisesDialog() }
         removeExerciseBtn.setOnClickListener { view -> buildRemoveExerciseDialog() }
-        favBtn.setOnClickListener { view -> setFavourite(!currentWorkout.isFavourited) }
+        favBtn.setOnClickListener { view -> setFavourite(currentWorkout.isFavourited) }
 
         updateBtn.setOnClickListener{ view ->
             if(nameInput.text.toString().length < 1){
@@ -89,7 +89,7 @@ class EditWorkoutFragment : Fragment() {
                 nameInput.setBackgroundColor(Color.parseColor(getString(R.string.colour_error)))
             } else {
                 updateWorkoutWithExercises()
-                Toast.makeText(activity, "Created workout ${nameInput.text.toString()}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, "Updated workout ${nameInput.text.toString()}", Toast.LENGTH_SHORT).show()
                 (activity as MainActivity).navToWorkoutList()
             }
         }
@@ -104,12 +104,12 @@ class EditWorkoutFragment : Fragment() {
      * Toggles image when favourited/not favourited
      */
     private fun setFavourite(isFavourited: Boolean){
-        if(!isFavourited){
+        if(isFavourited){
             currentWorkout.isFavourited = false
-            favBtn.setImageResource(R.drawable.ic_star_filled)
+            favBtn.setImageResource(R.drawable.ic_star)
         } else {
             currentWorkout.isFavourited = true
-            favBtn.setImageResource(R.drawable.ic_star)
+            favBtn.setImageResource(R.drawable.ic_star_filled)
         }
     }
 
@@ -236,9 +236,7 @@ class EditWorkoutFragment : Fragment() {
         val dbHandler = DBHandler(this.requireContext(), null, null, 1)
         var workout = dbHandler.findWorkoutById(workoutId)
         if(workout !=  null){
-            currentWorkout = workout.workoutName?.let { WorkoutViewModel(workout.id, it) }!!
-            currentWorkout.description = workout.description
-            currentWorkout.isFavourited = workout.isFavourited
+            currentWorkout = WorkoutViewModel(workout)
 
             var workoutTags = dbHandler.getTagsForWorkout(workout)
             if(workoutTags != null){
@@ -318,6 +316,7 @@ class EditWorkoutFragment : Fragment() {
         currentWorkout.name = nameInput.text.toString()
         currentWorkout.description = descriptionInput.text.toString()
         var updatedWorkout = currentWorkout.castWorkoutVMToWorkout()
+        updatedWorkout.setUpdatedDate()
         dbHandler.updateWorkout(updatedWorkout)
 
         // Workout exercises, added and removed
@@ -366,18 +365,21 @@ class EditWorkoutFragment : Fragment() {
 
         // Adding new ones
         for(tag in splitTags){
-            var foundTag = currentWorkout.tags.firstOrNull{it.name!!.lowercase() == tag.toString().lowercase()}
-
-            if(foundTag == null){
-                foundTag = allTags.firstOrNull{ it.name!!.lowercase() == tag.toString().lowercase() }
+            tag.trim()
+            if(tag.length > 0){
+                var foundTag = currentWorkout.tags.firstOrNull{it.name!!.lowercase() == tag.lowercase()}
 
                 if(foundTag == null){
-                    foundTag = Tag(tag.toString().lowercase())
-                    foundTag.id = dbHandler.addTag(foundTag)!!
-                }
+                    foundTag = allTags.firstOrNull{ it.name!!.lowercase() == tag.lowercase() }
 
-                if(foundTag.id != null){
-                    var result = dbHandler.addTagToWorkoutByIds(currentWorkout.id, foundTag.id)
+                    if(foundTag == null){
+                        foundTag = Tag(tag.lowercase())
+                        foundTag.id = dbHandler.addTag(foundTag)!!
+                    }
+
+                    if(foundTag.id != null){
+                        var result = dbHandler.addTagToWorkoutByIds(currentWorkout.id, foundTag.id)
+                    }
                 }
             }
         }

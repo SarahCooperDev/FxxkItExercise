@@ -134,6 +134,7 @@ class EditExerciseFragment : Fragment() {
         currentExercise.possibleSetSize = selectedSets
         currentExercise.possibleRepSize = selectedReps
         currentExercise.targettedAreas = selectedAreas
+        currentExercise.setUpdatedDate()
 
         try{
             var repTime = repTimeInput.text.toString().toInt()
@@ -157,18 +158,21 @@ class EditExerciseFragment : Fragment() {
 
         // Adds new tags
         for(tag in splitTags){
-            var foundTag = currentExercise.tags.firstOrNull{it.name!!.lowercase() == tag.toString().lowercase()}
-
-            if(foundTag == null){
-                foundTag = allTags.firstOrNull{ it.name!!.lowercase() == tag.toString().lowercase() }
+            tag.trim()
+            if(tag.length > 0){
+                var foundTag = currentExercise.tags.firstOrNull{it.name!!.lowercase() == tag.lowercase()}
 
                 if(foundTag == null){
-                    foundTag = Tag(tag.toString().lowercase())
-                    foundTag.id = dbHandler.addTag(foundTag)!!
-                }
+                    foundTag = allTags.firstOrNull{ it.name!!.lowercase() == tag.lowercase() }
 
-                if(foundTag.id != null){
-                    var result = dbHandler.addTagToExerciseByIds(currentExercise.id, foundTag.id)
+                    if(foundTag == null){
+                        foundTag = Tag(tag.lowercase())
+                        foundTag.id = dbHandler.addTag(foundTag)!!
+                    }
+
+                    if(foundTag.id != null){
+                        var result = dbHandler.addTagToExerciseByIds(currentExercise.id, foundTag.id)
+                    }
                 }
             }
         }

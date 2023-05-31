@@ -15,13 +15,12 @@ import com.example.fxxkit.DataClass.WorkoutExercise
 import com.example.fxxkit.MainActivity
 import com.example.fxxkit.R
 import com.example.fxxkit.ViewHolder.DetailWorkoutExerciseListAdapter
-import com.example.fxxkit.ViewHolder.WorkoutExerciseListAdapter
 import com.example.fxxkit.ViewModel.WorkoutViewModel
 
 /**
  * Shows the details of a workout
  */
-class WorkoutFragment : Fragment() {
+class WorkoutDetailsFragment : Fragment() {
     private var workoutId: Int = -1
     private lateinit var currentWorkout: WorkoutViewModel
     private var workExercises: ArrayList<WorkoutExercise> = ArrayList<WorkoutExercise>()
@@ -32,6 +31,8 @@ class WorkoutFragment : Fragment() {
     private lateinit var favImage: ImageView
     private lateinit var exerciseRV: RecyclerView
     private lateinit var editBtn: ImageButton
+    private lateinit var createdTxt: TextView
+    private lateinit var updatedTxt: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,12 +41,14 @@ class WorkoutFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var view = inflater.inflate(R.layout.fragment_workout, container, false)
+        var view = inflater.inflate(R.layout.fragment_workout_details, container, false)
         (activity as MainActivity).getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText(getString(R.string.workout_details_title))
 
         titleTV = view.findViewById(R.id.workout_name_txt)
         descriptionTV = view.findViewById(R.id.description_txt)
         tagTxt = view.findViewById(R.id.tag_txt)
+        createdTxt = view.findViewById(R.id.created_date_txt)
+        updatedTxt = view.findViewById(R.id.updated_date_txt)
         favImage = view.findViewById(R.id.favourite_iv)
         exerciseRV = view.findViewById(R.id.exercise_rv)
         editBtn = view.findViewById(R.id.edit_btn)
@@ -55,11 +58,13 @@ class WorkoutFragment : Fragment() {
 
         titleTV.setText(currentWorkout.name)
         descriptionTV.setText(currentWorkout.description)
+        createdTxt.setText(getString(R.string.created_txt) + " " + currentWorkout.createdDate.toString())
+        updatedTxt.setText(getString(R.string.updated_txt) + " " + currentWorkout.updatedDate.toString())
 
         if(currentWorkout.tags.size > 0){ tagTxt.setText(currentWorkout.getTagDisplayString()) }
         else { tagTxt.setText(getString(R.string.no_tags_txt)) }
-        if(currentWorkout.isFavourited){ favImage.setImageResource(android.R.drawable.btn_star_big_on) }
-        else { favImage.setImageResource(android.R.drawable.btn_star_big_off) }
+        if(currentWorkout.isFavourited){ favImage.setImageResource(R.drawable.ic_star_filled) }
+        else { favImage.setImageResource(R.drawable.ic_star) }
 
         exerciseRV.layoutManager = LinearLayoutManager(activity)
         exerciseRV.adapter = DetailWorkoutExerciseListAdapter(workExercises)
@@ -76,12 +81,10 @@ class WorkoutFragment : Fragment() {
         val dbHandler = DBHandler(this.requireContext(), null, null, 1)
         var workout = dbHandler.findWorkoutById(workoutId)
         if(workout !=  null){
-            currentWorkout = workout.workoutName?.let { WorkoutViewModel(workout.id, it) }!!
-            currentWorkout.description = workout.description
-            currentWorkout.isFavourited = workout.isFavourited
+            currentWorkout = WorkoutViewModel(workout)
             var workoutTags = dbHandler.getTagsForWorkout(workout)
 
-            if(workoutTags != null){
+            if(workoutTags != null && workoutTags.size > 0){
                 workout.tags = workoutTags
                 currentWorkout.tags = workoutTags
             }
@@ -105,6 +108,6 @@ class WorkoutFragment : Fragment() {
     companion object {
         @JvmStatic
         fun newInstance(workoutVM: WorkoutViewModel) =
-            WorkoutFragment().apply {  }
+            WorkoutDetailsFragment().apply {  }
     }
 }

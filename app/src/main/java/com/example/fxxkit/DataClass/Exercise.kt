@@ -1,5 +1,10 @@
 package com.example.fxxkit.DataClass
 
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.util.*
+import kotlin.collections.ArrayList
+
 /**
  *
  * Represents an exercise object
@@ -15,6 +20,8 @@ class Exercise {
     var possibleRepSize: ArrayList<String> = ArrayList<String>()
     var targettedAreas: ArrayList<String> = ArrayList<String>()
     var tags: ArrayList<Tag> = ArrayList<Tag>()
+    var createdDate: LocalDate = LocalDate.now()
+    var updatedDate: LocalDate = LocalDate.now()
 
     constructor(id:Int, name: String){
         this.id = id
@@ -33,6 +40,10 @@ class Exercise {
 
     constructor(name: String){
         this.name = name
+    }
+
+    public fun setUpdatedDate(){
+        this.updatedDate = LocalDate.now()
     }
 
     public fun getSetAsString(): String?{

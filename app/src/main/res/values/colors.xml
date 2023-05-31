@@ -15,5 +15,6 @@
     <color name="desert_orange">#E08E6D</color>
     <color name="desert_yellow">#F6C391</color>
     <color name="desert_white">#FFFAF4</color>
+    <color name="add_to_workout_btn">#a31aff</color>
     <color name="error_colour">#CC0000</color>
 </resources>

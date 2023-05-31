@@ -37,4 +37,8 @@
     <string name="error_index_lowest">Can\'t move any higher</string>
     <string name="error_index_highest">Can\'t go any lower</string>
     <string name="error_exercise_already_in_workout">Workout already contains this exercise!</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="created_txt">Created: </string>
+    <string name="updated_txt">Updated: </string>
 </resources>
