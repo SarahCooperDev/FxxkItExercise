@@ -11,8 +11,8 @@ import com.example.fxxkit.R
 import kotlin.collections.ArrayList
 
 object MultiselectLists {
-    public var setSizesArray: Array<String> = arrayOf("All", "3", "5", "6", "10", "12", "15")
-    public var repSizesArray: Array<String> = arrayOf("All", "3", "5", "6", "10", "12", "15", "20", "24", "30", "50")
+    public var setSizesArray: Array<String> = arrayOf("All", "1", "2", "3", "4", "5", "6", "10", "12", "15")
+    public var repSizesArray: Array<String> = arrayOf("All", "1", "2", "3", "5", "6", "8", "10", "12", "15", "20", "24", "30", "50")
     public var targettedAreaArray: Array<String> = arrayOf("All", "Calfs", "Quads", "Glutts", "Abs", "Triceps", "Biceps",
         "Ankles", "Knees", "Hips", "Wrists", "Elbows", "Shoulders", "Neck", "Back")
 
@@ -35,10 +35,12 @@ object MultiselectLists {
         val builder = AlertDialog.Builder(activity).create()
         val dialog = layoutInflater.inflate(R.layout.dialog_sets_reps_areas, null)
 
-        val listLayout = dialog.findViewById<LinearLayout>(R.id.list_layout)
+        val leftLayout = dialog.findViewById<LinearLayout>(R.id.left_layout)
+        val rightLayout = dialog.findViewById<LinearLayout>(R.id.right_layout)
         val cancelBtn = dialog.findViewById<ImageButton>(R.id.cancel_btn)
         val doneBtn = dialog.findViewById<ImageButton>(R.id.done_btn)
 
+        var isLeft = true
         for(item in itemList){
             var chkbx = CheckBox(activity)
             chkbx.setText(item)
@@ -58,7 +60,14 @@ object MultiselectLists {
                 chkbx.isChecked = true
             }
 
-            listLayout.addView(chkbx)
+            if(isLeft){
+                isLeft = false
+                leftLayout.addView(chkbx)
+            } else {
+                isLeft = true
+                rightLayout.addView(chkbx)
+            }
+
             checkboxes.add(chkbx)
         }
 

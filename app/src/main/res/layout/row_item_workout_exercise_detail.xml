@@ -54,7 +54,7 @@
                     android:layout_height="wrap_content"
                     android:text="Sets: "/>
                 <TextView
-                    android:id="@+id/set_list_txt"
+                    android:id="@+id/set_txt"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="N/A"/>
@@ -63,11 +63,34 @@
                     android:layout_height="wrap_content"
                     android:text="Reps: "/>
                 <TextView
-                    android:id="@+id/rep_list_txt"
+                    android:id="@+id/rep_txt"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="N/A"/>
             </TableRow>
+        </TableLayout>
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/both_sides_txt"></TextView>
+            <TextView
+                android:id="@+id/needs_both_txt"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="false"></TextView>
+        </LinearLayout>
+        <TableLayout
+            android:id="@+id/showing_table_2"
+            android:layout_width="match_parent"
+            android:stretchColumns="*"
+            android:layout_height="wrap_content">
             <TableRow
                 android:id="@+id/time_row">
                 <TextView

@@ -22,9 +22,13 @@ class WorkoutExerciseListAdapter(private val workExList: ArrayList<WorkoutExerci
 
     override fun onBindViewHolder(holder: WorkoutExerciseListViewHolder, position: Int) {
         val currentExercise = workExList[position]
-        holder.name.text = currentExercise.exercise!!.name.toString()
-        holder.sets.text = currentExercise.setSize
-        holder.reps.text = currentExercise.repSize
+        holder.idTxt.text = currentExercise.exercise!!.id.toString()
+        holder.nameTxt.text = currentExercise.exercise!!.name.toString()
+        holder.setTxt.text = currentExercise.setSize
+        holder.repTxt.text = currentExercise.repSize
+        holder.repTimeTxt.text = currentExercise.exercise!!.repTime.toString()
+        holder.needsBothTxt.text = currentExercise.exercise!!.needsBothSides.toString()
+        holder.totalTimeTxt.text = currentExercise.getTotalTimeString()
     }
 
     override fun getItemCount(): Int {
@@ -32,8 +36,12 @@ class WorkoutExerciseListAdapter(private val workExList: ArrayList<WorkoutExerci
     }
 
     class WorkoutExerciseListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val name: TextView = itemView.findViewById(R.id.exercise_name_txt)
-        val sets: TextView = itemView.findViewById(R.id.exercise_set_txt)
-        val reps: TextView = itemView.findViewById(R.id.exercise_rep_text)
+        val idTxt: TextView = itemView.findViewById(R.id.exercise_id_txt)
+        val nameTxt: TextView = itemView.findViewById(R.id.exercise_name_txt)
+        val setTxt: TextView = itemView.findViewById(R.id.set_txt)
+        val repTxt: TextView = itemView.findViewById(R.id.rep_txt)
+        val needsBothTxt: TextView = itemView.findViewById(R.id.needs_both_txt)
+        val repTimeTxt: TextView = itemView.findViewById(R.id.rep_time_txt)
+        val totalTimeTxt: TextView = itemView.findViewById(R.id.total_time_txt)
     }
 }

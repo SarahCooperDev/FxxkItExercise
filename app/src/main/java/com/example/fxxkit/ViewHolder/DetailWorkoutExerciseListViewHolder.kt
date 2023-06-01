@@ -31,30 +31,14 @@ class DetailWorkoutExerciseListAdapter(private val workExList: ArrayList<Workout
         holder.description.text = currentExercise.exercise!!.description.toString()
         holder.sets.text = currentExercise.setSize
         holder.reps.text = currentExercise.repSize
+        holder.needsBothTxt.text = currentExercise.exercise!!.needsBothSides.toString()
         holder.repTime.text = currentExercise.exercise!!.repTime.toString() + "s"
         holder.areas.text = currentExercise.exercise!!.getAreasAsString()
         holder.strength.text = currentExercise.exercise!!.isStrengthening.toString()
         holder.condition.text = currentExercise.exercise!!.isConditioning.toString()
 
         // Displays time as minutes and seconds
-        var totalTime = currentExercise.getTotalTimeInSecs()
-        if(totalTime != null){
-            var minutes = totalTime/60
-            var minutesString = minutes.toString()
-            if(minutes < 1){
-                minutesString = "0"
-            }
-            var seconds = totalTime%60
-            var secondsString = seconds.toString()
-            if(seconds < 10 && seconds > 0){
-                secondsString = "0" + seconds.toString()
-            } else if(seconds < 10){
-                secondsString = "00"
-            }
-            holder.totalTime.text = minutesString + ":" + secondsString + "m"
-        } else {
-            holder.totalTime.text = "N/A"
-        }
+        holder.totalTime.text = currentExercise.getTotalTimeString()
 
         showDetails = true
         toggleVisibility(holder)
@@ -95,8 +79,9 @@ class DetailWorkoutExerciseListAdapter(private val workExList: ArrayList<Workout
         val id: TextView = itemView.findViewById(R.id.exercise_id_txt)
         val name: TextView = itemView.findViewById(R.id.exercise_name_txt)
         val description: TextView = itemView.findViewById(R.id.description_txt)
-        val sets: TextView = itemView.findViewById(R.id.set_list_txt)
-        val reps: TextView = itemView.findViewById(R.id.rep_list_txt)
+        val sets: TextView = itemView.findViewById(R.id.set_txt)
+        val reps: TextView = itemView.findViewById(R.id.rep_txt)
+        val needsBothTxt: TextView = itemView.findViewById(R.id.needs_both_txt)
         val repTime: TextView = itemView.findViewById(R.id.rep_time_txt)
         val totalTime: TextView = itemView.findViewById(R.id.total_time_txt)
         val areas: TextView = itemView.findViewById(R.id.area_list_txt)

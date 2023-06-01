@@ -34,6 +34,7 @@ class ExerciseDetailsFragment : Fragment() {
     private lateinit var setListTxt: TextView
     private lateinit var repListTxt: TextView
     private lateinit var repTimeTxt: TextView
+    private lateinit var needsBothTxt: TextView
     private lateinit var targettedAreasTxt: TextView
     private lateinit var isStrengthTxt: TextView
     private lateinit var isConditionTxt: TextView
@@ -51,6 +52,7 @@ class ExerciseDetailsFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var view = inflater.inflate(R.layout.fragment_exercise_details, container, false)
+        (activity as MainActivity).getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText(getString(R.string.exercise_details_title))
         loadExercise()
         loadWorkouts()
 
@@ -60,6 +62,7 @@ class ExerciseDetailsFragment : Fragment() {
         setListTxt = view.findViewById(R.id.set_list_txt)
         repListTxt = view.findViewById(R.id.rep_list_txt)
         repTimeTxt = view.findViewById(R.id.rep_time_txt)
+        needsBothTxt = view.findViewById(R.id.needs_both_txt)
         targettedAreasTxt = view.findViewById(R.id.area_list_txt)
         isStrengthTxt = view.findViewById(R.id.is_strength_txt)
         isConditionTxt = view.findViewById(R.id.is_condition_txt)
@@ -76,6 +79,9 @@ class ExerciseDetailsFragment : Fragment() {
         setListTxt.setText(currentExercise.getSetAsString())
         repListTxt.setText(currentExercise.getRepsAsString())
         repTimeTxt.setText(currentExercise.repTime.toString())
+        //if(currentExercise.needsBothSides) {
+            needsBothTxt.setText(currentExercise.needsBothSides.toString())
+        //}
         targettedAreasTxt.setText(currentExercise.getAreasAsString())
         if(currentExercise.isStrengthening){ isStrengthTxt.setText(getString(R.string.is_strength_txt)) }
         else { isStrengthTxt.setText(getString(R.string.isnt_strength_txt)) }

@@ -55,11 +55,33 @@ class WorkoutExercise{
             var setInt = setSize?.toInt()
             var repInt = repSize?.toInt()
             var total = setInt!! * repInt!! * seconds!!
+            if(exercise!!.needsBothSides){ total = total * 2 }
             return total
         } catch(e: Exception){
             return null
         }
 
         return null
+    }
+
+    public fun getTotalTimeString(): String{
+        var totalTime = getTotalTimeInSecs()
+        if(totalTime != null){
+            var minutes = totalTime/60
+            var minutesString = minutes.toString()
+            if(minutes < 1){
+                minutesString = "0"
+            }
+            var seconds = totalTime%60
+            var secondsString = seconds.toString()
+            if(seconds < 10 && seconds > 0){
+                secondsString = "0" + seconds.toString()
+            } else if(seconds < 10){
+                secondsString = "00"
+            }
+            return minutesString + ":" + secondsString + "m"
+        } else {
+            return "N/A"
+        }
     }
 }

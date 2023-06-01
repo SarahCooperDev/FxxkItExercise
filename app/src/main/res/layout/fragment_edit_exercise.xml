@@ -116,6 +116,18 @@
                                 android:inputType="number"/>
                         </TableRow>
                         <TableRow>
+                            <TextView
+                                android:layout_weight="1"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:text="@string/both_sides_txt" />
+                            <CheckBox
+                                android:id="@+id/needs_both_chkbx"
+                                android:layout_weight="1"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content" />
+                        </TableRow>
+                        <TableRow>
                             <ToggleButton
                                 android:id="@+id/strengthening_toggle_btn"
                                 android:layout_weight="1"

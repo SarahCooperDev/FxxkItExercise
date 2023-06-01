@@ -34,6 +34,7 @@ class EditExerciseFragment : Fragment() {
     private lateinit var setSizeMultiselect: TextView
     private lateinit var repSizeMultiselect: TextView
     private lateinit var repTimeInput: EditText
+    private lateinit var needsBothChkbx: CheckBox
     private lateinit var tagInput: EditText
     private lateinit var cancelBtn: ImageButton
     private lateinit var updateBtn: ImageButton
@@ -56,6 +57,7 @@ class EditExerciseFragment : Fragment() {
         setSizeMultiselect = view.findViewById(R.id.set_size_multiselect)
         repSizeMultiselect = view.findViewById(R.id.rep_size_multiselect)
         repTimeInput = view.findViewById(R.id.rep_time_txt)
+        needsBothChkbx = view.findViewById(R.id.needs_both_chkbx)
         targettedAreasMultiselect = view.findViewById(R.id.area_select)
         tagInput = view.findViewById(R.id.tag_input)
         cancelBtn = view.findViewById(R.id.cancel_btn)
@@ -68,6 +70,7 @@ class EditExerciseFragment : Fragment() {
 
         if(currentExercise.isStrengthening){ isStrengthBtn.isChecked = true }
         if(currentExercise.isConditioning) { isConditioningBtn.isChecked = true }
+        if(currentExercise.needsBothSides) { needsBothChkbx.isChecked = true }
         if(currentExercise.tags.size > 0){ tagInput.setText(currentExercise.getTagInputString()) }
 
         if(currentExercise.possibleSetSize.size > 0){
@@ -131,6 +134,7 @@ class EditExerciseFragment : Fragment() {
         currentExercise.description = descriptionInput.text.toString()
         if(isStrengthBtn.isChecked()){ currentExercise.isStrengthening = true }
         if(isConditioningBtn.isChecked()){ currentExercise.isConditioning = true }
+        currentExercise.needsBothSides = needsBothChkbx.isChecked
         currentExercise.possibleSetSize = selectedSets
         currentExercise.possibleRepSize = selectedReps
         currentExercise.targettedAreas = selectedAreas

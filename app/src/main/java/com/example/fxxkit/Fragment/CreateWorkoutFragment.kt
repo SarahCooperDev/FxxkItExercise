@@ -241,6 +241,7 @@ class CreateWorkoutFragment : Fragment() {
     private fun loadExercises(): ArrayList<Exercise>{
         val dbHandler = DBHandler(this.requireContext(), null, null, 1)
         var exerciseList = dbHandler.getAllExercises()!!
+        exerciseList.sortBy { it.name }
         return exerciseList
     }
 

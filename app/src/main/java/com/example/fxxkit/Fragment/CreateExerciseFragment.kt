@@ -33,6 +33,7 @@ class CreateExerciseFragment : Fragment() {
     private lateinit var setSizeMultiselect: TextView
     private lateinit var repSizeMultiselect: TextView
     private lateinit var targettedAreasMultiselect: TextView
+    private lateinit var needsBothChkbx: CheckBox
     private lateinit var tagInput: EditText
     private lateinit var cancelBtn: ImageButton
     private lateinit var createBtn: ImageButton
@@ -42,7 +43,7 @@ class CreateExerciseFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view =  inflater.inflate(R.layout.fragment_add_exercise, container, false)
+        val view =  inflater.inflate(R.layout.fragment_create_exercise, container, false)
         (activity as MainActivity).getSupportActionBar()?.customView?.findViewById<TextView>(R.id.appbar_title_id)?.setText(getString(R.string.create_exercise_title))
 
         selectedSets.add(MultiselectLists.setSizesArray[0])
@@ -51,17 +52,18 @@ class CreateExerciseFragment : Fragment() {
         getAllTags()
         println("Date created is: ${newExercise.createdDate.toString()}")
 
-        exerciseNameInput = view.findViewById<EditText>(R.id.exercise_name)
-        descriptionInput = view.findViewById<EditText>(R.id.description_txt)
-        repTimeInput = view.findViewById<EditText>(R.id.rep_time_txt)
-        isStrengthBtn = view.findViewById<ToggleButton>(R.id.strengthening_toggle_btn)
-        isConditioningBtn = view.findViewById<ToggleButton>(R.id.conditioning_toggle_btn)
+        exerciseNameInput = view.findViewById(R.id.exercise_name)
+        descriptionInput = view.findViewById(R.id.description_txt)
+        repTimeInput = view.findViewById(R.id.rep_time_txt)
+        needsBothChkbx = view.findViewById(R.id.needs_both_chkbx)
+        isStrengthBtn = view.findViewById(R.id.strengthening_toggle_btn)
+        isConditioningBtn = view.findViewById(R.id.conditioning_toggle_btn)
         setSizeMultiselect = view.findViewById(R.id.set_size_multiselect)
         repSizeMultiselect = view.findViewById(R.id.rep_size_multiselect)
-        targettedAreasMultiselect = view.findViewById<TextView>(R.id.area_select)
-        tagInput = view.findViewById<EditText>(R.id.tag_input)
-        cancelBtn = view.findViewById<ImageButton>(R.id.cancel_btn)
-        createBtn = view.findViewById<ImageButton>(R.id.create_btn)
+        targettedAreasMultiselect = view.findViewById(R.id.area_select)
+        tagInput = view.findViewById(R.id.tag_input)
+        cancelBtn = view.findViewById(R.id.cancel_btn)
+        createBtn = view.findViewById(R.id.create_btn)
 
         createBtn.setOnClickListener{view ->
             if(exerciseNameInput.text.toString().length < 1){
@@ -108,6 +110,7 @@ class CreateExerciseFragment : Fragment() {
 
         if(isStrengthBtn.isChecked()){ newExercise.isStrengthening = true }
         if(isConditioningBtn.isChecked()){ newExercise.isConditioning = true }
+        if(needsBothChkbx.isChecked){ newExercise.needsBothSides = true }
         if(selectedSets.size == 0){selectedSets.add(MultiselectLists.setSizesArray[0])}
         if(selectedReps.size == 0){selectedReps.add(MultiselectLists.repSizesArray[0])}
         if(selectedAreas.size == 0){selectedAreas.add(MultiselectLists.targettedAreaArray[0])}

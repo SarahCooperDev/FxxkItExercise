@@ -12,8 +12,8 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
     SQLiteOpenHelper(context, DATABASE_NAME, factory, CURRENT_DATABASE_VERSION){
 
     companion object{
-        private val CURRENT_DATABASE_VERSION = 5
-        private val NEW_DATABASE_VERSION = 6
+        private val CURRENT_DATABASE_VERSION = 6
+        private val NEW_DATABASE_VERSION = 7
         private val DATABASE_NAME = "workoutDB.db"
 
         val TABLE_EXERCISES = "exercise"
@@ -43,6 +43,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         val COLUMN_NAME = "name"
         val COLUMN_DATE_CREATED = "created_date"
         val COLUMN_DATE_UPDATED = "updated_date"
+        val COLUMN_NEEDS_BOTH_SIDES = "both_sides"
     }
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -52,7 +53,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
                 COLUMN_IS_STRENGTH + " BOOLEAN, " + COLUMN_IS_CONDITION + " BOOLEAN, " +
                 COLUMN_POSSIBLE_SET_SIZE + " TEXT, " + COLUMN_POSSIBLE_REP_SIZE + " TEXT, " +
                 COLUMN_DATE_CREATED + " INTEGER, " + COLUMN_DATE_UPDATED + " INTEGER, " +
-                COLUMN_TARGETTED_AREAS + " TEXT)")
+                COLUMN_NEEDS_BOTH_SIDES + " BOOLEAN, " + COLUMN_TARGETTED_AREAS + " TEXT)")
 
         val CREATE_WORKOUT_TABLE = ("CREATE TABLE " + TABLE_WORKOUTS +
                 "(" + COLUMN_ID + " INTEGER PRIMARY KEY," + COLUMN_WORKOUTNAME + " TEXT, " +
@@ -109,6 +110,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         calfRaisesEx.possibleRepSize = arrayListOf(MultiselectLists.repSizesArray[0])
         calfRaisesEx.targettedAreas = arrayListOf(MultiselectLists.targettedAreaArray[1])
         calfRaisesEx.repTime = 5
+        calfRaisesEx.needsBothSides = true
         var calfId = dbWrapperAddExercise(db, calfRaisesEx)
         calfRaisesEx.id = calfId!!
 
@@ -297,6 +299,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         values.put(COLUMN_IS_CONDITION, exercise.isConditioning)
         values.put(COLUMN_IS_STRENGTH, exercise.isStrengthening)
         values.put(COLUMN_REP_TIME, exercise.repTime)
+        values.put(COLUMN_NEEDS_BOTH_SIDES, exercise.needsBothSides)
         values.put(COLUMN_DATE_CREATED, exercise.createdDate.toEpochDay())
         values.put(COLUMN_DATE_UPDATED, exercise.updatedDate.toEpochDay())
 
@@ -332,6 +335,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
             val setString = cursor.getString(cursor.getColumnIndex(COLUMN_POSSIBLE_SET_SIZE))
             val repString = cursor.getString(cursor.getColumnIndex(COLUMN_POSSIBLE_REP_SIZE))
             val areaString = cursor.getString(cursor.getColumnIndex(COLUMN_TARGETTED_AREAS))
+            val needsBoth = cursor.getInt(cursor.getColumnIndex(COLUMN_NEEDS_BOTH_SIDES)) > 0
             val createdDate = LocalDate.ofEpochDay(cursor.getLong(cursor.getColumnIndex(COLUMN_DATE_CREATED)))
             val updatedDate = LocalDate.ofEpochDay(cursor.getLong(cursor.getColumnIndex(COLUMN_DATE_UPDATED)))
 
@@ -347,6 +351,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
             if(setString != null){ exercise.setStringToSet(setString) }
             if(repString != null){ exercise.setStringToRep(repString) }
             if(areaString != null){ exercise.setStringToArea(areaString) }
+            if(needsBoth != null) { exercise.needsBothSides = needsBoth }
             if(createdDate != null){ exercise.createdDate = createdDate }
             if(updatedDate != null){ exercise.updatedDate = updatedDate }
 
@@ -377,6 +382,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         var repString: String?
         var areaString: String?
         var repTime: Int
+        var needsBoth: Boolean
         var createdDate: LocalDate
         var updatedDate: LocalDate
 
@@ -391,6 +397,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
                 repString = cursor.getString(cursor.getColumnIndex(COLUMN_POSSIBLE_REP_SIZE))
                 areaString = cursor.getString(cursor.getColumnIndex(COLUMN_TARGETTED_AREAS))
                 repTime = cursor.getInt(cursor.getColumnIndex(COLUMN_REP_TIME))
+                needsBoth = cursor.getInt(cursor.getColumnIndex(COLUMN_NEEDS_BOTH_SIDES)) > 0
                 createdDate = LocalDate.ofEpochDay(cursor.getLong(cursor.getColumnIndex(COLUMN_DATE_CREATED)))
                 updatedDate = LocalDate.ofEpochDay(cursor.getLong(cursor.getColumnIndex(COLUMN_DATE_UPDATED)))
 
@@ -402,6 +409,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
                 if(repString != null){ exercise.setStringToRep(repString) }
                 if(areaString != null){ exercise.setStringToArea(areaString) }
                 if(repTime > 0){ exercise.repTime = repTime}
+                if(needsBoth != null){ exercise.needsBothSides = needsBoth }
                 if(createdDate != null){ exercise.createdDate = createdDate }
                 if(updatedDate != null){ exercise.updatedDate = updatedDate }
 
@@ -427,6 +435,7 @@ class DBHandler(context: Context, name: String?, factory: SQLiteDatabase.CursorF
         values.put(COLUMN_IS_CONDITION, exercise.isConditioning)
         values.put(COLUMN_IS_STRENGTH, exercise.isStrengthening)
         values.put(COLUMN_DATE_UPDATED, exercise.updatedDate.toEpochDay())
+        values.put(COLUMN_NEEDS_BOTH_SIDES, exercise.needsBothSides)
         if(exercise.repTime > 0){ values.put(COLUMN_REP_TIME, exercise.repTime) }
         if(setString != null){ values.put(COLUMN_POSSIBLE_SET_SIZE, setString) }
         if(repString != null){ values.put(COLUMN_POSSIBLE_REP_SIZE, repString) }

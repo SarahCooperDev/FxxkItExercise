@@ -41,7 +41,6 @@ class WorkoutListAdapter(private val activity: MainActivity, private val eList: 
         else { holder.favourite_iv.setImageResource(R.drawable.ic_star) }
 
         holder.workout_details_row.visibility = View.GONE
-        holder.workout_exercises_row.visibility = View.GONE
 
         // Creates the table of workout exercises
         var table = holder.exercise_rv
@@ -52,11 +51,9 @@ class WorkoutListAdapter(private val activity: MainActivity, private val eList: 
         holder.workout_row.setOnClickListener{
             if(holder.exercise_rv.visibility == View.VISIBLE){
                 holder.workout_details_row.visibility = View.GONE
-                holder.workout_exercises_row.visibility = View.GONE
                 holder.exercise_rv.visibility = View.GONE
             } else if(holder.exercise_rv.visibility == View.GONE){
                 holder.workout_details_row.visibility = View.VISIBLE
-                holder.workout_exercises_row.visibility = View.VISIBLE
                 holder.exercise_rv.visibility = View.VISIBLE
             }
         }
@@ -91,7 +88,6 @@ class WorkoutListAdapter(private val activity: MainActivity, private val eList: 
         val workout_name: TextView = itemView.findViewById(R.id.workout_name_txt)
         val workout_row: CardView = itemView.findViewById(R.id.workout_row_item)
         val workout_details_row: TableRow = itemView.findViewById(R.id.workout_details_row)
-        val workout_exercises_row: TableRow = itemView.findViewById(R.id.workout_exercises_row)
         val exercise_rv: RecyclerView = itemView.findViewById(R.id.workout_exercise_rv)
         val workout_id: TextView = itemView.findViewById(R.id.workout_id_txt)
         val description_txt: TextView = itemView.findViewById(R.id.description_txt)

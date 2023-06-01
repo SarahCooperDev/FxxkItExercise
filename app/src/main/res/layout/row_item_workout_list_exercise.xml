@@ -4,57 +4,112 @@
     android:layout_height="wrap_content"
     style="@style/DesertRow"
     android:id="@+id/exercise_row">
-    <TableLayout
+    <LinearLayout
+        android:padding="10dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_width="fill_parent"
-        android:stretchColumns="0"
-        android:layout_margin="5dp">
-        <TableRow
+        android:orientation="vertical">
+        <TableLayout
             android:layout_height="wrap_content"
-            android:layout_width="match_parent">
-            <LinearLayout
-                android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
+            android:stretchColumns="0"
+            android:layout_margin="5dp">
+            <TableRow
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="horizontal">
-                <TextView
+                android:layout_width="match_parent">
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:id="@+id/exercise_name_txt"
-                    android:text="Exercise Name"
-                    android:layout_marginRight="20dp" ></TextView>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/exercise_id_txt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Test"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=" | "/>
+                    <TextView
+                        android:id="@+id/exercise_name_txt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Test"/>
+                </LinearLayout>
+            </TableRow>
+        </TableLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:text="Sets: "></TextView>
+            <TextView
                 android:layout_weight="1"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:text="Sets: "></TextView>
-                <TextView
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:id="@+id/exercise_set_txt"
-                    android:text="Sets: "
-                    android:layout_marginRight="20dp"></TextView>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:id="@+id/set_txt"
+                android:text="Sets: "
+                android:layout_marginRight="20dp"></TextView>
+            <TextView
                 android:layout_weight="1"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:text="Reps: "></TextView>
-                <TextView
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:id="@+id/exercise_rep_text"
-                    android:text="Reps: "></TextView>
-            </LinearLayout>
-        </TableRow>
-    </TableLayout>
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:text="Reps: "></TextView>
+            <TextView
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:id="@+id/rep_txt"
+                android:text="Reps: "></TextView>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/both_sides_txt"></TextView>
+            <TextView
+                android:id="@+id/needs_both_txt"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="false"></TextView>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Rep time: "/>
+            <TextView
+                android:id="@+id/rep_time_txt"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="N/A"/>
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Total time: "/>
+            <TextView
+                android:id="@+id/total_time_txt"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="N/A"/>
+        </LinearLayout>
+    </LinearLayout>
 </androidx.cardview.widget.CardView>

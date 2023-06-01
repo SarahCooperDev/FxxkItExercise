@@ -41,4 +41,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="created_txt">Created: </string>
     <string name="updated_txt">Updated: </string>
+    <string name="exercise_details_title">Exercise Details</string>
+    <string name="both_sides_txt">Repeat for both sides:</string>
 </resources>

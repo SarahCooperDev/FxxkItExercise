@@ -11,7 +11,8 @@
     card_view:contentPadding="10dp"
     android:foreground="?selectableItemBackground"
     android:clickable="true">
-    <RelativeLayout
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
         <TableLayout
@@ -115,13 +116,10 @@
                     android:background="@null"
                     card_view:srcCompat="@drawable/ic_star" />
             </TableRow>
-            <TableRow
-                android:id="@+id/workout_exercises_row">
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/workout_exercise_rv"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"></androidx.recyclerview.widget.RecyclerView>
-            </TableRow>
         </TableLayout>
-    </RelativeLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/workout_exercise_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></androidx.recyclerview.widget.RecyclerView>
+    </LinearLayout>
 </androidx.cardview.widget.CardView>

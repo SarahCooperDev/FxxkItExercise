@@ -19,6 +19,7 @@ class Exercise {
     var possibleSetSize: ArrayList<String> = ArrayList<String>()
     var possibleRepSize: ArrayList<String> = ArrayList<String>()
     var targettedAreas: ArrayList<String> = ArrayList<String>()
+    var needsBothSides: Boolean = false
     var tags: ArrayList<Tag> = ArrayList<Tag>()
     var createdDate: LocalDate = LocalDate.now()
     var updatedDate: LocalDate = LocalDate.now()

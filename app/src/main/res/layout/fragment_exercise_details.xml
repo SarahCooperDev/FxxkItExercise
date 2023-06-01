@@ -120,6 +120,17 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:text="@string/both_sides_txt"></TextView>
+                <TextView
+                    android:id="@+id/needs_both_txt"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="false"></TextView>
+            </TableRow>
+            <TableRow>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:text="Targetted Areas: "/>
                 <TextView
                     android:id="@+id/area_list_txt"
