@@ -210,7 +210,7 @@ class EditWorkoutFragment : Fragment() {
 
         builder.setPositiveButton(getString(R.string.done_txt)) { dialogInterface, i ->
             for(workEx in selectedExercises){
-                if(workEx.isSelected){
+                if(!workEx.isSelected){
                     removedWorkExercises.add(workEx)
                 }
             }
@@ -323,11 +323,33 @@ class EditWorkoutFragment : Fragment() {
         for(workEx in removedWorkExercises){ dbHandler.deleteWorkoutExercise(workEx.id) }
         for(workEx in addedWorkExercises){ dbHandler.addExerciseToWorkout(workEx) }
         selectedExercises.sortBy { it.orderNo }
+        normaliseExercises()
         normaliseWorkExercises()
         for(workEx in selectedExercises){ checkAndUpdate(dbHandler, workEx)}
 
         // Tags, added and removed
         updateTags(dbHandler)
+    }
+
+    /**
+     * Removes duplicate workout exercises
+     */
+    private fun normaliseExercises(){
+        var toRemove = ArrayList<Int>()
+        for(ex in selectedExercises){
+            var check = selectedExercises.filter { it.exercise!!.id == ex.exercise!!.id }
+            if(check.size > 1){
+                toRemove.add(check[0].exercise!!.id)
+            }
+        }
+
+        var ids = toRemove.distinct()
+        for(id in ids){
+            var allEx = selectedExercises.filter{it.exercise!!.id == id}
+            for(j in 1..allEx.size-1){
+                selectedExercises.remove(allEx[j])
+            }
+        }
     }
 
     /**

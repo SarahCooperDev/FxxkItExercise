@@ -67,7 +67,7 @@ class ExerciseListFragment : Fragment() {
         setUpFilterBtn()
         loadExercises()
         loadWorkouts()
-        sortByReverseChrono()
+        sortByAlpha()
 
         exerciseRecycler.layoutManager = LinearLayoutManager(activity)
         exerciseRecycler.adapter = ExerciseListAdapter(exerciseList, allWorkouts, activity as MainActivity)
